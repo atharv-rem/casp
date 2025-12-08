@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     // STORE THE SESSION SECRET, NOT THE ID
     cookieStore.set("session", session.secret, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "strict",
       path: "/",
     });

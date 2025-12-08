@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Cal_Sans,Inter } from "next/font/google";
+import {Inter,Cal_Sans} from "next/font/google";
 import "./globals.css";
+
+
+const inter = Inter({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const cal = Cal_Sans({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-cal",
-  display : "swap",
-});
-
-const inter = Inter({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-inter",
   display : "swap",
 });
 
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cal.variable} ${inter.variable}`}>
+    <html lang="en" className={`${inter.className} ${cal.className} bg-white`}>
       <body>{children}</body>
     </html>
   )
