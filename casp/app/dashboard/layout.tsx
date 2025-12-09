@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import localFont from "next/font/local";
 import LogoutButton from "../components/logout_button";
-
+import Link from "next/link";
 const kal = localFont({
   src: [
     { path: '../fonts/KalamaykaVF.woff2', style: 'normal' },
@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* LEFT SIDEBAR */}
       <div className="flex flex-col items-center justify-start w-[20%] h-full">
-        <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-gray-300 p-2">
+        <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
             <Image src={logo} alt="CASP Logo" width={15} height={15}/>
             <h1 className="text-[15px] font-cal">casp</h1>
@@ -56,7 +56,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={addrecord} alt="add record" width={16} height={16}/>
-            <h1 className="text-[15px] font-cal ml-[10px]">add records</h1>
+            <Link href="/dashboard/records" className="text-[15px] font-cal ml-[10px]">add records</Link>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={giveaccess} alt="give access" width={16} height={16}/>
@@ -72,11 +72,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}
-      <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-gray-300">
-        <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-gray-300 p-2">
+      <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef]">
+        <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
             <Image src={workplace} alt="CASP Logo" width={15} height={15}/>
-            <h1 className="text-[14px] font-cal ml-2">{user.name}&nbsp;/&nbsp;</h1>
+            <h1 className="text-[14px] font-cal ml-2">{user.name}</h1>
+            <p>/</p>
             <h1 className="text-[14px] font-cal">dashboard</h1>
           </div>
           <LogoutButton />
@@ -85,11 +86,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* RIGHT AI PANEL */}
-      <div className="flex flex-col items-start justify-center w-[30%] h-full border-l-[1px] border-gray-300">
-        <h1 className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
+      <div className="flex flex-col items-start justify-center w-[30%] h-full border-l-[1px] border-[#efefef]">
+        <h1 style={{textShadow: ' 0 122px 34px rgba(143, 143, 143, 0.00), 0 78px 31px rgba(143, 143, 143, 0.01), 0 44px 26px rgba(143, 143, 143, 0.05), 0 20px 20px rgba(143, 143, 143, 0.09), 0 5px 11px rgba(143, 143, 143, 0.10)'}} className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
         <p className="text--[10px] font-kal font-semibold ml-[20px]">powered by gemini</p>
 
-        <div className="fixed bottom-[20px] right-[10px] flex flex-row items-center justify-start shadow-md hover:shadow-lg w-[250px] px-[10px] py-[5px] rounded-[12px] border-[1px] border-gray-300 cursor-pointer">
+        <div className="fixed bottom-[20px] right-[10px] flex flex-row items-center justify-start shadow-md hover:shadow-lg w-[250px] px-[10px] py-[5px] rounded-[12px] border-[1px] border-[#efefef] cursor-pointer">
           <Image src={ai} alt="AI icon" width={18} height={18}/>
           <p className="text-[15px] ml-[5px] font-inter font-bold">what would you like me do?</p>
         </div>
