@@ -34,18 +34,16 @@ export default function SignupPage() {
 
         <form onSubmit={handleSignup} className="w-full max-w-md">
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 text-[20px] font-inter font-regular mb-2">name</label>
-            <input id="name" type="text" placeholder="john doe" className="shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[20px]" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}/>
-            <label htmlFor="email" className="block text-gray-700 text-[20px] font-inter font-medium mb-2">email</label>
-            <input id="email" type="email" placeholder="john.doe@example.com" className="shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[20px]" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}/>
-
-            <label htmlFor="password" className="block text-gray-700 text-[20px] font-inter font-medium mb-2">password</label>
-            <input id="password" type="password" placeholder="enter your password" className="shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
-
-            <button type="submit" className="mt-4 bg-black hover:bg-gray-800 text-white font-inter font-medium py-[5px] px-[10px] rounded-[12px]">Create</button>
+            <label htmlFor="name" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2">name</label>
+            <input id="name" type="text" placeholder="john doe" className="font-albert font-semibold shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[20px]" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}/>
+            <label htmlFor="email" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2">email</label>
+            <input id="email" type="email" placeholder="john.doe@example.com" className="font-albert font-semibold shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[20px]" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}/>
+            <label htmlFor="password" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2">password</label>
+            <input id="password" type="password" placeholder="enter your password" className="font-albert font-semibold shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
+            <button type="submit" className="mt-4 bg-black hover:bg-gray-800 text-white font-albert font-bold py-[5px] px-[10px] rounded-[12px]">create</button>
           </div>
         </form>
-        <div className="font-inter text-[13px] text-gray-400">
+        <div className="font-albert text-[13px] text-gray-400">
           By signing in, you agree to our <span className="underline cursor-pointer text-black">Terms of Service</span> and <span className="underline cursor-pointer text-black">Privacy Policy</span>.
         </div>
       </div>

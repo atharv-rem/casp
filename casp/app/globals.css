@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Font utilities mapping to next/font CSS variables */
-.font-inter { font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
-.font-cal { font-family: var(--font-cal), var(--font-inter), ui-sans-serif, system-ui; }
+.font-inter { font-family: var(--font-albert), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+.font-cal { font-family: var(--font-cal), var(--font-albert), ui-sans-serif, system-ui; }
 /* Kalamayka (local font provided by dashboard layout) */
-.font-kal { font-family: var(--font-kal), var(--font-inter), ui-sans-serif, system-ui; }
+.font-kal { font-family: var(--font-kal), var(--font-albert), ui-sans-serif, system-ui; }

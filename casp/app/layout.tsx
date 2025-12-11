@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Cal_Sans } from "next/font/google";
+import { Albert_Sans, Cal_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const albert = Albert_Sans({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-albert",
   display: "swap",
 });
 
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${cal.variable} bg-white`}>
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${albert.variable} ${cal.variable} bg-white`}>
+      <body className={albert.className}>{children}</body>
     </html>
   );
 }

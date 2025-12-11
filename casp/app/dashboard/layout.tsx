@@ -52,15 +52,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex flex-col items-start justify-start w-full p-2 gap-1">
           <div className="flex flex-row items-center justify-start">
             <Image src={database} alt="database icon" width={16} height={16}/>
-            <h1 className="text-[15px] font-cal ml-[10px]">records</h1>
+            <h1 className="text-[15px] font-albert font-semibold ml-[10px]">records</h1>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={addrecord} alt="add record" width={16} height={16}/>
-            <Link href="/dashboard/records" className="text-[15px] font-cal ml-[10px]">add records</Link>
+            <Link href="/dashboard/records" className="text-[15px] font-albert font-semibold ml-[10px]">add records</Link>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={giveaccess} alt="give access" width={16} height={16}/>
-            <h1 className="text-[15px] font-cal ml-[10px]">give access</h1>
+            <h1 className="text-[15px] font-albert font-semibold ml-[10px]">give access</h1>
           </div>
         </div>
 
@@ -76,9 +76,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
             <Image src={workplace} alt="CASP Logo" width={15} height={15}/>
-            <h1 className="text-[14px] font-cal ml-2">{user.name}</h1>
+            <h1 className="text-[14px] font-albert font-semibold ml-2">{user.name}</h1>
             <p>/</p>
-            <h1 className="text-[14px] font-cal">dashboard</h1>
+            <h1 className="text-[14px] font-albert font-bold">dashboard</h1>
           </div>
           <LogoutButton />
         </div>
@@ -92,7 +92,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         <div className="fixed bottom-[20px] right-[10px] flex flex-row items-center justify-start shadow-md hover:shadow-lg w-[250px] px-[10px] py-[5px] rounded-[12px] border-[1px] border-[#efefef] cursor-pointer">
           <Image src={ai} alt="AI icon" width={18} height={18}/>
-          <p className="text-[15px] ml-[5px] font-inter font-bold">what would you like me do?</p>
+          <p className="text-[15px] ml-[5px] font-albert font-bold">what would you like me do?</p>
         </div>
       </div>
 

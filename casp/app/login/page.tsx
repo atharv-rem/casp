@@ -35,13 +35,12 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="w-full max-w-md">
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 text-[20px] font-inter font-bold mb-2">email</label>
-            <input id="email" type="email" placeholder="john.doe@example.com" className="shadow-md border-[1px] border-gray-300 rounded-[10px] font-inter font-bold w-full py-2 px-3 mb-[20px]"/>
+            <label htmlFor="email" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2">email</label>
+            <input id="email" type="email" placeholder="john.doe@example.com" className="shadow-md border-[1px] border-gray-300 rounded-[10px] font-albert font-semibold w-full py-2 px-3 mb-[20px]"/>
+            <label htmlFor="password" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2">password</label>
+            <input id="password" type="password" placeholder="enter your password" className="shadow-md border-[1px] border-gray-300 rounded-[10px] font-albert font-semibold w-full py-2 px-3"/>
 
-            <label htmlFor="password" className="block text-gray-700 text-[20px] font-inter font-bold mb-2">password</label>
-            <input id="password" type="password" placeholder="enter your password" className="shadow-md border-[1px] border-gray-300 rounded-[10px] font-inter font-bold w-full py-2 px-3"/>
-
-            <button type="submit" className="mt-4 bg-black hover:bg-gray-800 text-white font-inter font-bold py-[5px] px-[10px] rounded-[12px]">Login</button>
+            <button type="submit" className="mt-4 bg-black hover:bg-gray-800 text-white font-albert font-bold py-[5px] px-[10px] rounded-[12px]">Login</button>
           </div>
         </form>
       </div>
