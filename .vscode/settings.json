@@ -1,3 +1,4 @@
 {
-    "omlet.rootPath": "casp"
+    "omlet.rootPath": "casp",
+    "deno.enable": true
 }

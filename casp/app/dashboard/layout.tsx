@@ -3,6 +3,19 @@ import "../globals.css";
 import localFont from "next/font/local";
 import LogoutButton from "../components/logout_button";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { supabaseAdmin } from "@/lib/supabase/admin";
+import Image from "next/image";
+import logo from "@/public/assets/black casp logo.png";
+import usericon from "@/public/assets/user icon.svg";
+import workplace from "@/public/assets/building.svg";
+import sidebar from "@/public/assets/sidebar close.svg";
+import database from "@/public/assets/database.svg";
+import giveaccess from "@/public/assets/give access.svg";
+import addrecord from "@/public/assets/add user.svg";
+import ai from "@/public/assets/ai search.svg";
+import gemini from "@/public/assets/gemini.svg"
+
 const kal = localFont({
   src: [
     { path: '../fonts/KalamaykaVF.woff2', style: 'normal' },
@@ -13,27 +26,22 @@ const kal = localFont({
 export const metadata: Metadata = {
   title: "Dashboard"
 };
-import { cookies } from "next/headers";
-import { getUserClient } from "@/lib/appwrite";
-import Image from "next/image";
-
-import logo from "@/public/assets/black casp logo.png";
-import usericon from "@/public/assets/user icon.svg";
-import workplace from "@/public/assets/building.svg";
-import sidebar from "@/public/assets/sidebar close.svg";
-import database from "@/public/assets/database.svg";
-import giveaccess from "@/public/assets/give access.svg";
-import addrecord from "@/public/assets/add user.svg";
-import ai from "@/public/assets/ai search.svg";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
-  const sessionSecret = cookieStore.get("session")?.value;
+  const accessToken = cookieStore.get("sb-access-token")?.value;
 
-  if (!sessionSecret) return <div>Not logged in</div>;
+  if (!accessToken) return <div>Not logged in</div>;
 
-  const { account } = getUserClient(sessionSecret);
-  const user = await account.get();
+  const { data:data, error:login_error } = await supabaseAdmin.auth.getUser(accessToken);
+  if (login_error || !data.user) {
+    return <div>Not logged in</div>;
+  }
+
+  const AccountName = data.user.user_metadata?.name || "User";
+  const orgId = data.user.app_metadata?.organization_id;
+  const { data: org, error:cannot_fetch_org_name } = await supabaseAdmin.from("organizations").select("name").eq("id", orgId).single();
+  const OrganizationName = org.name;
 
   return (
     <div className={`${kal.variable} flex flex-row items-center justify-center h-dvh w-full bg-white`}>
@@ -67,7 +75,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         {/* User bottom left */}
         <div className="fixed bottom-[20px] left-[20px] flex flex-row items-center justify-start"> 
           <Image src={usericon} alt="User Icon" width={15} height={15} className="mb-2"/>
-          <p className="text-[13px] font-inter text-gray-400">{user.name}</p>
+          <p className="text-[13px] font-inter text-gray-400">{AccountName}</p>
         </div>
       </div>
 
@@ -76,7 +84,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
             <Image src={workplace} alt="CASP Logo" width={15} height={15}/>
-            <h1 className="text-[14px] font-albert font-semibold ml-2">{user.name}</h1>
+            <h1 className="text-[14px] font-albert font-semibold">{OrganizationName.toLowerCase()}</h1>
             <p>/</p>
             <h1 className="text-[14px] font-albert font-bold">dashboard</h1>
           </div>
@@ -88,7 +96,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       {/* RIGHT AI PANEL */}
       <div className="flex flex-col items-start justify-center w-[30%] h-full border-l-[1px] border-[#efefef]">
         <h1 style={{textShadow: ' 0 122px 34px rgba(143, 143, 143, 0.00), 0 78px 31px rgba(143, 143, 143, 0.01), 0 44px 26px rgba(143, 143, 143, 0.05), 0 20px 20px rgba(143, 143, 143, 0.09), 0 5px 11px rgba(143, 143, 143, 0.10)'}} className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
-        <p className="text--[10px] font-kal font-semibold ml-[20px]">powered by gemini</p>
+        <div className="flex flex-row">
+          <p className="text-[15px] font-kal font-semibold ml-[20px]">powered by gemini</p>
+          <Image src={gemini} alt="gemini logo" width={12} height={12} className="ml-[5px]"/>
+        </div>
 
         <div className="fixed bottom-[20px] right-[10px] flex flex-row items-center justify-start shadow-md hover:shadow-lg w-[250px] px-[10px] py-[5px] rounded-[12px] border-[1px] border-[#efefef] cursor-pointer">
           <Image src={ai} alt="AI icon" width={18} height={18}/>

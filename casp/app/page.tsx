@@ -10,8 +10,9 @@ export default function Home() {
       {/* NAVBAR */}
       <div className="fixed top-[20px] left-[30px] right-[30px] h-[40px] flex flex-row items-center justify-between border-[1px] border-gray-300 bg-white z-10 rounded-[15px] shadow-lg">
         <div className="flex flex-row items-center justify-start">
-          <Image src={logo} alt="CASP Logo" width={23} height={23} className="ml-[10px]" />
+          <Image src={logo} alt="CASP Logo" width={20} height={20} className="ml-[10px]" />
           <p className="font-cal text-[20px] ml-[5px]">casp</p>
+          <p className="font-albert font-bold text-[12px] ml-[5px] px-[8px] py-[1px] bg-[#d9d9d9] text-black rounded-[7px]">beta</p>
         </div>
         <div className="flex flex-row items-center gap-[15px] mr-[5px]">
           <p className="font-albert font-bold text-[18px] text-black">pricing</p>

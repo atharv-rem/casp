@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export default function proxy(req: NextRequest) {
-  // Check the 'session' cookie which stores Appwrite session.secret
-  const sessionSecret = req.cookies.get("session")?.value;
+  const accessToken = req.cookies.get("sb-access-token")?.value;
 
-  if (!sessionSecret) {
+  if (!accessToken) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -13,5 +12,5 @@ export default function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"], 
+  matcher: ["/dashboard/:path*"],
 };

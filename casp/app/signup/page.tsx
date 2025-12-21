@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [form, setForm] = useState({name: "", email: "", password: ""});
+  const [form, setForm] = useState({name: "", email: "", password: "", organizationName: ""});
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +40,8 @@ export default function SignupPage() {
             <input id="email" type="email" placeholder="john.doe@example.com" className="font-albert font-semibold shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[20px]" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}/>
             <label htmlFor="password" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2">password</label>
             <input id="password" type="password" placeholder="enter your password" className="font-albert font-semibold shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
+            <label htmlFor="organizationName" className="block text-gray-700 text-[20px] font-albert font-semibold mb-2 mt-4">organization name</label>
+            <input id="organizationName" type="text" placeholder="acme inc" className="font-albert font-semibold shadow-md border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3" value={form.organizationName} onChange={(e) => setForm({ ...form, organizationName: e.target.value })}/>
             <button type="submit" className="mt-4 bg-black hover:bg-gray-800 text-white font-albert font-bold py-[5px] px-[10px] rounded-[12px]">create</button>
           </div>
         </form>
