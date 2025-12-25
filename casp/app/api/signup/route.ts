@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { supabaseServerClient } from "@/lib/supabase/client";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
 
 export async function POST(req: Request) {
   const { email, password, name, organizationName } = await req.json();
@@ -76,35 +77,16 @@ export async function POST(req: Request) {
       throw metadataError;
     }
 
+    const supabase = await createSupabaseServerClient();
 
-    const { data: sessionData, error: signinError } =
-      await supabaseServerClient.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { error: signinError } =
+      await supabase.auth.signInWithPassword({ email, password });
 
     if (signinError) throw signinError;
-    if (!sessionData.session) {
-      throw new Error("Unable to establish session");
-    }
-
-    const cookieStore = await cookies();
-
-    cookieStore.set("sb-access-token", sessionData.session.access_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
-
-    cookieStore.set("sb-refresh-token", sessionData.session.refresh_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
 
     return NextResponse.json({ success: true });
+
+
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message ?? "Signup failed" },

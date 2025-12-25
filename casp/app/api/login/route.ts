@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { supabaseServerClient } from "@/lib/supabase/client";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export async function POST(req: Request) {
+  const supabase =await createSupabaseServerClient();
   const { email, password } = await req.json();
 
   //Validate inputs
@@ -16,17 +16,18 @@ export async function POST(req: Request) {
 
   //Authenticate user
   const { data, error } =
-    await supabaseServerClient.auth.signInWithPassword({
+    await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-  if (error || !data || !data.user || !data.session) {
+  if (error || !data.user) {
     return NextResponse.json(
       { error: error?.message ?? "Invalid login credentials" },
       { status: 401 }
     );
   }
+
 
   const organizationId = data.user.app_metadata?.organization_id;
   if (!organizationId) {
@@ -57,20 +58,6 @@ export async function POST(req: Request) {
       { status: 403 }
     );
   }
-
-  const cookieStore = await cookies();
-  cookieStore.set("sb-access-token", data.session.access_token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-  });
-  cookieStore.set("sb-refresh-token", data.session.refresh_token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-  });
 
   return NextResponse.json({ success: true });
 }

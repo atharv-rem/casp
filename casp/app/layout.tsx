@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Albert_Sans, Cal_Sans } from "next/font/google";
+import { Rethink_Sans, Cal_Sans } from "next/font/google";
 import "./globals.css";
 
-const albert = Albert_Sans({
-  weight: ["300", "400", "500", "600", "700"],
+const rethink = Rethink_Sans({
+  weight: ["400", "500", "600", "700","800"],
   subsets: ["latin"],
-  variable: "--font-albert",
+  variable: "--font-rethink",
   display: "swap",
 });
 
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${albert.variable} ${cal.variable} bg-white`}>
-      <body className={albert.className}>{children}</body>
+    <html lang="en" className={`${rethink.variable} ${cal.variable} bg-white`}>
+      <body className={rethink.className}>{children}</body>
     </html>
   );
 }

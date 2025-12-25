@@ -3,7 +3,7 @@ import "../globals.css";
 import localFont from "next/font/local";
 import LogoutButton from "../components/logout_button";
 import Link from "next/link";
-import { cookies } from "next/headers";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import Image from "next/image";
 import logo from "@/public/assets/black casp logo.png";
@@ -15,12 +15,18 @@ import giveaccess from "@/public/assets/give access.svg";
 import addrecord from "@/public/assets/add user.svg";
 import ai from "@/public/assets/ai search.svg";
 import gemini from "@/public/assets/gemini.svg"
-
+import {Geist_Mono} from "next/font/google";
 const kal = localFont({
   src: [
     { path: '../fonts/KalamaykaVF.woff2', style: 'normal' },
   ],
   variable: '--font-kal',
+});
+const geist = Geist_Mono({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,23 +34,31 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("sb-access-token")?.value;
+  const supabase = await createSupabaseServerClient();
+  const {data: { user }} = await supabase.auth.getUser();
 
-  if (!accessToken) return <div>Not logged in</div>;
-
-  const { data:data, error:login_error } = await supabaseAdmin.auth.getUser(accessToken);
-  if (login_error || !data.user) {
+  if (!user) {
     return <div>Not logged in</div>;
   }
 
-  const AccountName = data.user.user_metadata?.name || "User";
-  const orgId = data.user.app_metadata?.organization_id;
-  const { data: org, error:cannot_fetch_org_name } = await supabaseAdmin.from("organizations").select("name").eq("id", orgId).single();
-  const OrganizationName = org.name;
+  const AccountName = user.user_metadata?.name ?? "User";
+  const orgId = user.app_metadata?.organization_id;
+
+  if (!orgId) {
+    return <div>No organization linked</div>;
+  }
+
+  const { data: org } = await supabaseAdmin
+    .from("organizations")
+    .select("name")
+    .eq("id", orgId)
+    .single();
+
+  const OrganizationName = org?.name ?? "organization";
+
 
   return (
-    <div className={`${kal.variable} flex flex-row items-center justify-center h-dvh w-full bg-white`}>
+    <div className={`${kal.variable} ${geist.variable} flex flex-row items-center justify-center h-dvh w-full bg-white`}>
 
       {/* LEFT SIDEBAR */}
       <div className="flex flex-col items-center justify-start w-[20%] h-full">
@@ -60,22 +74,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex flex-col items-start justify-start w-full p-2 gap-1">
           <div className="flex flex-row items-center justify-start">
             <Image src={database} alt="database icon" width={16} height={16}/>
-            <h1 className="text-[15px] font-albert font-semibold ml-[10px]">records</h1>
+            <h1 className="text-[13px] font-geist font-extrabold ml-[10px]">RECORDS</h1>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={addrecord} alt="add record" width={16} height={16}/>
-            <Link href="/dashboard/records" className="text-[15px] font-albert font-semibold ml-[10px]">add records</Link>
+            <Link href="/dashboard/records" className="text-[13px] font-geist font-extrabold ml-[10px]">ADD RECORDS</Link>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={giveaccess} alt="give access" width={16} height={16}/>
-            <h1 className="text-[15px] font-albert font-semibold ml-[10px]">give access</h1>
+            <h1 className="text-[13px] font-geist font-extrabold ml-[10px]">GIVE ACCESS</h1>
           </div>
         </div>
 
         {/* User bottom left */}
         <div className="fixed bottom-[20px] left-[20px] flex flex-row items-center justify-start"> 
           <Image src={usericon} alt="User Icon" width={15} height={15} className="mb-2"/>
-          <p className="text-[13px] font-inter text-gray-400">{AccountName}</p>
+          <p className="text-[13px] font-rethink text-gray-400">{AccountName}</p>
         </div>
       </div>
 
@@ -84,9 +98,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
             <Image src={workplace} alt="CASP Logo" width={15} height={15}/>
-            <h1 className="text-[14px] font-albert font-semibold">{OrganizationName.toLowerCase()}</h1>
+            <h1 className="text-[14px] font-rethink font-semibold">{OrganizationName.toLowerCase()}</h1>
             <p>/</p>
-            <h1 className="text-[14px] font-albert font-bold">dashboard</h1>
+            <h1 className="text-[14px] font-rethink font-bold">dashboard</h1>
           </div>
           <LogoutButton />
         </div>

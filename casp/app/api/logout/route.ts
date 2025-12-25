@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST() {
-  const cookieStore = await cookies();
+  const supabase = await createSupabaseServerClient();
 
-  // Delete Supabase auth cookies
-  cookieStore.delete("sb-access-token");
-  cookieStore.delete("sb-refresh-token");
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 400 }
+    );
+  }
 
   return NextResponse.json({ success: true });
 }
