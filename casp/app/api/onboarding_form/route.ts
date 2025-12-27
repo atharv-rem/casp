@@ -15,16 +15,23 @@ export async function POST(req: Request) {
 
     const { data: employee, error: empError } = await supabaseAdmin
       .from("employees")
-      .select("organization_id")
+      .select("organization_id, role")
       .eq("auth_user_id", user.id)
       .single();
-    
+
     console.log("Employee row:", employee);
     console.log("Employee error:", empError);
 
     if (!employee || empError) {
       return NextResponse.json(
         { error: "Organization not found" },
+        { status: 403 }
+      );
+    }
+
+    if (employee.role !== "admin") {
+      return NextResponse.json(
+        { error: "Only admins can complete onboarding" },
         { status: 403 }
       );
     }

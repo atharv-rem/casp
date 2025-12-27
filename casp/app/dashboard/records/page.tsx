@@ -5,12 +5,8 @@ import AddSingleRecordButton from "@/app/components/add single record";
 
 export default function RecordsPage() {
     return (
-        <div className="flex flex-col items-start justify-start w-full h-full px-[20px]">
-            <h1 className="text-[25px] font-cal mt-[10px]">Add New Record</h1>
-            <div className="flex flex-row mt-[5px]">
+        <div className="w-full items-start justify-center flex flex-col">
                 <AddSingleRecordButton />
-                <AddBulkRecordButton />
             </div>
-        </div>
     );
 }

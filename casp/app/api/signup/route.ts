@@ -48,10 +48,8 @@ export async function POST(req: Request) {
         auth_user_id: createdUser.user.id,
         role: "admin",
         status: "active",
-        profile: {
-          name,
-          email,
-        },
+        system_profile: {name,email},
+        custom_profile: {}
       });
 
     if (employeeError) {//deletes the created user and organization if employee creation fails

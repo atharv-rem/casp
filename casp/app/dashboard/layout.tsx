@@ -64,31 +64,31 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="flex flex-col items-center justify-start w-[20%] h-full">
         <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
-            <Image src={logo} alt="CASP Logo" width={15} height={15}/>
-            <h1 className="text-[15px] font-cal">casp</h1>
+            <Image src={logo} alt="CASP Logo" width={14} height={14}/>
+            <h1 className="text-[14px] font-cal">casp</h1>
           </div>
           <Image src={sidebar} alt="sidebar icon" width={15} height={15}/>
         </div>
 
         {/* Sidebar menu */}
-        <div className="flex flex-col items-start justify-start w-full p-2 gap-1">
+        <div className="flex flex-col items-start justify-start w-full p-2 gap-0">
           <div className="flex flex-row items-center justify-start">
-            <Image src={database} alt="database icon" width={16} height={16}/>
-            <h1 className="text-[13px] font-geist font-extrabold ml-[10px]">RECORDS</h1>
+            <Image src={database} alt="database icon" width={14} height={14}/>
+            <h1 className="text-[15px] font-rethink font-bold ml-[10px]">records</h1>
           </div>
           <div className="flex flex-row items-center justify-start">
-            <Image src={addrecord} alt="add record" width={16} height={16}/>
-            <Link href="/dashboard/records" className="text-[13px] font-geist font-extrabold ml-[10px]">ADD RECORDS</Link>
+            <Image src={addrecord} alt="add record" width={14} height={14}/>
+            <Link href="/dashboard/records" className="text-[15px] font-rethink font-bold ml-[10px]">add records</Link>
           </div>
           <div className="flex flex-row items-center justify-start">
-            <Image src={giveaccess} alt="give access" width={16} height={16}/>
-            <h1 className="text-[13px] font-geist font-extrabold ml-[10px]">GIVE ACCESS</h1>
+            <Image src={giveaccess} alt="give access" width={14} height={14}/>
+            <h1 className="text-[15px] font-rethink font-bold ml-[10px]">give access</h1>
           </div>
         </div>
 
         {/* User bottom left */}
         <div className="fixed bottom-[20px] left-[20px] flex flex-row items-center justify-start"> 
-          <Image src={usericon} alt="User Icon" width={15} height={15} className="mb-2"/>
+          <Image src={usericon} alt="User Icon" width={14} height={14} className="mb-2"/>
           <p className="text-[13px] font-rethink text-gray-400">{AccountName}</p>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef]">
         <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
           <div className="flex flex-row items-center justify-start gap-1">
-            <Image src={workplace} alt="CASP Logo" width={15} height={15}/>
+            <Image src={workplace} alt="workplace Logo" width={14} height={14}/>
             <h1 className="text-[14px] font-rethink font-semibold">{OrganizationName.toLowerCase()}</h1>
             <p>/</p>
             <h1 className="text-[14px] font-rethink font-bold">dashboard</h1>
