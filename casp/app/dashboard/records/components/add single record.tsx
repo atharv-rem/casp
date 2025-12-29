@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { addEmployeeRecord } from "@/app/dashboard/records/action";
+import { add_single_employee_record } from "@/app/dashboard/records/action";
 import Image from "next/image";
 import arrowRight from '@/public/assets/arrow icon.svg'
 
@@ -29,7 +29,7 @@ export default async function AddSingleRecord() {
     <div className="ml-[30px] mr-[30px] mt-[30px] flex flex-col items-start">
       <h2 className="text-[40px] font-rethink font-semibold">Add Employee</h2>
 
-      <form action={addEmployeeRecord} className="mt-[20px] flex flex-col">
+      <form action={add_single_employee_record} className="mt-[20px] flex flex-col">
         <input type="hidden" name="organization_id" value={orgId} />
         <div className="w-full mb-[15px] flex flex-col">
           <label className="text-[#686868] font-bold mb-[5px]">Name</label>
