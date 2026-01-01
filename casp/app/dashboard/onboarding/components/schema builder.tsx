@@ -54,10 +54,11 @@ export default function SchemaBuilder({ fields, setFields }) {
       </div>
 
       {/* Add new column */}
-      <div className="gap-3 flex flex-col font-rethink">
-        <input value={newField} onChange={(e) => setNewField(e.target.value)} placeholder="column name (eg: name)" className="w-full border-[1px] border-[#b9b9b9] rounded-[15px] px-[15px] py-[10px] text-[15px] font-rethink"/>
-        <label htmlFor="schema-field-type" className="hidden">Column type</label>
-        <select id="schema-field-type" value={fieldType} onChange={(e) => setFieldType(e.target.value)} className="appearence-none w-full rounded-[15px] px-[15px] py-[10px] text-[15px] font-rethink font-semibold border-[1px] border-[#b9b9b9]">
+      <div className="flex flex-col font-rethink">
+        <label htmlFor="column name" className="block text-gray-700 text-[15px] font-rethink font-semibold mb-[6px]">Column name</label>
+        <input id="column name" value={newField} onChange={(e) => setNewField(e.target.value)} placeholder="column name (eg: name)" className="w-full border-[1px] border-[#b9b9b9] rounded-[15px] px-[15px] py-[10px] text-[15px] font-rethink font-semibold mb-[20px]"/>
+        <label htmlFor="column type" className="block text-gray-700 text-[15px] font-rethink font-semibold mb-[6px]">Column type</label>
+        <select id="column type" value={fieldType} onChange={(e) => setFieldType(e.target.value)} className="appearence-none w-full rounded-[15px] px-[15px] py-[10px] text-[15px] font-rethink font-semibold border-[1px] border-[#b9b9b9] mb-[20px]">
           {FIELD_TYPES.map((t) => (
             <option key={t.value} value={t.value} className="font-semibold">
               {t.label}
@@ -65,9 +66,9 @@ export default function SchemaBuilder({ fields, setFields }) {
           ))}
         </select>
 
-        <div onClick={addField} className="border-[1px] border-dashed border-[#b9b9b9] rounded-[15px] py-[5px] text-center cursor-pointer font-semibold font-geist hover:bg-gray-50 flex flex-row justify-center items-center">
+        <div onClick={addField} className="border-[1px] border-dashed border-[#b9b9b9] rounded-[15px] py-[5px] text-center cursor-pointer font-medium font-rethink hover:bg-gray-50 flex flex-row justify-center items-center">
           <Image src={plus} alt="Add Field" className="w-4 h-4 mr-2"/>
-          <p>ADD COLUMN</p>
+          <p>{`Add ${newField} Column`}</p>
         </div>
       </div>
     </div>

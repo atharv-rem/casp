@@ -2,16 +2,23 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST() {
-  const supabase = await createSupabaseServerClient();
+  try {
+    const supabase = await createSupabaseServerClient();
 
-  const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
 
-  if (error) {
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
     return NextResponse.json(
-      { error: error.message },
-      { status: 400 }
+      { error: "An unexpected error occurred." },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json({ success: true });
 }

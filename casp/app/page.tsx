@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       {/* NAVBAR */}
-      <div className="fixed top-[20px] left-[30px] right-[30px] h-[40px] flex flex-row items-center justify-between border-[1px] border-gray-300 bg-white z-10 rounded-[15px] shadow-lg">
+      <div className="fixed top-[20px] left-[30px] right-[30px] h-[40px] flex flex-row items-center justify-between border-[1px] border-gray-300 bg-white z-10 rounded-[15px] shadow-lg shadow-gray-100">
         <div className="flex flex-row items-center justify-start">
           <Image src={logo} alt="CASP Logo" width={20} height={20} className="ml-[10px]" />
           <p className="font-cal text-[20px] ml-[5px]">casp</p>

@@ -41,5 +41,25 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Redirect to onboarding if user hasn't completed onboarding
+  if (user) {
+    const appMetadata = user.app_metadata as { onboarding_completed?: boolean } | undefined;
+    const onboardingCompleted = appMetadata?.onboarding_completed ?? false;
+    const isOnboardingPage = request.nextUrl.pathname.startsWith("/dashboard/onboarding");
+
+    if (!onboardingCompleted && !isOnboardingPage) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard/onboarding";
+      return NextResponse.redirect(url);
+    }
+
+    // Prevent access to onboarding page if already completed
+    if (onboardingCompleted && isOnboardingPage) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
+  }
+
   return response;
 }

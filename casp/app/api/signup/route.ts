@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -8,6 +7,7 @@ export async function POST(req: Request) {
   const { email, password, name, organizationName } = await req.json();
 
   try {
+
     // Create user in Supabase Auth
     const { data: createdUser, error: createError } =
       await supabaseAdmin.auth.admin.createUser({
@@ -17,6 +17,7 @@ export async function POST(req: Request) {
         user_metadata: { name },
       });
     if (createError) throw createError;
+    
     if (!createdUser.user) {
       throw new Error("Failed to create user");
     }
@@ -64,6 +65,7 @@ export async function POST(req: Request) {
         {
           app_metadata: {
             organization_id: organization.id,
+            onboarding_completed: false,
           },
         }
       );
@@ -85,10 +87,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
 
 
-  } catch (err: any) {
-    console.error("Signup error:", err);
+  } 
+  catch (error: any) {
     return NextResponse.json(
-      { error: err.message ?? "Signup failed" },
+      { error: error.message ?? "Signup failed" },
       { status: 400 }
     );
   }

@@ -5,16 +5,13 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 export async function POST(req: Request) {
   const supabase =await createSupabaseServerClient();
   const { email, password } = await req.json();
-
-  //Validate inputs
-  if (!email || !password) {
+  try {if (!email || !password) {
     return NextResponse.json(
       { error: "Email and password are required" },
       { status: 400 }
     );
   }
 
-  //Authenticate user
   const { data, error } =
     await supabase.auth.signInWithPassword({
       email,
@@ -28,7 +25,6 @@ export async function POST(req: Request) {
     );
   }
 
-
   const organizationId = data.user.app_metadata?.organization_id;
   if (!organizationId) {
     return NextResponse.json(
@@ -37,9 +33,7 @@ export async function POST(req: Request) {
     );
   }
 
-  //Check employee record
-  const { data: employee, error: employeeError } =
-    await supabaseAdmin
+  const { data: employee, error: employeeError } = await supabaseAdmin
       .from("employees")
       .select("status")
       .eq("auth_user_id", data.user.id)
@@ -60,4 +54,11 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ success: true });
+  } 
+  catch (error) {
+    return NextResponse.json(
+      { error: error.message || "login failed" },
+      { status: 500 }
+    );
+  }
 }

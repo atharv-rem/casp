@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import localFont from "next/font/local";
-import LogoutButton from "../components/logout_button";
+import LogoutButton from "../global components/logout_button";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
@@ -33,12 +33,12 @@ export const metadata: Metadata = {
   title: "Dashboard"
 };
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {  
   const supabase = await createSupabaseServerClient();
   const {data: { user }} = await supabase.auth.getUser();
 
   if (!user) {
-    return <div>Not logged in</div>;
+    router.push('/login');
   }
 
   const AccountName = user.user_metadata?.name ?? "User";
@@ -63,9 +63,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
       {/* LEFT SIDEBAR */}
       <div className="flex flex-col items-center justify-start w-[20%] h-full">
         <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
-          <div className="flex flex-row items-center justify-start gap-1">
-            <Image src={logo} alt="CASP Logo" width={14} height={14}/>
-            <h1 className="text-[14px] font-cal">casp</h1>
+          <div className="flex flex-row items-center justify-center"> 
+            <Image src={usericon} alt="User Icon" width={14} height={14} className="mr-2"/>
+            <p className="text-[14px] font-rethink font-bold text-black">{AccountName}</p>
           </div>
           <Image src={sidebar} alt="sidebar icon" width={15} height={15}/>
         </div>
@@ -85,12 +85,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <h1 className="text-[15px] font-rethink font-bold ml-[10px]">give access</h1>
           </div>
         </div>
-
-        {/* User bottom left */}
-        <div className="fixed bottom-[20px] left-[20px] flex flex-row items-center justify-start"> 
-          <Image src={usericon} alt="User Icon" width={14} height={14} className="mb-2"/>
-          <p className="text-[13px] font-rethink text-gray-400">{AccountName}</p>
-        </div>
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}
@@ -109,7 +103,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* RIGHT AI PANEL */}
       <div className="flex flex-col items-start justify-center w-[30%] h-full border-l-[1px] border-[#efefef]">
-        <h1 style={{textShadow: ' 0 122px 34px rgba(143, 143, 143, 0.00), 0 78px 31px rgba(143, 143, 143, 0.01), 0 44px 26px rgba(143, 143, 143, 0.05), 0 20px 20px rgba(143, 143, 143, 0.09), 0 5px 11px rgba(143, 143, 143, 0.10)'}} className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
+        <h1 className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
         <div className="flex flex-row">
           <p className="text-[15px] font-kal font-semibold ml-[20px]">powered by gemini</p>
           <Image src={gemini} alt="gemini logo" width={12} height={12} className="ml-[5px]"/>

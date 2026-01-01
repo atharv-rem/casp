@@ -19,9 +19,6 @@ export async function POST(req: Request) {
       .eq("auth_user_id", user.id)
       .single();
 
-    console.log("Employee row:", employee);
-    console.log("Employee error:", empError);
-
     if (!employee || empError) {
       return NextResponse.json(
         { error: "Organization not found" },
@@ -37,7 +34,6 @@ export async function POST(req: Request) {
     }
 
     const organization_id = employee.organization_id;
-    console.log("Resolved organization_id:", organization_id)
 
     const empInsert = await supabaseAdmin
       .from("employee_schemas")
@@ -46,8 +42,6 @@ export async function POST(req: Request) {
         { onConflict: "organization_id" }
       );
 
-    console.log("Employee schema insert result:", empInsert);
-
     const projInsert = await supabaseAdmin
       .from("project_schemas")
       .upsert(
@@ -55,14 +49,24 @@ export async function POST(req: Request) {
         { onConflict: "organization_id" }
       );
 
-    console.log("Project schema insert result:", projInsert);
+    // Set onboarding_completed to true in user's app_metadata
+    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+      user.id,
+      { app_metadata: { onboarding_completed: true } }
+    );
+
+    if (updateError) {
+      return NextResponse.json(
+        { error: "Failed to update onboarding status" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } 
   catch (error) {
-    console.error("Onboarding error:", error);
     return NextResponse.json(
-      { error: "Unexpected server error" },
+      { error: error.message || "Onboarding failed" },
       { status: 500 }
     );
   }

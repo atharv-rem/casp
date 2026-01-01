@@ -38,6 +38,30 @@ export async function add_single_employee_record(formData: FormData) {
   }
 }
 
+export async function add_single_project_record(formData: FormData) {
+  const organization_id = formData.get("organization_id") as string;
+  const meta: Record<string, any> = {};
+  const name = formData.get("project_name") as string;
+  for (const [key, value] of formData.entries()) {
+    if (key === "organization_id" || key === "project_name" || key.startsWith("$ACTION_ID_")) {
+      continue;
+    }
+    meta[key] = value;
+  }
+  const { error } = await supabaseAdmin
+    .from("projects")
+    .insert({
+      organization_id,
+      name,
+      meta,
+    });
+
+  if (error) {
+    console.error(error);
+    throw new Error("Failed to create project");
+  }
+}
+
 export async function add_multiple_employee_records(formData: FormData,excelHeaders: string[]) {
   const supabase = await createSupabaseServerClient()
   const {data: { user }} = await supabase.auth.getUser()
