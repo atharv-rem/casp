@@ -58,7 +58,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
 
   return (
-    <div className={`${kal.variable} ${geist.variable} flex flex-row items-center justify-center h-dvh w-full bg-white`}>
+    <div className={`${kal.variable} ${geist.variable} flex flex-row items-center justify-center h-dvh w-full bg-white overflow-hidden`}>
 
       {/* LEFT SIDEBAR */}
       <div className="flex flex-col items-center justify-start w-[20%] h-full">
@@ -88,9 +88,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}
-      <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef]">
-        <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2">
-          <div className="flex flex-row items-center justify-start gap-1">
+      <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
+        <div className="flex flex-row justify-between items-center h-[30px] w-full border-b-[1px] border-[#efefef] p-2 sticky top-0 z-10 bg-white">
+          <div className="flex flex-row items-center justify-start gap-1 ">
             <Image src={workplace} alt="workplace Logo" width={14} height={14}/>
             <h1 className="text-[14px] font-rethink font-semibold">{OrganizationName.toLowerCase()}</h1>
             <p>/</p>
@@ -98,7 +98,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
           <LogoutButton />
         </div>
-        {children}
+        {children}  
       </div>
 
       {/* RIGHT AI PANEL */}

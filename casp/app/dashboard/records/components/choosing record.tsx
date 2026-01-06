@@ -2,7 +2,7 @@
 import { useState } from "react";
 import AddSingleRecord from "@/app/dashboard/records/components/add single record";
 import AddBulkRecords from "@/app/dashboard/records/components/add bulk records";
-export function ChoosingRecords( {orgId, empfields, projfields }: {orgId: string, empfields: any[], projfields: any[]}) {
+export function ChoosingRecords( {orgId, empfields, projfields, projectList }: {orgId: string, empfields: any[], projfields: any[], projectList: any[]}) {
     const [numberOfRecords, setNumberOfRecords] = useState('single');
     return (
         <>
@@ -14,7 +14,7 @@ export function ChoosingRecords( {orgId, empfields, projfields }: {orgId: string
                 BULK RECORDS
             </button>
         </div>
-        {numberOfRecords === 'single' ? <AddSingleRecord orgId={orgId} empfields={empfields} projfields={projfields} /> : <AddBulkRecords/>}
+        {numberOfRecords === 'single' ? <AddSingleRecord orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList} /> : <AddBulkRecords/>}
         </>
     );
 }

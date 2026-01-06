@@ -23,17 +23,23 @@ export default async function RecordsPage() {
         .eq("organization_id", orgId)
         .single();
 
+    const { data: projects, error } = await supabaseAdmin
+        .from('projects')
+        .select('id,name')
+        .eq('organization_id', orgId);
+
     if (empError || !empSchema?.schema?.fields?.length) {
         return <p>No employee schema found.</p>;
     }
 
     const empfields = empSchema?.schema?.fields;
-    const projfields = projSchema?.schema?.fields ;
+    const projfields = projSchema?.schema?.fields;
+    const projectList = projects || [];
     return (
         <div className=" pl-[30px] pr-[30px] w-full items-start justify-center flex flex-col">
             <h1 className="mt-[15px] text-[40px] font-rethink font-semibold">Add Records</h1>
             <p className="mr-[30px] mb-[10px] text-[18px] font-rethink font-medium text-gray-600">Choose how you want to add records</p>
-            <ChoosingRecords orgId={orgId} empfields={empfields} projfields={projfields} />
+            <ChoosingRecords orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList}           />
         </div>
     );
 }
