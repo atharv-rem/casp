@@ -113,56 +113,48 @@ export async function add_single_project_record(prevState: any, formData: FormDa
   }
 }
 
-export async function add_multiple_employee_records(formData: FormData,excelHeaders: string[]) {
+export async function add_bulk_records(formData: FormData, templateType: 'employees' | 'projects' | 'assignments' | 'all') {
   const supabase = await createSupabaseServerClient()
-  const {data: { user }} = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
   if (!user) {
     throw new Error('Not authenticated')
   }
+
   const orgId = user.app_metadata?.organization_id
   if (!orgId) {
     throw new Error('Organization not found')
   }
 
-  const { data, error } = await supabaseAdmin
-    .from('employee_schemas')
-    .select('schema')
-    .eq('organization_id', orgId)
-    .single()
+  const [employeeSchemaRes, projectSchemaRes] = await Promise.all([
+    supabaseAdmin
+      .from('employee_schemas')
+      .select('schema')
+      .eq('organization_id', orgId)
+      .single(),
 
-  if (error || !data) {
-    throw new Error('Employee schema not found')
-  }
+    supabaseAdmin
+      .from('project_schemas')
+      .select('schema')
+      .eq('organization_id', orgId)
+      .single(),
+  ])
 
-  const schemaFields: string[] = data.schema.fields.map((f: any) => f.key.toLowerCase().trim())
+  const employeeSchema =
+    (employeeSchemaRes.data?.schema?.fields || [])
+      .map((f: any) => f.key ?? f.id)
 
-  if (excelHeaders.length < 2) {
-    throw new Error('Excel must contain name and email columns')
-  }
-
-  if (excelHeaders[0] !== 'name') {
-    throw new Error('First column must be "name"')
-  }
-
-  if (excelHeaders[1] !== 'email') {
-    throw new Error('Second column must be "email"')
-  }
-
-  const excelCustomFields = excelHeaders.slice(2)
-
-  const validCustomFields = excelCustomFields.length === schemaFields.length && schemaFields.every(field => excelCustomFields.includes(field))
-
-  if (!validCustomFields) {
-    throw new Error(
-      `field mismatch. Expected: ${schemaFields.join(', ')}`
-    )
-  }
+  const projectSchema =
+    (projectSchemaRes.data?.schema?.fields || [])
+      .map((f: any) => f.key ?? f.id)
 
   const res = await fetch('http://localhost:8080/upload', {
     method: 'POST',
     headers: {
       'x-org-id': orgId,
-      'x-employee-schema': JSON.stringify(schemaFields.map(k => ({ key: k }))),
+      'x-template-type': templateType,
+      'x-employee-schema': JSON.stringify(employeeSchema),
+      'x-project-schema': JSON.stringify(projectSchema),
     },
     body: formData,
   })
@@ -174,4 +166,6 @@ export async function add_multiple_employee_records(formData: FormData,excelHead
 
   return { success: true }
 }
+
+
 

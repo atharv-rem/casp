@@ -14,7 +14,7 @@ export function ChoosingRecords( {orgId, empfields, projfields, projectList }: {
                 BULK RECORDS
             </button>
         </div>
-        {numberOfRecords === 'single' ? <AddSingleRecord orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList} /> : <AddBulkRecords/>}
+        {numberOfRecords === 'single' ? <AddSingleRecord orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList} /> : <AddBulkRecords empfields={empfields} projfields={projfields} />}
         </>
     );
 }

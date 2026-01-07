@@ -24,7 +24,11 @@ export default function LoginPage() {
     });
 
     if (login_api.ok) {
-      setLoginButtonState("PROCESSING...");
+      setLoginButtonState(
+      <div className="flex flex-row items-center justify-center">
+        <div className="loader ease-linear rounded-full border-2 border-t-2 border-white h-4 w-4"></div>
+        <p className="ml-2">Logging in</p>
+      </div>);
       router.push("/dashboard");
     } else {
       const login_error = await login_api.json();
@@ -56,7 +60,7 @@ export default function LoginPage() {
               <input id="email" type="email" placeholder="john.doe@example.com" className="text-[15px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[10px]"/>
               <label htmlFor="password" className="block text-gray-700 text-[15px] font-rethink font-semibold mb-[6px]">Password</label>
               <input id="password" type="password" placeholder="enter your password" className="text-[15px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[15px]"/>
-              <button type="submit" className="bg-black hover:bg-gray-800 text-white font-geist font-extrabold py-[5px] px-[15px] rounded-[15px]">{loginButtonState}</button>
+              <button type="submit" className="bg-black hover:bg-gray-800 text-white font-geist font-bold py-[4px] px-[14px] rounded-[12px]">{loginButtonState}</button>
             </div>
           </form>
         </div>

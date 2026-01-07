@@ -5,13 +5,19 @@ import (
 	"net/http"
 )
 
+/* -------------------- schema -------------------- */
+
 type SchemaField struct {
 	Key string `json:"key"`
 }
 
+/* -------------------- handler -------------------- */
+
 func UploadExcel(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(200 << 20) // 200MB
-	if err != nil {
+
+	/* ---------- parse multipart ---------- */
+
+	if err := r.ParseMultipartForm(200 << 20); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -23,31 +29,63 @@ func UploadExcel(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// TEMP: org_id from header (JWT later)
+	/* ---------- org ---------- */
+
 	orgID := r.Header.Get("x-org-id")
 	if orgID == "" {
 		http.Error(w, "missing org id", http.StatusUnauthorized)
 		return
 	}
 
-	// 🔥 NEW: read employee schema from header
-	rawSchema := r.Header.Get("x-employee-schema")
-	if rawSchema == "" {
-		http.Error(w, "employee schema missing", http.StatusBadRequest)
+	/* ---------- template type ---------- */
+
+	templateRaw := r.Header.Get("x-template-type")
+	if templateRaw == "" {
+		http.Error(w, "missing template type", http.StatusBadRequest)
 		return
 	}
 
-	var fields []SchemaField
-	if err := json.Unmarshal([]byte(rawSchema), &fields); err != nil {
-		http.Error(w, "invalid schema format", http.StatusBadRequest)
+	template := TemplateType(templateRaw)
+	if template != EmployeeTemplate &&
+		template != ProjectTemplate &&
+		template != AssignmentTemplate {
+		http.Error(w, "invalid template type", http.StatusBadRequest)
 		return
 	}
 
-	// extract only keys
-	schemaFields := make([]string, 0, len(fields))
-	for _, f := range fields {
-		schemaFields = append(schemaFields, f.Key)
+	/* ---------- employee schema ---------- */
+
+	var employeeFields []string
+
+	rawEmpSchema := r.Header.Get("x-employee-schema")
+	if rawEmpSchema != "" {
+		var fields []SchemaField
+		if err := json.Unmarshal([]byte(rawEmpSchema), &fields); err != nil {
+			http.Error(w, "invalid employee schema", http.StatusBadRequest)
+			return
+		}
+		for _, f := range fields {
+			employeeFields = append(employeeFields, f.Key)
+		}
 	}
+
+	/* ---------- project schema ---------- */
+
+	var projectFields []string
+
+	rawProjSchema := r.Header.Get("x-project-schema")
+	if rawProjSchema != "" {
+		var fields []SchemaField
+		if err := json.Unmarshal([]byte(rawProjSchema), &fields); err != nil {
+			http.Error(w, "invalid project schema", http.StatusBadRequest)
+			return
+		}
+		for _, f := range fields {
+			projectFields = append(projectFields, f.Key)
+		}
+	}
+
+	/* ---------- db ---------- */
 
 	conn, err := Connect()
 	if err != nil {
@@ -56,12 +94,22 @@ func UploadExcel(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close(r.Context())
 
-	// 🔥 UPDATED CALL (new signature)
-	err = ProcessExcel(file, conn, orgID, schemaFields)
+	/* ---------- process ---------- */
+
+	err = ProcessExcel(
+		file,
+		conn,
+		orgID,
+		template,
+		employeeFields,
+		projectFields,
+	)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Upload successful"))
 }
