@@ -22,7 +22,12 @@ export default function SignupPage() {
     });
 
     if (signup_api.ok) {
-      setSignupButtonState("PROCESSING...");
+      setSignupButtonState(
+      <div className="flex flex-row items-center justify-center">
+        <div className="loader ease-linear rounded-full border-2 border-t-2 border-white h-4 w-4"></div>
+        <p className="ml-2">Creating account</p>
+      </div>
+      );
       router.push("/dashboard");
     } else {
       const signup_error = await signup_api.json();
@@ -57,7 +62,7 @@ export default function SignupPage() {
               <input id="password" type="password" placeholder="enter your password" className="text-[15px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[10px]" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
               <label htmlFor="organizationName" className="block text-gray-700 text-[15px] font-rethink font-semibold mb-[6px]">Organization Name</label>
               <input id="organizationName" type="text" placeholder="acme inc" className="text-[15px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[15px]" value={form.organizationName} onChange={(e) => setForm({ ...form, organizationName: e.target.value })}/>
-              <button type="submit" className=" bg-black hover:bg-gray-800 text-white font-geist font-extrabold py-[5px] px-[15px] rounded-[15px]">{signupButtonState}</button>
+              <button type="submit" className=" bg-black hover:bg-gray-800 text-white font-geist font-bold py-[4px] px-[14px] rounded-[12px]">{signupButtonState}</button>
           </form>
           <div className="font-rethink text-[13px] text-gray-400 mt-2">
             By signing in, you agree to our <span className="underline cursor-pointer text-black">Terms of Service</span> and <span className="underline cursor-pointer text-black">Privacy Policy</span>.
