@@ -1,5 +1,5 @@
-import { add_single_employee_record } from "@/app/dashboard/records/action";
-import { add_single_project_record } from "@/app/dashboard/records/action";
+import { add_single_employee_record } from "@/app/dashboard/add_records/action";
+import { add_single_project_record } from "@/app/dashboard/add_records/action";
 import Image from "next/image";
 import arrowRight from '@/public/assets/arrow icon.svg'
 import React, { useActionState, useEffect, useState } from "react";

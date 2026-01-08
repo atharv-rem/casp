@@ -1,7 +1,7 @@
 'use client'
 import erroricon from "@/public/assets/error icon.svg"
 import { useState } from 'react'
-import { add_bulk_records } from '@/app/dashboard/records/action'
+import { add_bulk_records } from '@/app/dashboard/add_records/action'
 import {
   Table,
   TableBody,

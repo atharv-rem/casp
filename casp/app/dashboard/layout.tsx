@@ -74,11 +74,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex flex-col items-start justify-start w-full p-2 gap-0">
           <div className="flex flex-row items-center justify-start">
             <Image src={database} alt="database icon" width={14} height={14}/>
-            <h1 className="text-[15px] font-rethink font-bold ml-[10px]">records</h1>
+            <Link href="/dashboard/records" className="text-[15px] font-rethink font-bold ml-[10px]">records</Link>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={addrecord} alt="add record" width={14} height={14}/>
-            <Link href="/dashboard/records" className="text-[15px] font-rethink font-bold ml-[10px]">add records</Link>
+            <Link href="/dashboard/add_records" className="text-[15px] font-rethink font-bold ml-[10px]">add records</Link>
           </div>
           <div className="flex flex-row items-center justify-start">
             <Image src={giveaccess} alt="give access" width={14} height={14}/>

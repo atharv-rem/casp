@@ -1,7 +1,7 @@
 'use client';
 import { useState } from "react";
-import AddSingleRecord from "@/app/dashboard/records/components/add single record";
-import AddBulkRecords from "@/app/dashboard/records/components/add bulk records";
+import AddSingleRecord from "@/app/dashboard/add_records/components/add single record";
+import AddBulkRecords from "@/app/dashboard/add_records/components/add bulk records";
 export function ChoosingRecords( {orgId, empfields, projfields, projectList }: {orgId: string, empfields: any[], projfields: any[], projectList: any[]}) {
     const [numberOfRecords, setNumberOfRecords] = useState('single');
     return (
