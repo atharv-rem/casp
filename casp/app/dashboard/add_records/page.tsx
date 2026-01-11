@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {ChoosingRecords} from "@/app/dashboard/add_records/components/choosing record.tsx";
+import { Separator } from "@/components/ui/separator"
 
 export default async function RecordsPage() {
     const supabase = await createSupabaseServerClient();
@@ -36,10 +37,8 @@ export default async function RecordsPage() {
     const projfields = projSchema?.schema?.fields;
     const projectList = projects || [];
     return (
-        <div className=" pl-[30px] pr-[30px] w-full items-start justify-center flex flex-col">
-            <h1 className="mt-[15px] text-[40px] font-rethink font-semibold">Add Records</h1>
-            <p className="mr-[30px] mb-[10px] text-[18px] font-rethink font-medium text-gray-600">Choose how you want to add records</p>
-            <ChoosingRecords orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList}           />
+        <div className=" pl-[30px] pr-[30px] pt-[20px] w-full items-start justify-center flex flex-col">
+            <ChoosingRecords orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList}/>
         </div>
     );
 }

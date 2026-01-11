@@ -16,6 +16,7 @@ import addrecord from "@/public/assets/add user.svg";
 import ai from "@/public/assets/ai search.svg";
 import gemini from "@/public/assets/gemini.svg"
 import {Geist_Mono} from "next/font/google";
+
 const kal = localFont({
   src: [
     { path: '../fonts/KalamaykaVF.woff2', style: 'normal' },
@@ -94,7 +95,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Image src={workplace} alt="workplace Logo" width={14} height={14}/>
             <h1 className="text-[14px] font-rethink font-semibold">{OrganizationName.toLowerCase()}</h1>
             <p>/</p>
-            <h1 className="text-[14px] font-rethink font-bold">dashboard</h1>
+            <h1 className="text-[14px] font-rethink font-semibold">dashboard</h1>
           </div>
           <LogoutButton />
         </div>

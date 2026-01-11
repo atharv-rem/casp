@@ -1,4 +1,5 @@
 'use client'
+import Image from "next/image"
 import erroricon from "@/public/assets/error icon.svg"
 import { useState } from 'react'
 import { add_bulk_records } from '@/app/dashboard/add_records/action'
@@ -69,8 +70,8 @@ export default function AddBulkRecordButton( { empfields, projfields }: { empfie
 
   return (
     <>
-      <div className="mb-5 flex flex-row items-center">
-        <label className="mr-2 font-medium text-[15px] text-black">
+      <div className="mb-5 mt-2 flex flex-row items-center">
+        <label className="mr-2 font-rethink font-bold text-[14px] text-black">
           Select Template Type:
         </label>
         <Popover open={open} onOpenChange={setOpen}>
@@ -79,7 +80,7 @@ export default function AddBulkRecordButton( { empfields, projfields }: { empfie
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="text-[15px] w-[220px] justify-between border-gray-300 bg-white text-black rounded-[12px]"
+              className="text-[14px] w-[220px] justify-between border-gray-300 bg-white text-black rounded-[12px]"
             >
               {templateOptions.find((opt) => opt.value === templateType)?.label ?? "Select template..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-100" />
@@ -116,22 +117,22 @@ export default function AddBulkRecordButton( { empfields, projfields }: { empfie
         </Popover>
       </div>
       {templateType === 'employees' && (
-        <p className="mb-2 text-[15px]">
+        <p className="mb-2 text-[14px]">
           Upload an Excel file to add multiple employees at once. Ensure the file includes the columns shown in the preview below
           </p>
       )}
       {templateType === 'projects' && (
-        <p className="mb-2 text-[15px]">
+        <p className="mb-2 text-[14px]">
           Upload an Excel file to add multiple projects at once. Ensure the file includes the columns shown in the preview below
           </p>
       )}
       {templateType === 'assignments' && (
-        <p className="mb-2 text-[15px]">
+        <p className="mb-2 text-[14px]">
           Upload an Excel file to add multiple assignments at once. Ensure the file includes the columns shown in the preview below
           </p>
       )}
       {templateType === 'all' && (
-        <p className="mb-2 text-[15px]">
+        <p className="mb-2 text-[14px]">
           Upload an Excel file to add multiple employees, projects, and assign them projects all at once. Ensure the file includes the columns shown in the preview below
           </p>
       )}
@@ -187,44 +188,44 @@ export default function AddBulkRecordButton( { empfields, projfields }: { empfie
           <TableRow>
             {templateType === 'employees' && (
               <>
-                <TableCell className="font-geist">John Doe</TableCell>
-                <TableCell className="font-geist">john.doe@example.com</TableCell>
+                <TableCell className="font-rethink">John Doe</TableCell>
+                <TableCell className="font-rethink">john.doe@example.com</TableCell>
                 {empfields.map((field) => (
-                  <TableCell key={field.id} className="font-geist">{field.type}</TableCell>
+                  <TableCell key={field.id} className="font-rethink">{field.type}</TableCell>
                 ))}
               </>
             )}
             {templateType === 'projects' && (
               <>
-                <TableCell className="font-geist">Project Alpha</TableCell>
+                <TableCell className="font-rethink">Project Alpha</TableCell>
                 {projfields.map((field) => (
-                  <TableCell key={field.id} className="font-geist">{field.type}</TableCell>
+                  <TableCell key={field.id} className="font-rethink">{field.type}</TableCell>
                 ))}
               </>
             )}
             {templateType === 'assignments' && (
               <>
-                <TableCell className="font-geist">John Doe</TableCell>
-                <TableCell className="font-geist">Project Alpha</TableCell>
-                <TableCell className="font-geist">2023-01-01</TableCell>
-                <TableCell className="font-geist">2023-12-31</TableCell>
-                <TableCell className="font-geist">50%</TableCell>
+                <TableCell className="font-rethink">John Doe</TableCell>
+                <TableCell className="font-rethink">Project Alpha</TableCell>
+                <TableCell className="font-rethink">2023-01-01</TableCell>
+                <TableCell className="font-rethink">2023-12-31</TableCell>
+                <TableCell className="font-rethink">50%</TableCell>
               </>
             )}
             {templateType === 'all' && (
               <>
-                <TableCell className="font-geist">John Doe</TableCell>
-                <TableCell className="font-geist">john.doe@example.com</TableCell>
+                <TableCell className="font-rethink">John Doe</TableCell>
+                <TableCell className="font-rethink">john.doe@example.com</TableCell>
                 {empfields.map((field) => (
-                  <TableCell key={field.id} className="font-geist">{field.type}</TableCell>
+                  <TableCell key={field.id} className="font-rethink">{field.type}</TableCell>
                 ))}
-                <TableCell className="font-geist">Project Alpha</TableCell>
+                <TableCell className="font-rethink">Project Alpha</TableCell>
                 {projfields.map((field) => (
-                  <TableCell key={field.id} className="font-geist">{field.type}</TableCell>
+                  <TableCell key={field.id} className="font-rethink">{field.type}</TableCell>
                 ))}
-                <TableCell className="font-geist">2023-01-01</TableCell>
-                <TableCell className="font-geist">2023-12-31</TableCell>
-                <TableCell className="font-geist">50%</TableCell>
+                <TableCell className="font-rethink">2023-01-01</TableCell>
+                <TableCell className="font-rethink">2023-12-31</TableCell>
+                <TableCell className="font-rethink">50%</TableCell>
               </>
             )}
           </TableRow>
