@@ -19,7 +19,7 @@ interface Field {
   type?: string;
 }
 
-export default function AddSingleRecord({ orgId, empfields, projfields, projectList }: { orgId: string; empfields: Field[]; projfields: Field[]; projectList: any[] }) {
+export default function AddSingleRecord({ orgId, empfields, projfields, projectList, recordType }: { orgId: string; empfields: Field[]; projfields: Field[]; projectList: any[]; recordType: string }) {
   const router = useRouter();
   const [empState, empFormAction, isEmpPending] = useActionState(add_single_employee_record, null);
   const [projState, projFormAction, isProjPending] = useActionState(add_single_project_record, null);
@@ -39,6 +39,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
   const [assignments, setAssignments] = useState<Assignment[]>([{ project_id: "", allocation_percentage: 0, start_date: undefined, end_date: undefined }, ]);
   const usedPercentage = assignments.reduce((sum, a) => sum + (a.allocation_percentage || 0), 0);
   const remainingPercentage = 100 - usedPercentage;
+
   const getAvailableProjects = (currentIndex: number) => {
   const selectedIds = assignments
     .map((a, i) => (i === currentIndex ? null : a.project_id))
@@ -91,9 +92,10 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
 
   return (
     <>
-    <div className="flex flex-col items-start mb-[20px]">
-      <h1 className="text-[20px] font-rethink font-bold text-black w-full">ADD EMPLOYEE</h1>
-      <p className="text-[14px] font-rethink text-[#686868] mb-[20px] border-b-[1px] border-[#b9b9b9] pb-[10px] w-full">fill out the form below to add a new employee.</p>
+    {recordType === 'employee' && (
+    <div className="flex flex-col items-start mb-[20px] mt-[10px]">
+      <h1 className="text-[20px] font-rethink font-bold text-black w-full">Add Employee</h1>
+      <p className="text-[14px] font-rethink text-[#686868] mb-[10px] w-full">fill out the form below to add a new employee.</p>
       <form action={empFormAction} className="grid grid-cols-2 gap-[12px]">
         <input type="hidden" name="organization_id" value={orgId} />
         <div className="w-full flex flex-col">
@@ -149,12 +151,9 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
             </p>
           ) : (
           <>
-          <p className="text-black font-rethink font-bold mb-[5px] mt-[10px] text-[14px] border-b-[1px] border-[#b9b9b9] pb-[10px] mb-[20px]">
-            ASSIGN PROJECTS
-          </p>
           {assignments.map((assignment, index) => (
-            <div key={index} className="grid grid-cols-2 gap-[12px] mb-[10px] border-b-[1px] border-[#b9b9b9] pb-[10px] mb-[20px]">
-              <label htmlFor={`assignments[${index}][project_id]`} className ="text-[#686868] font-medium font-rethink text-[14px]">project</label>
+            <div key={index} className="grid grid-cols-2 gap-[12px] items-center mb-[10px] mt-[10px] pb-[10px]">
+              <label htmlFor={`assignments[${index}][project_id]`} className ="text-[#686868] font-medium font-rethink text-[14px]">assign a project</label>
               <input type="hidden" name={`assignments[${index}][project_id]`} value={assignment.project_id === "none" ? "" : assignment.project_id} />
               <Popover open={comboboxOpen[index]} onOpenChange={(open) => setComboboxOpen(prev => ({ ...prev, [index]: open }))}>
                 <PopoverTrigger asChild>
@@ -319,7 +318,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
             }
             className="w-full bg-white text-black font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] border-dashed border-[2px] border-[#d2d2d2] flex flex-row items-center justify-center hover:translate-x-1 hover:duration-300 mb-[10px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            + ADD PROJECT
+            + Assign another project
           </button>
           </>
         )}
@@ -340,10 +339,12 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
         </div>
       </form>
     </div>
-
-    <div className="flex flex-col items-start mb-[20px] mt-[20px]">
-      <h1 className="text-[20px] font-rethink font-bold text-black w-full">ADD PROJECT</h1>
-      <p className="text-[14px] font-rethink text-[#686868] mb-[20px] border-b-[1px] border-[#b9b9b9] pb-[10px] w-full">fill out the form below to add a new project.</p>
+    )}
+    
+    {recordType === 'project' && (
+    <div className="flex flex-col items-start mb-[20px] mt-[10px]">
+      <h1 className="text-[20px] font-rethink font-bold text-black w-full">Add Project</h1>
+      <p className="text-[14px] font-rethink text-[#686868] mb-[10px] w-full">fill out the form below to add a new project.</p>
       <form action={projFormAction} className="grid grid-cols-2 gap-[20px]">
         <input type="hidden" name="organization_id" value={orgId} />
         <div className="w-full flex flex-col">
@@ -400,6 +401,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
         </div>
       </form>
     </div>
+    )}
     </>
   );
 }

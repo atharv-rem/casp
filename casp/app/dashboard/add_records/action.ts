@@ -142,21 +142,33 @@ export async function add_bulk_records(formData: FormData, templateType: 'employ
 
   const employeeSchema =
     (employeeSchemaRes.data?.schema?.fields || [])
-      .map((f: any) => f.key ?? f.id)
+      .map((f: any) => ({ key: f.key ?? f.id }))
 
   const projectSchema =
     (projectSchemaRes.data?.schema?.fields || [])
-      .map((f: any) => f.key ?? f.id)
+      .map((f: any) => ({ key: f.key ?? f.id }))
+
+  // Create metadata JSON object
+  const metadata = {
+    org_id: orgId,
+    template_type: templateType,
+    employee_schema: employeeSchema,
+    project_schema: projectSchema,
+  }
+
+  console.log('Sending metadata:', JSON.stringify(metadata, null, 2))
+
+  // Create new FormData with file and metadata
+  const uploadFormData = new FormData()
+  const file = formData.get('file')
+  if (file) {
+    uploadFormData.append('file', file)
+  }
+  uploadFormData.append('metadata', JSON.stringify(metadata))
 
   const res = await fetch('http://localhost:8080/upload', {
     method: 'POST',
-    headers: {
-      'x-org-id': orgId,
-      'x-template-type': templateType,
-      'x-employee-schema': JSON.stringify(employeeSchema),
-      'x-project-schema': JSON.stringify(projectSchema),
-    },
-    body: formData,
+    body: uploadFormData,
   })
 
   if (!res.ok) {
