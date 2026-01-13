@@ -1,4 +1,6 @@
 "use client"
+import usericon from "@/public/assets/user icon.svg"
+import Image from "next/image"
 import { useState } from "react"
 import {
   ColumnDef,
@@ -38,6 +40,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Settings2 } from "lucide-react"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -70,7 +80,17 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
     },
   })
 
+
+  const [selectedRow, setSelectedRow] = useState<any>(null)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  const handleRowClick = (row: any) => {
+    setSelectedRow(row)
+    setIsSheetOpen(true)
+  }
+
   return (
+    <>
     <div className="w-full">
       <div className="flex items-center justify-between pb-4 gap-4">
         <Input
@@ -134,6 +154,8 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => handleRowClick(row)}
+                  className="cursor-pointer hover:bg-muted"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="font-rethink text-left text-[14px]">
@@ -230,5 +252,35 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
         </div>
       </div>
     </div>
+
+    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+      <SheetContent className="w-[400px] p-[20px] flex flex-col">
+        <SheetHeader>
+          <div className="flex flex-row items-center justify-start gap-2">
+            <SheetTitle className="font-rethink text-[18px] hidden">Record Details</SheetTitle>
+            <SheetDescription className=" hidden font-rethink text-[14px]"></SheetDescription>
+            <Image src={usericon} alt="User Icon" className="size-[20px] opacity-[50%]" />
+            <div className="font-rethink text-[14px] font-medium px-[10px] rounded-[8px] bg-[#E3F5F5]">Employee</div>
+          </div>
+        </SheetHeader>
+        <div className="grid grid-cols-2 overflow-y-auto mt-4">
+          {selectedRow &&
+            selectedRow.getVisibleCells().map((cell: any) => {
+              const header = cell.column.columnDef.header;
+              return (
+                <div key={cell.id} className="">
+                  <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                    {typeof header === "string" ? header : cell.column.id.replace(/_/g, " ")}
+                  </h3>
+                  <div className="font-rethink text-[14px] font-medium text-black mb-[20px]">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </div>
+                </div>
+              );
+          })}
+          </div>
+        </SheetContent>
+    </Sheet>
+    </>
   )
 }

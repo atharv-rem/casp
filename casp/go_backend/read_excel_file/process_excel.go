@@ -157,10 +157,23 @@ func ProcessExcel(
 
 	/* ---------- parse rows ---------- */
 
+	// helper to safely get cell value with bounds check
+	getCell := func(r []string, idx int) string {
+		if idx < len(r) {
+			return r[idx]
+		}
+		return ""
+	}
+
 	var parsed []ParsedRow
 
 	for rows.Next() {
 		r, _ := rows.Columns()
+
+		// skip empty rows
+		if len(r) == 0 {
+			continue
+		}
 
 		pr := ParsedRow{
 			EmployeeCustom: map[string]string{},
@@ -168,37 +181,37 @@ func ProcessExcel(
 		}
 
 		if v, ok := col["employee name"]; ok {
-			pr.EmployeeName = r[v]
+			pr.EmployeeName = getCell(r, v)
 		}
 		if v, ok := col["employee email"]; ok {
-			pr.EmployeeEmail = r[v]
+			pr.EmployeeEmail = getCell(r, v)
 		}
 		if v, ok := col["project name"]; ok {
-			pr.ProjectName = r[v]
+			pr.ProjectName = getCell(r, v)
 		}
 
-		if v, ok := col["start date"]; ok && r[v] != "" {
-			pr.StartDate, _ = time.Parse("2006-01-02", r[v])
+		if v, ok := col["start date"]; ok && getCell(r, v) != "" {
+			pr.StartDate, _ = time.Parse("2006-01-02", getCell(r, v))
 		}
-		if v, ok := col["end date"]; ok && r[v] != "" {
-			t, _ := time.Parse("2006-01-02", r[v])
+		if v, ok := col["end date"]; ok && getCell(r, v) != "" {
+			t, _ := time.Parse("2006-01-02", getCell(r, v))
 			pr.EndDate = &t
 		}
-		if v, ok := col["allocation %"]; ok && r[v] != "" {
-			i, _ := strconv.Atoi(r[v])
+		if v, ok := col["allocation %"]; ok && getCell(r, v) != "" {
+			i, _ := strconv.Atoi(getCell(r, v))
 			pr.Allocation = &i
 		}
 
 		for _, f := range customEmployeeFields {
 			key := normalize(f)
 			if i, ok := col[key]; ok {
-				pr.EmployeeCustom[key] = r[i]
+				pr.EmployeeCustom[key] = getCell(r, i)
 			}
 		}
 		for _, f := range customProjectFields {
 			key := normalize(f)
 			if i, ok := col[key]; ok {
-				pr.ProjectCustom[key] = r[i]
+				pr.ProjectCustom[key] = getCell(r, i)
 			}
 		}
 
@@ -240,7 +253,7 @@ func upsertEmployees(ctx context.Context, conn *pgx.Conn, orgID string, rows []P
 		_, err := conn.Exec(ctx, `
 			INSERT INTO employees (organization_id, system_profile, custom_profile)
 			VALUES ($1,$2,$3)
-			ON CONFLICT (organization_id, (system_profile->>'email'))
+			ON CONFLICT (organization_id)
 			DO NOTHING
 		`, orgID, systemJSON, customJSON)
 

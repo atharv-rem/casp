@@ -21,14 +21,15 @@ export default async function ShowAllRecords() {
     .from("project_schemas")
     .select("schema")
     .single()
-
-  // Extract fields from schema JSONB - use 'id' as key since custom_profile uses UUIDs
+  
+  console.log('employeeSchema', employeeSchemaData  )
+  console.log('projectSchema', projectSchemaData  )
   const employeeFields: SchemaField[] = employeeSchemaData?.schema?.fields ?? []
   const projectFields: SchemaField[] = projectSchemaData?.schema?.fields ?? []
-
-  // Convert to format expected by columns (using id as key since that's what custom_profile uses)
   const employeeSchema = employeeFields.map(f => ({ key: f.id, label: f.label.toLowerCase() }))
   const projectSchema = projectFields.map(f => ({ key: f.id, label: f.label.toLowerCase() }))
+  console.log('employeeSchema', employeeSchema  )
+  console.log('projectSchema', projectSchema  )
 
   const { data: assignments } = await supabase
     .from("employee_project_assignments")
@@ -49,37 +50,43 @@ export default async function ShowAllRecords() {
       )
     `)
 
-  const rows =
-    assignments?.map(row => {
-      const systemProfile = row.employees?.system_profile ?? {}
-      const customProfile = row.employees?.custom_profile ?? {}
-      const projectMeta = row.projects?.meta ?? {}
+  const rows = assignments?.map(row => {
+  const systemProfile = row.employees?.system_profile ?? {}
+  const customProfile = row.employees?.custom_profile ?? {}
+  const projectMeta = row.projects?.meta ?? {}
 
-      return {
-        id: row.id,
-        employee_name: systemProfile.name ?? '—',
-        employee_email: systemProfile.email ?? '—',
-        ...Object.fromEntries(
-          Object.entries(customProfile).map(([key, value]) => [
-            `emp_${key}`,
-            value,
-          ])
-        ),
-        project_name: row.projects?.name ?? '—',
-        ...Object.fromEntries(
-          Object.entries(projectMeta).map(([key, value]) => [
-            `proj_${key}`,
-            value,
-          ])
-        ),
-        start_date: row.start_date,
-        end_date: row.end_date,
-        allocation_percentage: row.allocation_percentage,
-      }
-    }) ?? []
+  const mappedCustomFields = Object.fromEntries(
+    Object.entries(customProfile).map(([id, value]) => {
+      const field = employeeFields.find(f => f.id === id);
+      const key = field ? field.label.toLowerCase(): null ;
+      return [key, value];
+    })
+  )
+
+  const mappedProjectMeta = Object.fromEntries(
+    Object.entries(projectMeta).map(([id, value]) => {
+      const field = projectFields.find(f => f.id === id);
+      const key = field ? field.label.toLowerCase(): null ;
+      return [key, value];
+    })
+  )
+
+  return {
+    id: row.id,
+    employee_name: systemProfile.name ?? '—',
+    employee_email: systemProfile.email ?? '—',
+    ...mappedCustomFields, 
+    project_name: row.projects?.name ?? '—',
+    ...mappedProjectMeta,   
+    start_date: row.start_date,
+    end_date: row.end_date,
+    allocation_percentage: row.allocation_percentage,
+  }
+}) ?? []
 
   return (
     <div className="w-full h-dvh pl-[30px] pr-[30px] pt-[20px]">
+      {console.log('rows', rows  )}
       <RecordsTable
         employeeSchema={employeeSchema}
         projectSchema={projectSchema}

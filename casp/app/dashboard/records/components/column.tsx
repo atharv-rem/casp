@@ -16,10 +16,7 @@ export type DynamicField = {
   label: string
 }
 
-export function getColumns(
-  employeeFields: DynamicField[],
-  projectFields: DynamicField[]
-): ColumnDef<AssignmentRow>[] {
+export function getColumns(employeeFields: DynamicField[], projectFields: DynamicField[]): ColumnDef<AssignmentRow>[] {
 
   return [
     {
@@ -31,18 +28,18 @@ export function getColumns(
       header: () => <span className="font-rethink font-bold text-[14px]">EMPLOYEE EMAIL</span>,
     },
     ...employeeFields.map(field => ({
-      accessorKey: `emp_${field.key}`,
+      accessorKey: `${field.label}`,
       header: () => <span className="font-rethink font-bold text-[14px]">{field.label.toUpperCase()}</span>,
-      cell: ({ row }) => row.getValue(`emp_${field.key}`) ?? '—',
+      cell: ({ row }) => row.getValue(`${field.label}`) ?? '—',
     })) as ColumnDef<AssignmentRow>[],
     {
       accessorKey: 'project_name',
       header: () => <span className="font-rethink font-bold text-[14px]">PROJECT NAME</span>,
     },
     ...projectFields.map(field => ({
-      accessorKey: `proj_${field.key}`,
+      accessorKey: `${field.label}`,
       header: () => <span className="font-rethink font-bold text-[14px]">{field.label.toUpperCase()}</span>,
-      cell: ({ row }) => row.getValue(`proj_${field.key}`) ?? '—',
+      cell: ({ row }) => row.getValue(`${field.label}`) ?? '—',
     })) as ColumnDef<AssignmentRow>[],
     {
       accessorKey: 'start_date',

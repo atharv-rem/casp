@@ -303,8 +303,10 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
           <p className="text-[#686868] font-medium font-rethink text-[14px] mb-[20px]">
             Remaining allocation: <b className="text-red-500">{remainingPercentage}%</b>
           </p>
-
-          <button
+          </>
+        )}
+        </div>
+        <button
             type="button"
             disabled={
               remainingPercentage <= 0 ||
@@ -316,13 +318,10 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                 { project_id: "", allocation_percentage: 0, start_date: undefined, end_date: undefined },
               ])
             }
-            className="w-full bg-white text-black font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] border-dashed border-[2px] border-[#d2d2d2] flex flex-row items-center justify-center hover:translate-x-1 hover:duration-300 mb-[10px] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="shadow-sm bg-white text-black font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] border-[1px] border-[#e8e8e8] flex flex-row items-center justify-center hover:translate-x-1 hover:duration-300 mb-[10px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            + Assign another project
+            Assign another project
           </button>
-          </>
-        )}
-        </div>
 
         
         <div className="flex flex-col">
@@ -332,8 +331,8 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
           {showEmpMessage && empState?.error && (
             <p className="text-red-500 text-[15px] font-bold font-rethink mb-2">{empState.error}</p>
           )}
-          <button disabled={isEmpPending} type="submit" className="w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
-              <span>{isEmpPending ? "PROCESSING..." : "ADD EMPLOYEE"}</span>
+          <button disabled={isEmpPending} type="submit" className="w-auto bg-[#000000] text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
+              <span>{isEmpPending ? "Processing..." : "Add Employee"}</span>
               <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
           </button>
         </div>
@@ -395,7 +394,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
             <p className="text-red-500 text-[15px] font-bold font-rethink mb-2">{projState.error}</p>
           )}
           <button type="submit" className="w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
-              <span>{isProjPending ? "PROCESSING..." : "ADD PROJECT"}</span>
+              <span>{isProjPending ? "Processing..." : "Add Project"}</span>
               <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
           </button>
         </div>
