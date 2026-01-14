@@ -40,8 +40,8 @@ export default function SignupPage() {
       <div className="w-1/2 h-full flex flex-col items-center justify-center">
         <div className="w-3/4 items-start justify-center">
           <div className="flex flex-row justify-start items-center">
-            <h1 className="text-[40px] font-rethink font-medium">Create Organization</h1>
-            <Image src={building} alt="building" width={40} height={40} className="ml-4"/>
+            <h1 className="text-[35px] font-rethink font-medium">Create Organization</h1>
+            <Image src={building} alt="building" width={35} height={35} className="ml-4"/>
           </div>
           {signupError && 
             <div className="flex flex-row items-center mt-1 mb-1">
@@ -62,11 +62,11 @@ export default function SignupPage() {
               <input id="password" type="password" placeholder="enter your password" className="text-[15px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[10px]" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
               <label htmlFor="organizationName" className="block text-gray-700 text-[15px] font-rethink font-semibold mb-[6px]">Organization Name</label>
               <input id="organizationName" type="text" placeholder="acme inc" className="text-[15px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[15px]" value={form.organizationName} onChange={(e) => setForm({ ...form, organizationName: e.target.value })}/>
+              <div className="font-rethink text-[13px] text-gray-400 mb-[15px]">
+                By signing in, you agree to our <span className="underline cursor-pointer text-black">Terms of Service</span> and <span className="underline cursor-pointer text-black">Privacy Policy</span>.
+              </div>
               <button type="submit" className=" bg-black hover:bg-gray-800 text-white font-geist font-bold py-[4px] px-[14px] rounded-[12px]">{signupButtonState}</button>
           </form>
-          <div className="font-rethink text-[13px] text-gray-400 mt-2">
-            By signing in, you agree to our <span className="underline cursor-pointer text-black">Terms of Service</span> and <span className="underline cursor-pointer text-black">Privacy Policy</span>.
-          </div>
         </div>
       </div>
       <div className="relative w-1/2 h-full">

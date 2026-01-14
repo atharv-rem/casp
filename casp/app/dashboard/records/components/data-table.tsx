@@ -1,7 +1,7 @@
 "use client"
 import usericon from "@/public/assets/user icon.svg"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   ColumnDef,
   flexRender,
@@ -48,6 +48,30 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton"
+
+type SchemaField = {
+  id: string
+  key: string
+  type: string
+  label: string
+  required: boolean
+}
+
+type RecordDetails = {
+  employee: any
+  project: any
+  employeeAssignments: any[]
+  projectAssignments: any[]
+  employeeSchema: { fields: SchemaField[] }
+  projectSchema: { fields: SchemaField[] }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -83,14 +107,37 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
 
   const [selectedRow, setSelectedRow] = useState<any>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [recordDetails, setRecordDetails] = useState<RecordDetails | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleRowClick = (row: any) => {
+  const handleRowClick = async (row: any) => {
     setSelectedRow(row)
     setIsSheetOpen(true)
+    setIsLoading(true)
+    setRecordDetails(null)
+
+    const employeeId = row.original.employee_id
+    const projectId = row.original.project_id
+
+    try {
+      const response = await fetch(`/api/record_details?employee_id=${employeeId}&project_id=${projectId}` )
+      if (response.ok) {
+        const data = await response.json()
+        setRecordDetails(data)
+      }
+    } catch (error) {
+      console.error("Failed to fetch record details:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  const formatLabel = (label: string) => {
+    return label.replace(/_/g, " ").toUpperCase()
   }
 
   return (
     <>
+    {/* table container */}
     <div className="w-full">
       <div className="flex items-center justify-between pb-4 gap-4">
         <Input
@@ -252,34 +299,230 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
         </div>
       </div>
     </div>
+    
 
+    {/* sheet for record details */}
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-      <SheetContent className="w-[400px] p-[20px] flex flex-col">
+      <SheetContent className="w-[500px] p-[20px] flex flex-col">
         <SheetHeader>
           <div className="flex flex-row items-center justify-start gap-2">
             <SheetTitle className="font-rethink text-[18px] hidden">Record Details</SheetTitle>
-            <SheetDescription className=" hidden font-rethink text-[14px]"></SheetDescription>
-            <Image src={usericon} alt="User Icon" className="size-[20px] opacity-[50%]" />
-            <div className="font-rethink text-[14px] font-medium px-[10px] rounded-[8px] bg-[#E3F5F5]">Employee</div>
+            <SheetDescription className="hidden font-rethink text-[14px]"></SheetDescription>
+            <div className=" flex flex-col">
+              <span className="font-rethink text-[30px] font-bold">{selectedRow?.original?.employee_name || ""}</span>
+              <span className="font-rethink text-[14px] font-medium text-[#909090]">{selectedRow?.original?.employee_email || ""}</span>
+            </div>
           </div>
         </SheetHeader>
-        <div className="grid grid-cols-2 overflow-y-auto mt-4">
-          {selectedRow &&
-            selectedRow.getVisibleCells().map((cell: any) => {
-              const header = cell.column.columnDef.header;
-              return (
-                <div key={cell.id} className="">
-                  <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
-                    {typeof header === "string" ? header : cell.column.id.replace(/_/g, " ")}
-                  </h3>
-                  <div className="font-rethink text-[14px] font-medium text-black mb-[20px]">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+
+        {isLoading ? (
+          <div className="flex flex-col gap-4 mt-4">
+            <Skeleton className="h-8 w-full rounded-[6px]" />
+            <Skeleton className="h-32 w-full rounded-[6px]" />
+            <Skeleton className="h-32 w-full rounded-[6px]" />
+          </div>
+        ) : recordDetails ? (
+          <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="details" className="font-rethink font-bold text-[14px]">DETAILS</TabsTrigger>
+              <TabsTrigger value="project" className="font-rethink font-bold text-[14px]">PROJECT DETAILS</TabsTrigger>
+              <TabsTrigger value="assignments" className="font-rethink font-bold text-[14px]">ASSIGNMENTS</TabsTrigger>
+            </TabsList>
+
+            {/* Employee Details Tab */}
+            <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
+                {recordDetails.employee?.custom_profile && Object.keys(recordDetails.employee.custom_profile).length > 0 && (
+                    <div className="grid grid-cols-2 gap-3">
+                      {Object.entries(recordDetails.employee.custom_profile)
+                        .filter(([id]) => {
+                          // Only show fields that exist in the schema
+                          const field = recordDetails.employeeSchema?.fields?.find(f => f.id === id)
+                          return field !== undefined
+                        })
+                        .map(([id, value]) => {
+                          const field = recordDetails.employeeSchema?.fields?.find(f => f.id === id)
+                          const label = field?.label || ''
+                          // Skip if value is an object (not a primitive)
+                          if (typeof value === 'object' && value !== null) return null
+                          return (
+                            <div key={id}>
+                              <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                                {formatLabel(label)}
+                              </p>
+                              <p className="font-rethink text-[14px] font-bold text-black">
+                                {String(value) || "—"}
+                              </p>
+                            </div>
+                          )
+                        })}
+                    </div>
+                )}
+
+                {recordDetails.employeeAssignments && recordDetails.employeeAssignments.length > 0 ? (
+                    <>
+                    <h3 className="font-rethink text-[11px] font-medium mt-4 text-[#909090]">ASSIGNED PROJECTS</h3>
+                    <div className="space-y-2 mt-[5px] w-auto">
+                      {recordDetails.employeeAssignments.map((assignment: any) => (
+                        <div key={assignment.id} className="p-3 bg-[#fafafa] rounded-[8px]">
+                          <p className="font-rethink text-[14px] font-bold">{assignment.projects?.name || "—"}</p>
+                          <div className="flex gap-4 mt-1">
+                            <span className="font-rethink text-[12px] text-[#686868]">
+                              {assignment.allocation_percentage}% allocation      
+                            </span>
+                            <span className="font-rethink text-[12px] text-[#686868]">
+                              {assignment.start_date} - {assignment.end_date || "Present"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    </>
+                  ) : (
+                    <p className="font-rethink text-[14px] text-[#686868]">No other project assignments</p>
+                  )}
+            </TabsContent>
+
+            {/* Project Details Tab */}
+            <TabsContent value="project" className="flex-1 overflow-y-auto mt-4">
+              <div className="space-y-4">
+                <div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">NAME</p>
+                      <p className="font-rethink text-[14px] font-medium text-black">{recordDetails.project?.name || "—"}</p>
+                    </div>
                   </div>
                 </div>
-              );
-          })}
+
+                {recordDetails.project?.meta && Object.keys(recordDetails.project.meta).length > 0 && (
+                  <div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {Object.entries(recordDetails.project.meta)
+                        .filter(([id]) => {
+                          // Only show fields that exist in the schema
+                          const field = recordDetails.projectSchema?.fields?.find(f => f.id === id)
+                          return field !== undefined
+                        })
+                        .map(([id, value]) => {
+                          const field = recordDetails.projectSchema?.fields?.find(f => f.id === id)
+                          const label = field?.label || ''
+                          // Skip if value is an object (not a primitive)
+                          if (typeof value === 'object' && value !== null) return null
+                          return (
+                            <div key={id}>
+                              <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                                {formatLabel(label)}
+                              </p>
+                              <p className="font-rethink text-[14px] font-medium text-black">
+                                {String(value) || "—"}
+                              </p>
+                            </div>
+                          )
+                        })}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <h3 className="font-rethink text-[11px] font-medium mt-4 text-[#909090]">TEAM MEMBERS</h3>
+                  {recordDetails.projectAssignments && recordDetails.projectAssignments.length > 0 ? (
+                    <div className="space-y-2 mt-[5px]">
+                      {recordDetails.projectAssignments.map((assignment: any) => (
+                        <div key={assignment.id} className="p-3 bg-[#fafafa] rounded-[8px]">
+                          <p className="font-rethink text-[14px] font-medium">
+                            {assignment.employees?.system_profile?.name || "—"}
+                          </p>
+                          <div className="flex gap-4 mt-1">
+                            <span className="font-rethink text-[12px] text-[#686868]">
+                              {assignment.allocation_percentage}% allocation
+                            </span>
+                            <span className="font-rethink text-[12px] text-[#686868]">
+                              {assignment.start_date} - {assignment.end_date || "Present"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-rethink text-[14px] text-[#686868]">No team members assigned</p>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Assignments Overview Tab */}
+            <TabsContent value="assignments" className="flex-1 overflow-y-auto mt-4">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-rethink text-[11px] font-medium mb-3 text-[#909090]">CURRENT ASSIGNMENT</h3>
+                  <div className="p-3 bg-[#fafafa] rounded-[8px]">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-rethink text-[14px] font-medium">
+                          {recordDetails.project?.name || "—"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 mt-2">
+                      <span className="font-rethink text-[12px] text-[#686868]">
+                        {selectedRow?.original?.allocation_percentage}% allocation
+                      </span>
+                      <span className="font-rethink text-[12px] text-[#686868]">
+                        {selectedRow?.original?.start_date} - {selectedRow?.original?.end_date || "Present"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-rethink text-[11px] font-medium mb-3 text-[#909090]">
+                    ALL ASSIGNMENTS FOR {recordDetails.employee?.system_profile?.name.toUpperCase() || "EMPLOYEE"}
+                  </h3>
+                  {recordDetails.employeeAssignments && recordDetails.employeeAssignments.length > 0 ? (
+                    <div className="space-y-2">
+                      {recordDetails.employeeAssignments.map((assignment: any) => (
+                        <div 
+                          key={assignment.id} 
+                          className={`p-3 rounded-[8px] ${assignment.projects?.id === recordDetails.project?.id ? 'bg-[#fafafa]' : 'bg-[#fafafa]'}`}
+                        >
+                          <p className="font-rethink text-[14px] font-medium">{assignment.projects?.name || "—"}</p>
+                          <div className="flex gap-4 mt-1">
+                            <span className="font-rethink text-[12px] text-[#686868]">
+                              {assignment.allocation_percentage}% allocation
+                            </span>
+                            <span className="font-rethink text-[12px] text-[#686868]">
+                              {assignment.start_date} - {assignment.end_date || "Present"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-rethink text-[14px] text-[#686868]">No assignments found</p>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <div className="grid grid-cols-2 overflow-y-auto mt-4">
+            {selectedRow &&
+              selectedRow.getVisibleCells().map((cell: any) => {
+                const header = cell.column.columnDef.header;
+                return (
+                  <div key={cell.id} className="">
+                    <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                      {typeof header === "string" ? header : cell.column.id.replace(/_/g, " ")}
+                    </h3>
+                    <div className="font-rethink text-[14px] font-medium text-black mb-[20px]">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
+                  </div>
+                );
+            })}
           </div>
-        </SheetContent>
+        )}
+      </SheetContent>
     </Sheet>
     </>
   )

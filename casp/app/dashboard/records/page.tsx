@@ -22,19 +22,17 @@ export default async function ShowAllRecords() {
     .select("schema")
     .single()
   
-  console.log('employeeSchema', employeeSchemaData  )
-  console.log('projectSchema', projectSchemaData  )
   const employeeFields: SchemaField[] = employeeSchemaData?.schema?.fields ?? []
   const projectFields: SchemaField[] = projectSchemaData?.schema?.fields ?? []
   const employeeSchema = employeeFields.map(f => ({ key: f.id, label: f.label.toLowerCase() }))
   const projectSchema = projectFields.map(f => ({ key: f.id, label: f.label.toLowerCase() }))
-  console.log('employeeSchema', employeeSchema  )
-  console.log('projectSchema', projectSchema  )
-
+  
   const { data: assignments } = await supabase
     .from("employee_project_assignments")
     .select(`
       id,
+      employee_id,
+      project_id,
       start_date,
       end_date,
       allocation_percentage,
@@ -73,6 +71,8 @@ export default async function ShowAllRecords() {
 
   return {
     id: row.id,
+    employee_id: row.employee_id,
+    project_id: row.project_id,
     employee_name: systemProfile.name ?? '—',
     employee_email: systemProfile.email ?? '—',
     ...mappedCustomFields, 
@@ -86,7 +86,6 @@ export default async function ShowAllRecords() {
 
   return (
     <div className="w-full h-dvh pl-[30px] pr-[30px] pt-[20px]">
-      {console.log('rows', rows  )}
       <RecordsTable
         employeeSchema={employeeSchema}
         projectSchema={projectSchema}

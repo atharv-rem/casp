@@ -11,6 +11,5 @@ interface RecordsTableProps {
 
 export function RecordsTable({ employeeSchema, projectSchema, rows }: RecordsTableProps) {
   const columns = getColumns(employeeSchema, projectSchema)
-  console.log('columns', columns  )
   return <DataTable columns={columns} data={rows} />
 }

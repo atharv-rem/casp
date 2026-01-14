@@ -41,8 +41,8 @@ export default function LoginPage() {
       <div className="w-1/2 h-full flex flex-col items-center justify-center">
         <div className="w-3/4 items-start justify-center">
           <div className="flex flex-row justify-start items-center">
-            <h1 className="text-[40px] font-rethink font-medium">Login</h1>
-            <Image src={building} alt="building" width={40} height={40} className="ml-4"/>
+            <h1 className="text-[35px] font-rethink font-medium">Login</h1>
+            <Image src={building} alt="building" width={35} height={35} className="ml-4"/>
           </div>
           {loginError && 
             <div className="flex flex-row items-center mt-1 mb-1">

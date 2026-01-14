@@ -2,6 +2,8 @@ import { ColumnDef } from '@tanstack/react-table'
 
 export type AssignmentRow = {
   id: string
+  employee_id: string
+  project_id: string
   employee_name: string
   employee_email: string
   project_name: string
