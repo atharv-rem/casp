@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import building from "@/public/assets/building.svg"
-import signupImage from "@/public/assets/signup image.avif"
+import signupImage from "@/public/assets/signup image.png"
 import erroricon from "@/public/assets/error icon.svg"
 import { useState } from "react";
 import { useRouter } from "next/navigation";
