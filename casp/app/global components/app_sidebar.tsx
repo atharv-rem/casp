@@ -1,3 +1,7 @@
+import database from "@/public/assets/database.svg";
+import giveaccess from "@/public/assets/give access.svg";
+import addrecord from "@/public/assets/add user.svg";
+import settings from "@/public/assets/settings.svg"
 import {
   Sidebar,
   SidebarContent,
@@ -11,29 +15,24 @@ import {
 
 const items = [
   {
-    title: "Home",
-    url: "#",
-    icon: Home,
+    title: "records",
+    url: "/dashboard/records",
+    icon: database,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "add records",
+    url: "/dashboard/add_records",
+    icon: addrecord,
   },
   {
-    title: "Calendar",
+    title: "give access",
     url: "#",
-    icon: Calendar,
+    icon: giveaccess,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "settings",
+    url: "/dashboard/settings",
+    icon: settings,
   },
 ]
 
