@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import building from "@/public/assets/building.svg"
+import Link from "next/link";
 import loginImage from "@/public/assets/signup image.png"
 import erroricon from "@/public/assets/error icon.svg"
 import { useRouter } from "next/navigation";
@@ -8,6 +9,8 @@ import { useState } from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -57,21 +60,23 @@ export default function LoginPage() {
               <p className="text-red-500 font-rethink font-bold text-[12px]">{loginError}</p>
             </div>
           }
-          <p className="w-full items-center justify-center text-gray-500 font-rethink text-[12px] mb-[10px]">
-            Don't have an account? <span className="text-black underline cursor-pointer" onClick={() => router.push("/signup")}>sign up</span>
+          <p className="w-full items-center justify-center text-gray-500 font-rethink text-[14px] mb-[10px]">
+            Don't have an account? <Link href="/signup" className="text-black underline cursor-pointer font-semibold">sign up</Link>
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="w-3/4">
             <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-700 text-[12px] font-rethink font-semibold mb-[6px]">Email</label>
-              {errors.email && <p className="text-red-500 text-[12px] mb-[2px] font-bold">{errors.email.message}</p>}
-              <input {...register("email")} 
-              id="email" type="email" placeholder="john.doe@example.com" className="text-[12px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[6px]"/>
-              <label htmlFor="password" className="block text-gray-700 text-[12px] font-rethink font-semibold mb-[6px]">Password</label>
-              {errors.password && <p className="text-red-500 text-[12px] mb-[2px] font-bold">{errors.password.message}</p>}
-              <input 
-              {...register("password")} 
-              id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold border-[1px] border-gray-300 rounded-[10px] w-full py-2 px-3 mb-[15px]"/>
+              <div className="flex flex-col gap-2 mb-[10px]">
+                <Label htmlFor="email" className="text-gray-700 text-[12px] font-rethink font-semibold">Email</Label>
+                {errors.email && <p className="text-red-500 text-[12px] font-bold">{errors.email.message}</p>}
+                <Input {...register("email")} id="email" type="email" placeholder="john.doe@example.com" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
+              </div>
+              <div className="flex flex-col gap-2 mb-[15px]">
+                <Label htmlFor="password" className="text-gray-700 text-[12px] font-rethink font-semibold">Password</Label>
+                {errors.password && <p className="text-red-500 text-[12px] font-bold">{errors.password.message}</p>}
+                <Input {...register("password")} id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold rounded-[10px]" />
+                <Link href="/forgot-password" className="text-[14px] font-rethink font-semibold text-black underline">Forgot password?</Link>
+              </div>
               <button disabled={isSubmitting} type="submit" className="bg-black hover:bg-gray-800 text-white font-geist font-bold py-[4px] px-[14px] rounded-[12px]">{loginButtonState}</button>
             </div>
           </form>
