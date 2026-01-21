@@ -1,7 +1,7 @@
 "use client"
 import usericon from "@/public/assets/user icon.svg"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {
   ColumnDef,
   flexRender,
@@ -46,7 +46,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet"
 import {
   Tabs,
@@ -124,6 +123,7 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
       if (response.ok) {
         const data = await response.json()
         setRecordDetails(data)
+        console.log("Fetched record details:", data)
       }
     } catch (error) {
       console.error("Failed to fetch record details:", error)
@@ -303,14 +303,17 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
 
     {/* sheet for record details */}
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-      <SheetContent className="w-[500px] p-[20px] flex flex-col">
+      <SheetContent className="w-[400px] h-[95%] mr-[15px] my-[15px] p-[20px] flex flex-col rounded-[15px]">
         <SheetHeader>
-          <div className="flex flex-row items-center justify-start gap-2">
-            <SheetTitle className="font-rethink text-[18px] hidden">Record Details</SheetTitle>
-            <SheetDescription className="hidden font-rethink text-[14px]"></SheetDescription>
-            <div className=" flex flex-col">
-              <span className="font-rethink text-[30px] font-bold">{selectedRow?.original?.employee_name || ""}</span>
-              <span className="font-rethink text-[14px] font-medium text-[#909090]">{selectedRow?.original?.employee_email || ""}</span>
+          <div className="flex flex-row items-start mb-[5px]">
+            <SheetTitle className="font-rethink hidden">Record Details</SheetTitle>
+            <SheetDescription className="hidden font-rethink"></SheetDescription>
+            <div className="size-[45px] bg-[#FAFAFA] rounded-[5px] flex items-center justify-center mr-2">
+              <Image src={usericon} alt="user icon" className="size-[25px]" />
+            </div>
+            <div className=" flex flex-col items-start justify-center gap-1">
+              <span className="font-rethink text-[22px] font-semibold">{selectedRow?.original?.employee_name || ""}</span>
+              <span className=" leading-0 font-rethink text-[12px] font-medium text-[#909090]">{selectedRow?.original?.employee_email || ""}</span>
             </div>
           </div>
         </SheetHeader>
@@ -324,9 +327,9 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
         ) : recordDetails ? (
           <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="details" className="font-rethink font-bold text-[14px]">DETAILS</TabsTrigger>
-              <TabsTrigger value="project" className="font-rethink font-bold text-[14px]">PROJECT DETAILS</TabsTrigger>
-              <TabsTrigger value="assignments" className="font-rethink font-bold text-[14px]">ASSIGNMENTS</TabsTrigger>
+              <TabsTrigger value="details" className="font-rethink font-bold text-[12px]">DETAILS</TabsTrigger>
+              <TabsTrigger value="project" className="font-rethink font-bold text-[12px]">PROJECT DETAILS</TabsTrigger>
+              <TabsTrigger value="assignments" className="font-rethink font-bold text-[12px]">ASSIGNMENTS</TabsTrigger>
             </TabsList>
 
             {/* Employee Details Tab */}
@@ -334,16 +337,9 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
                 {recordDetails.employee?.custom_profile && Object.keys(recordDetails.employee.custom_profile).length > 0 && (
                     <div className="grid grid-cols-2 gap-3">
                       {Object.entries(recordDetails.employee.custom_profile)
-                        .filter(([id]) => {
-                          // Only show fields that exist in the schema
-                          const field = recordDetails.employeeSchema?.fields?.find(f => f.id === id)
-                          return field !== undefined
-                        })
                         .map(([id, value]) => {
                           const field = recordDetails.employeeSchema?.fields?.find(f => f.id === id)
                           const label = field?.label || ''
-                          // Skip if value is an object (not a primitive)
-                          if (typeof value === 'object' && value !== null) return null
                           return (
                             <div key={id}>
                               <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">

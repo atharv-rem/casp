@@ -1,10 +1,15 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const employeeId = searchParams.get("employee_id");
   const projectId = searchParams.get("project_id");
+
+  const supabase = await createSupabaseServerClient();
+  const {data:{ user } ,error: authError} = await supabase.auth.getUser();
+  const organization_id = user?.app_metadata.organization_id;
 
   if (!employeeId || !projectId) {
     return NextResponse.json(
@@ -93,11 +98,13 @@ export async function GET(request: NextRequest) {
     const { data: employeeSchemaData } = await supabaseAdmin
       .from("employee_schemas")
       .select("schema")
+      .eq("organization_id", organization_id)
       .single();
 
     const { data: projectSchemaData } = await supabaseAdmin
       .from("project_schemas")
       .select("schema")
+      .eq("organization_id", organization_id)
       .single();
 
     return NextResponse.json({

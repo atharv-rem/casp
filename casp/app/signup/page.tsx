@@ -16,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required").regex(/^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/, "Only letters, numbers, and single spaces are allowed").regex(/[a-zA-Z]/, "Name must contain at least one letter"),
   email: z.string().min(1, "Email is required").email("Invalid email address"),
-  password: z.string().min(10, "Password must be at least 10 characters").regex(/[A-Z]/, "Must contain at least one uppercase letter").regex(/[a-z]/, "Must contain at least one lowercase letter").regex(/[0-9]/, "Must contain at least one number").regex(/[@$!%*?&]/, "Must contain at least one special character (@$!%*?&]"),
+  password: z.string().min(10, "Password must be at least 10 characters").regex(/[A-Z]/, "Must contain at least one uppercase letter").regex(/[a-z]/, "Must contain at least one lowercase letter").regex(/[0-9]/, "Must contain at least one number").regex(/[#@$!%*?&]/, "Must contain at least one special character (@$!%*?&]"),
   organizationName: z.string().min(1, "Organization Name is required").regex(/^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/, "Only letters, numbers, and single spaces are allowed").regex(/[a-zA-Z]/, "Name must contain at least one letter"),
 });
 
@@ -36,12 +36,7 @@ export default function SignupPage() {
     });
 
     if (signup_api.ok) {
-      setSignupButtonState(
-      <div className="flex flex-row items-center justify-center">
-        <div className="loader ease-linear rounded-full border-2 border-t-2 border-white h-4 w-4"></div>
-        <p className="ml-2">Creating account</p>
-      </div>
-      );
+      setSignupButtonState("Creating...")
       router.push("/dashboard");
     } else {
       const signup_error = await signup_api.json();

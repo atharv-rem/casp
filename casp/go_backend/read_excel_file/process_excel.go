@@ -253,8 +253,6 @@ func upsertEmployees(ctx context.Context, conn *pgx.Conn, orgID string, rows []P
 		_, err := conn.Exec(ctx, `
 			INSERT INTO employees (organization_id, system_profile, custom_profile)
 			VALUES ($1,$2,$3)
-			ON CONFLICT (organization_id)
-			DO NOTHING
 		`, orgID, systemJSON, customJSON)
 
 		if err != nil {
@@ -276,8 +274,6 @@ func upsertProjects(ctx context.Context, conn *pgx.Conn, orgID string, rows []Pa
 		_, err := conn.Exec(ctx, `
 			INSERT INTO projects (organization_id, name, meta)
 			VALUES ($1,$2,$3)
-			ON CONFLICT (organization_id, name)
-			DO NOTHING
 		`, orgID, r.ProjectName, metaJSON)
 
 		if err != nil {
@@ -319,8 +315,6 @@ func insertAssignments(ctx context.Context, conn *pgx.Conn, orgID string, rows [
 			INSERT INTO employee_project_assignments
 			(organization_id, employee_id, project_id, start_date, end_date, allocation_percentage)
 			VALUES ($1,$2,$3,$4,$5,$6)
-			ON CONFLICT (organization_id, employee_id, project_id)
-			DO NOTHING
 		`,
 			orgID,
 			employeeID,

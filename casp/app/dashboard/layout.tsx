@@ -7,8 +7,8 @@ import PageRoute from "../global components/page_route";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import Image from "next/image";
-import logo from "@/public/assets/black casp logo.png";
 import usericon from "@/public/assets/user icon.svg";
+
 import sidebar from "@/public/assets/sidebar close.svg";
 import database from "@/public/assets/database.svg";
 import giveaccess from "@/public/assets/give access.svg";
@@ -17,6 +17,7 @@ import settings from "@/public/assets/settings.svg"
 import ai from "@/public/assets/ai search.svg";
 import gemini from "@/public/assets/gemini.svg"
 import {Geist_Mono} from "next/font/google";
+import { redirect } from "next/navigation";
 
 const kal = localFont({
   src: [
@@ -40,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const {data: { user }} = await supabase.auth.getUser();
 
   if (!user) {
-    router.push('/login');
+    redirect('/login');
   }
 
   const AccountName = user.user_metadata?.name ?? "User";

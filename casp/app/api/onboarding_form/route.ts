@@ -65,8 +65,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   } 
   catch (error) {
+    let errorMessage = "Onboarding failed";
+    if (error && typeof error === "object" && "message" in error && typeof (error as any).message === "string") {
+      errorMessage = (error as any).message;
+    }
     return NextResponse.json(
-      { error: error.message || "Onboarding failed" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
