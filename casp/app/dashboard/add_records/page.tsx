@@ -1,7 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import {ChoosingRecords} from "@/app/dashboard/add_records/components/choosing record.tsx";
-import { Separator } from "@/components/ui/separator"
+import {ChoosingRecords} from "@/app/dashboard/add_records/components/choosing record";
 
 export default async function RecordsPage() {
     const supabase = await createSupabaseServerClient();
@@ -37,7 +36,7 @@ export default async function RecordsPage() {
     const projfields = projSchema?.schema?.fields;
     const projectList = projects || [];
     return (
-        <div className=" pl-[30px] pr-[30px] pt-[20px] w-full items-start justify-center flex flex-col">
+        <div className=" pl-[25px] pr-[30px] pt-[25px] w-full items-start justify-center flex flex-col">
             <ChoosingRecords orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList}/>
         </div>
     );

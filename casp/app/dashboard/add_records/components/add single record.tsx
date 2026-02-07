@@ -94,7 +94,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     <>
     {recordType === 'employee' && (
     <div className="flex flex-col items-start mb-[20px] mt-[10px]">
-      <h1 className="text-[25px] font-rethink font-bold text-black w-full">Add Employee</h1>
+      <h1 className="text-[25px] font-rethink font-semibold text-black w-full">Add Employee</h1>
       <p className="text-[14px] font-rethink text-[#686868] mb-[10px] w-full">fill out the form below to add a new employee.</p>
       <form action={empFormAction} className="grid grid-cols-2 gap-[12px]">
         <input type="hidden" name="organization_id" value={orgId} />
@@ -133,13 +133,13 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                       onSelect={(date) => {
                         setEmpFieldDates(prev => ({ ...prev, [field.id]: date }));
                       }}
-                      initialFocus
+                      autoFocus
                     />
                   </PopoverContent>
                 </Popover>
               </>
             ) : (
-              <Input id={field.id} name={field.id} type={field.type ?? "text"} placeholder={`Enter ${field.label.toLowerCase()}`} className="w-full rounded-[10px] py-2 px-2 text-[14px] font-rethink focus:placeholder-transparent"/>
+              <Input id={field.id} name={field.id} type={field.type ?? "text"} placeholder={`Enter ${field.label.toLowerCase()}`} className="w-full rounded-[10px] py-2 px-2 text-[14px] font-rethink focus:placeholder-transparent" autoFocus/>
             )}
           </div>
         ))}
@@ -351,7 +351,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     
     {recordType === 'project' && (
     <div className="flex flex-col items-start mb-[20px] mt-[10px]">
-      <h1 className="text-[25px] font-rethink font-bold text-black w-full">Add Project</h1>
+      <h1 className="text-[25px] font-rethink font-semibold text-black w-full">Add Project</h1>
       <p className="text-[14px] font-rethink text-[#686868] mb-[10px] w-full">fill out the form below to add a new project.</p>
       <form action={projFormAction} className="grid grid-cols-2 gap-[20px]">
         <input type="hidden" name="organization_id" value={orgId} />

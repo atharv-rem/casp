@@ -12,6 +12,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from '@supabase/supabase-js';
+import { TextShimmer } from "@/components/ui/shimmer";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+
+
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -126,9 +129,9 @@ export default function LoginPage() {
         <Image src={loginImage} alt="login image" fill placeholder="blur" className="object-cover"/>
       </div>
     </div>
-    <div className="w-auto fixed bottom-7 right-7 z-50">
-      <p className="font-rethink text-[20px] text-black font-medium text-right">“efficiently manage and</p>
-      <p className="font-rethink text-[20px] text-black font-medium text-right leading-[12px]"> assign stuff to your workforce”</p>
+    <div className="w-auto fixed bottom-5 right-5 z-50">
+      <p className="font-rethink text-[15px] text-black font-medium text-right">“efficiently manage and</p>
+      <p className="font-rethink text-[15px] text-black font-medium text-right leading-[12px]"> assign stuff to your workforce”</p>
     </div>
 
     {/* Alert Dialog for notifications */}
