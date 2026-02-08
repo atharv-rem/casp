@@ -1,17 +1,8 @@
 "use client";
-import Image from "next/image";
+//ui components and assets
 import building from "@/public/assets/building.svg"
-import Link from "next/link";
 import loginImage from "@/public/assets/signup image.png"
 import erroricon from "@/public/assets/error icon.svg"
-import {useRouter } from "next/navigation";
-import {useState } from "react";
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { createClient } from '@supabase/supabase-js';
 import { TextShimmer } from "@/components/ui/shimmer";
 import {
   AlertDialog,
@@ -22,9 +13,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
+//hooks and libraries
+import {useRouter } from "next/navigation";
+import {useState } from "react";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import { createClient } from '@supabase/supabase-js';
+import { useStoreOrganizationID } from "@/zustand-global-storage";
+import Image from "next/image";
+import Link from "next/link";
 
-
+//login validation schema
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
@@ -40,12 +43,12 @@ const supabase = createClient(
 
 export default function LoginPage() {
   const router = useRouter();
+  const setOrganization = useStoreOrganizationID((state) => state.setOrganization);
   const {register,handleSubmit,watch,formState:{errors,isSubmitting}} = useForm<LoginSchema>({resolver: zodResolver(loginSchema)});
   const [loginError, setLoginError] = useState<string | null>(null);
   const [alertOpen, setAlertOpen] = useState(false)
   const [alertTitle, setAlertTitle] = useState('')
   const [alertMessage, setAlertMessage] = useState('')
-  const [loginButtonState, setLoginButtonState] = useState<string | null>("login");
 
   const forgotPassword = async () => {
     const email = watch("email")
@@ -80,7 +83,10 @@ export default function LoginPage() {
     });
 
     if (login_api.ok) {
-      setLoginButtonState("logging in...");
+      const result = await login_api.json();
+      if (result.organizationId) {
+        setOrganization(result.organizationId);
+      }
       router.push("/dashboard");
     } else {
       const login_error = await login_api.json();
@@ -109,18 +115,21 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(LoginSubmit)} className="w-3/4">
             <div className="mb-4">
-              <div className="flex flex-col gap-2 mb-[10px]">
+              <div className="flex flex-col gap-[5px] mb-[10px]">
                 <Label htmlFor="email" className="text-gray-700 text-[12px] font-rethink font-semibold">Email</Label>
                 {errors.email && <p className="text-red-500 text-[12px] font-bold">{errors.email.message}</p>}
                 <Input {...register("email")} id="email" type="email" placeholder="john.doe@example.com" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
               </div>
-              <div className="flex flex-col gap-2 mb-[15px] items-start justify-center">
+              <div className={`flex flex-col gap-[5px] ${isSubmitting ? "mb-[5px]" : "mb-[15px]"} items-start justify-center`}>
                 <Label htmlFor="password" className="text-gray-700 text-[12px] font-rethink font-semibold">Password</Label>
                 {errors.password && <p className="text-red-500 text-[12px] font-bold">{errors.password.message}</p>}
                 <Input {...register("password")} id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold rounded-[10px]" />
                 <button type="button" onClick={forgotPassword} className="text-[14px] font-rethink font-semibold text-black underline">Forgot password?</button>
               </div>
-              <button disabled={isSubmitting} type="submit" className="bg-black hover:bg-gray-800 text-white font-geist font-bold py-[4px] px-[14px] rounded-[12px]">{loginButtonState}</button>
+              <button disabled={isSubmitting} type="submit" className={`cursor-pointer text-[15px] font-semibold bg-[#000000] text-white items-center justify-center ${isSubmitting ? "hidden"  : "block"} hover:bg-gray-800 font-rethink font-bold w-full rounded-[10px] py-[5px]`}>
+                Login
+              </button>
+              {isSubmitting ? <TextShimmer className="font-rethink font-semibold  text-[15px]" colors={["transparent", "rgb(150, 150, 150)","transparent"]}>Loading your Dashboard....</TextShimmer> : null}
             </div>
           </form>
         </div>

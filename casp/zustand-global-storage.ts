@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-type OrganizationStore = {
-  organization: string | null;
-  setOrganization: (org: string | null) => void;
+type Organization_type = {
+  organization: string ;
+  setOrganization: (org: string ) => void;
 };
 
-export const useOrganizationStore = create<OrganizationStore>((set) => ({
-  organization: null,
+export const useStoreOrganizationID = create<Organization_type>((set) => ({
+  organization: '',
   setOrganization: (organization) => set({ organization }),
 }));

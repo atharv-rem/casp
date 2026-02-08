@@ -28,7 +28,7 @@ export default function SignupPage() {
   const [signupError, setSignupError] = useState<string | null>(null);
   const [signupButtonState, setSignupButtonState] = useState<string | null>("Create");
 
-  const onSubmit = async (data: SignupSchema) => {
+  const Signupsubmit = async (data: SignupSchema) => {
     const signup_api = await fetch("/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,7 +63,7 @@ export default function SignupPage() {
             Already have an account? <Link href="/login" className="text-black underline cursor-pointer font-semibold">log in</Link>
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="w-3/4 items-start justify-center">
+          <form onSubmit={handleSubmit(Signupsubmit)} className="w-3/4 items-start justify-center">
               <div className="flex flex-col gap-2 mb-[10px]">
                 <Label htmlFor="name" className="text-gray-700 text-[12px] font-rethink font-semibold">Name</Label>
                 {errors.name && <p className="text-red-500 text-[12px] font-bold">{errors.name.message}</p>}

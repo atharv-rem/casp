@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function PageRoute({ org }: { org: string }) {
     const pathname = usePathname();
     const pathSegments = pathname.split("/").filter(Boolean).map(segment => segment.replace(/_/g, " ")).join(" / ");
-    
+    console.log("Path Segments:", pathSegments);
     return (
         <div className="flex flex-row items-center justify-start gap-1">
             <Image src={workplace} alt="workplace Logo" width={14} height={14} />

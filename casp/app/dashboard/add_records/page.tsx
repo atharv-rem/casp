@@ -36,7 +36,7 @@ export default async function RecordsPage() {
     const projfields = projSchema?.schema?.fields;
     const projectList = projects || [];
     return (
-        <div className=" pl-[25px] pr-[30px] pt-[25px] w-full items-start justify-center flex flex-col">
+        <div className=" pl-[25px] pr-[30px] pt-[15px] w-full items-start justify-center flex flex-col">
             <ChoosingRecords orgId={orgId} empfields={empfields} projfields={projfields} projectList={projectList}/>
         </div>
     );

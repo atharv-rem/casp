@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import localFont from "next/font/local";
-import LogoutButton from "../global components/logout_button";
 import PageRoute from "../global components/page_route";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
@@ -60,9 +59,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* MAIN MIDDLE CONTENT*/}
       <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
-        <div className="flex flex-row justify-between items-center h-[30px] w-full p-2 sticky top-0 z-10 bg-white pl-[25px] pr-[30px] pt-[25px]">
+        <div className="flex flex-row justify-between items-center h-[30px] w-full p-2 sticky top-0 z-10 bg-white pl-[25px] pr-[30px] pt-[26px]">
           <PageRoute org={OrganizationName} />
-          <LogoutButton />
         </div>
         {children}  
       </div>

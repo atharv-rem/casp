@@ -5,10 +5,12 @@ import settings from "@/public/assets/settings.svg"
 import user from "@/public/assets/user icon.svg"
 import Image from "next/image";
 import Link from "next/link";
+import Logout_Button from "./logout_button";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -66,6 +68,9 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <SidebarFooter className="px-[10px]">
+        <Logout_Button />
+      </SidebarFooter>
     </Sidebar>
   )
 }
