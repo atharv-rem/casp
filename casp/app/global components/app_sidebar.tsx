@@ -49,22 +49,30 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
     <Sidebar variant="sidebar" collapsible="icon" className="p-2">
       <SidebarHeader className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center justify-start">
-          <Image src={user} alt="User Icon" width={14} height={14} className="mr-2" />
-          <span className="text-[14px] font-rethink font-semibold">{AccountName.split(" ")[0]}</span>
+          <Image src={user} alt="User Icon" width={15} height={15} className="mr-2 group-data-[state=collapsed]:size-5! shrink-0" />
+          <span className="text-[15px] font-rethink font-semibold group-data-[state=collapsed]:hidden">{AccountName.split(" ")[0]}</span>
         </div>
         <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarMenu className="p-2">
+        <SidebarMenu>
           {items.map((item) => (
-            <Link href={item.url} key={item.title}>
-              <SidebarMenuItem>
-                <div className="flex flex-row items-center justify-start">
-                  <Image src={item.icon} alt={`${item.title} icon`} width={14} height={14} className="mr-2" />
-                  <span className="font-rethink text-[13px] font-semibold hover:text-gray-800">{item.title}</span>
-                </div>
-              </SidebarMenuItem>
-            </Link>
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild tooltip={item.title}>
+                <Link href={item.url} className="flex items-center gap-2">
+                  <Image
+                    src={item.icon}
+                    alt={`${item.title} icon`}
+                    width={15}
+                    height={15}
+                    className="shrink-0 group-data-[collapsible=icon]:size-5!"
+                  />
+                  <span className="font-rethink text-[15px] font-semibold">
+                    {item.title}
+                  </span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarContent>

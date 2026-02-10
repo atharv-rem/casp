@@ -303,7 +303,7 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
 
     {/* sheet for record details */}
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-      <SheetContent className="w-[400px] h-[95%] mr-[15px] my-[15px] p-[20px] flex flex-col rounded-[15px]">
+      <SheetContent className="w-[400px] p-[20px] flex flex-col">
         <SheetHeader>
           <div className="flex flex-row items-start mb-[5px]">
             <SheetTitle className="font-rethink hidden">Record Details</SheetTitle>
@@ -326,10 +326,10 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
           </div>
         ) : recordDetails ? (
           <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="details" className="font-rethink font-bold text-[12px]">DETAILS</TabsTrigger>
-              <TabsTrigger value="project" className="font-rethink font-bold text-[12px]">PROJECT DETAILS</TabsTrigger>
-              <TabsTrigger value="assignments" className="font-rethink font-bold text-[12px]">ASSIGNMENTS</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 flex items-center justify-center py-[4px] px-[5px] shadow-xs h-[35px]">
+              <TabsTrigger value="details" className="font-rethink font-bold text-[13px]">DETAILS</TabsTrigger>
+              <TabsTrigger value="project" className="font-rethink font-bold text-[13px]">PROJECT DETAILS</TabsTrigger>
+              <TabsTrigger value="assignments" className="font-rethink font-bold text-[13px]">ASSIGNMENTS</TabsTrigger>
             </TabsList>
 
             {/* Employee Details Tab */}

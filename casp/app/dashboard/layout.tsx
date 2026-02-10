@@ -10,6 +10,7 @@ import gemini from "@/public/assets/gemini.svg"
 import { redirect } from "next/navigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "../global components/app_sidebar";
+import { cache } from "react";
 
 const kal = localFont({
   src: [
@@ -23,35 +24,47 @@ export const metadata: Metadata = {
   title: "Dashboard"
 };
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {  
+const getOrganizationID = cache(async () => {
   const supabase = await createSupabaseServerClient();
-  const {data: { user }} = await supabase.auth.getUser();
+
+  const {data: { user },} = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    redirect("/login");
   }
 
   const AccountName = user.user_metadata?.name ?? "User";
   const orgId = user.app_metadata?.organization_id;
 
   if (!orgId) {
-    return <div>No organization linked</div>;
+    throw new Error("No organization linked");
   }
 
-  const { data: org } = await supabaseAdmin
+  const { data: org, error } = await supabaseAdmin
     .from("organizations")
     .select("name")
     .eq("id", orgId)
     .single();
 
-  const OrganizationName = org?.name ?? "organization";
+  if (error) {
+    throw error;
+  }
 
+  return {
+    AccountName,
+    OrganizationName: org?.name ?? "organization",
+  };
+});
+
+
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {  
+  const { AccountName, OrganizationName } = await getOrganizationID();
 
   return (
     <div className={`${kal.variable} flex flex-row items-center justify-center h-dvh w-full bg-white overflow-hidden`}>
 
       {/* LEFT SIDEBAR */}
-      <div className="flex flex-col items-center justify-start w-[20%] h-full bg-[#fafafa]">
+      <div className="flex flex-col items-center justify-start h-full bg-[#fafafa]">
         <SidebarProvider>
           <AppSidebar AccountName={AccountName} />
         </SidebarProvider>

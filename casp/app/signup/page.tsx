@@ -1,17 +1,20 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
+//assets and components
 import building from "@/public/assets/building.svg"
 import signupImage from "@/public/assets/signup image.png"
 import erroricon from "@/public/assets/error icon.svg"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+
+//hooks and libraries
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
+import Link from "next/link";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required").regex(/^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/, "Only letters, numbers, and single spaces are allowed").regex(/[a-zA-Z]/, "Name must contain at least one letter"),
