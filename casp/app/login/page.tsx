@@ -76,7 +76,7 @@ export default function LoginPage() {
   }
 
   const LoginSubmit = async (data: LoginSchema) => {
-    const login_api = await fetch("/api/login", {
+    const login_api = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

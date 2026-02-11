@@ -18,7 +18,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger
 } from "@/components/ui/sidebar"
 
 const items = [
@@ -52,7 +51,6 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
           <Image src={user} alt="User Icon" width={15} height={15} className="mr-2 group-data-[state=collapsed]:size-5! shrink-0" />
           <span className="text-[15px] font-rethink font-semibold group-data-[state=collapsed]:hidden">{AccountName.split(" ")[0]}</span>
         </div>
-        <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
@@ -63,11 +61,11 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
                   <Image
                     src={item.icon}
                     alt={`${item.title} icon`}
-                    width={15}
-                    height={15}
+                    width={16}
+                    height={16}
                     className="shrink-0 group-data-[collapsible=icon]:size-5!"
                   />
-                  <span className="font-rethink text-[15px] font-semibold">
+                  <span className="font-rethink text-[14px] font-semibold">
                     {item.title}
                   </span>
                 </Link>

@@ -3,14 +3,14 @@ import "../globals.css";
 import localFont from "next/font/local";
 import PageRoute from "../global components/page_route";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { supabaseAdmin } from "@/lib/supabase/admin";
 import Image from "next/image";
 import ai from "@/public/assets/ai search.svg";
 import gemini from "@/public/assets/gemini.svg"
 import { redirect } from "next/navigation";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "../global components/app_sidebar";
-import { cache } from "react";
+import getOrganizationNameByID from "@/lib/database/organization";
+import {cache} from 'react'
 
 const kal = localFont({
   src: [
@@ -24,62 +24,38 @@ export const metadata: Metadata = {
   title: "Dashboard"
 };
 
-const getOrganizationID = cache(async () => {
-  const supabase = await createSupabaseServerClient();
-
-  const {data: { user },} = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const AccountName = user.user_metadata?.name ?? "User";
-  const orgId = user.app_metadata?.organization_id;
-
-  if (!orgId) {
-    throw new Error("No organization linked");
-  }
-
-  const { data: org, error } = await supabaseAdmin
-    .from("organizations")
-    .select("name")
-    .eq("id", orgId)
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return {
-    AccountName,
-    OrganizationName: org?.name ?? "organization",
-  };
-});
-
-
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {  
-  const { AccountName, OrganizationName } = await getOrganizationID();
+
+  const supabase = await createSupabaseServerClient();
+  const {  data: { user },} = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  const accountName:string = user.user_metadata?.name ?? "User";
+  const orgId:string = user.app_metadata?.organization_id;
+
+  if (!orgId) redirect("/login");
+  const getCachedOrgName = cache(getOrganizationNameByID);
+  const organizationName:string = await getCachedOrgName({ orgID: orgId });
 
   return (
-    <div className={`${kal.variable} flex flex-row items-center justify-center h-dvh w-full bg-white overflow-hidden`}>
+    <SidebarProvider className={`${kal.variable} flex flex-row items-center justify-center h-dvh w-full bg-white overflow-hidden`}>
 
       {/* LEFT SIDEBAR */}
       <div className="flex flex-col items-center justify-start h-full bg-[#fafafa]">
-        <SidebarProvider>
-          <AppSidebar AccountName={AccountName} />
-        </SidebarProvider>
+        <AppSidebar AccountName={accountName} />
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}
       <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
         <div className="flex flex-row justify-between items-center h-[30px] w-full p-2 sticky top-0 z-10 bg-white pl-[25px] pr-[30px] pt-[26px]">
-          <PageRoute org={OrganizationName} />
+          <PageRoute org={organizationName} />
         </div>
         {children}  
       </div>
 
       {/* RIGHT AI PANEL */}
-      <div className="flex flex-col items-start justify-center w-[30%] h-full border-l-[1px] border-[#efefef]">
+      <div className="flex flex-col items-start justify-center w-[350px] h-full border-l-[1px] border-[#efefef]">
         <h1 className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
         <div className="flex flex-row">
           <p className="text-[15px] font-kal font-semibold ml-[20px]">powered by gemini</p>
@@ -92,7 +68,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </div>
 
-    </div>
+    </SidebarProvider>
   );
 }
 
