@@ -12,7 +12,7 @@ type EmployeeField = {
 }
 
 type  EmployeeSchema = {
-    "field": EmployeeField[]
+    "field"?: EmployeeField[]
 }
 
 export async function GET(request: Request) {
@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         );
     }
     try {
-        const employeeSchemas: EmployeeSchema[] = await getEmployeeSchemas({orgId: OrgId});
+        const employeeSchemas: EmployeeSchema = await getEmployeeSchemas({orgId: OrgId});
         if (!employeeSchemas) {
         return NextResponse.json(
             { error: "Employee schemas not found" },

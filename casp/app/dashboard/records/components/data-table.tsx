@@ -308,7 +308,7 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
           <div className="flex flex-row items-start mb-[5px]">
             <SheetTitle className="font-rethink hidden">Record Details</SheetTitle>
             <SheetDescription className="hidden font-rethink"></SheetDescription>
-            <div className="size-[45px] bg-[#FAFAFA] rounded-[5px] flex items-center justify-center mr-2">
+            <div className="size-[45px] bg-[#FAFAFA] rounded-[10px] flex items-center justify-center mr-4">
               <Image src={usericon} alt="user icon" className="size-[25px]" />
             </div>
             <div className=" flex flex-col items-start justify-center gap-1">

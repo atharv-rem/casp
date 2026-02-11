@@ -1,7 +1,11 @@
 
 import { supabaseAdmin } from "../supabase/admin"
 
-export default async function getOrganizationNameByID({orgID}: {orgID: string}) {
+type OrganizationName = {
+    "name": string
+}
+
+export default async function getOrganizationNameByID({orgID}: {orgID: string}): Promise<OrganizationName>{
     const { data: organizationName} = await supabaseAdmin
         .from("organizations")
         .select("name")

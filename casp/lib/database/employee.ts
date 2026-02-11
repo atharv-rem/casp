@@ -1,0 +1,21 @@
+import {supabaseServerClient} from '../supabase/client'
+
+type System_Profile = {
+    "name": string,
+    "email": string,
+}
+type Custom_Profile = Record<string, string>;
+type EmployeeDetails = {
+    system_profile?: System_Profile,
+    custom_profile?: Custom_Profile
+}
+
+export default async function getEmployeeById({orgId}: {orgId: string}): Promise<EmployeeDetails> {
+    const supabase = supabaseServerClient
+    const { data: employees} = await supabase
+        .from('employees')
+        .select('system_profile,custom_profile')
+        .eq('organization_id', orgId)
+        .single()
+    return {system_profile: employees?.system_profile, custom_profile: employees?.custom_profile};
+}

@@ -1,3 +1,4 @@
+'use client'
 import database from "@/public/assets/database.svg";
 import giveaccess from "@/public/assets/give access.svg";
 import addrecord from "@/public/assets/add user.svg";
@@ -5,7 +6,9 @@ import settings from "@/public/assets/settings.svg"
 import user from "@/public/assets/user icon.svg"
 import Image from "next/image";
 import Link from "next/link";
-import Logout_Button from "./logout_button";
+import logout_icon from "@/public/assets/logout.svg";
+import Dashboard from "@/public/assets/dashboard.svg"
+import { useRouter } from "next/navigation";
 
 import {
   Sidebar,
@@ -21,6 +24,11 @@ import {
 } from "@/components/ui/sidebar"
 
 const items = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Dashboard,
+  },
   {
     title: "Records",
     url: "/dashboard/records",
@@ -44,11 +52,19 @@ const items = [
 ]
 
 export function AppSidebar({AccountName}: {AccountName: string}) {
+
+  const router = useRouter();
+  const handleLogout = async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+    });
+    router.push("/");
+  };
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="p-2">
       <SidebarHeader className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center justify-start">
-          <Image src={user} alt="User Icon" width={15} height={15} className="mr-2 group-data-[state=collapsed]:size-5! shrink-0" />
+          <Image src={user} alt="User Icon" width={15} height={15} className="ml-[2px] mr-[8px] group-data-[state=collapsed]:size-5! shrink-0" />
           <span className="text-[15px] font-rethink font-semibold group-data-[state=collapsed]:hidden">{AccountName.split(" ")[0]}</span>
         </div>
       </SidebarHeader>
@@ -61,8 +77,8 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
                   <Image
                     src={item.icon}
                     alt={`${item.title} icon`}
-                    width={16}
-                    height={16}
+                    width={18}
+                    height={18}
                     className="shrink-0 group-data-[collapsible=icon]:size-5!"
                   />
                   <span className="font-rethink text-[14px] font-semibold">
@@ -75,7 +91,10 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="px-[10px]">
-        <Logout_Button />
+        <div onClick={handleLogout} className="flex flex-row items-center justify-center text-[15px] w-auto hover:bg-gray-200 text-black font-rethink font-bold py-[2px]">
+          <Image src={logout_icon} alt="Logout Icon" className="w-[12px] h-[12px] mr-2 group-data-[state=collapsed]:size-5!" />
+          <span className="group-data-[state=collapsed]:hidden">Logout</span>
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

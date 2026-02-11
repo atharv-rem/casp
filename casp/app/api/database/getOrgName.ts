@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import {supabaseServerClient} from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
 
+type OrganizationResponse = {
+    name: string,
+}
+
 export async function GET(request: NextRequest) {
     const supabase = supabaseServerClient;
 
@@ -21,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const organizationName: string = await getOrganizationNameByID( { orgID: OrgId });
+        const organizationName: OrganizationResponse = await getOrganizationNameByID( { orgID: OrgId });
         if (!organizationName) {
         return NextResponse.json(
             { error: "Organization not found" },

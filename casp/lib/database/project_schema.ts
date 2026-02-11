@@ -1,6 +1,17 @@
 import {supabaseAdmin} from "../supabase/admin";
 
-export default async function getProjectSchema({orgId}: {orgId: string}) {
+type ProjectField = {
+    "id": string,
+    "key": string,
+    "type": string,
+    "label": string,
+    "required": boolean
+}
+
+type  ProjectSchema = {
+    "field"?: ProjectField[]
+}
+export default async function getProjectSchema({orgId}: {orgId: string}): Promise<ProjectSchema> {
     const supabase = supabaseAdmin;
     const { data: project_schemas} = await supabase
         .from('project_schemas')

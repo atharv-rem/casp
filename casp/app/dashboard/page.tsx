@@ -1,8 +1,13 @@
-export default function DashboardPage() {
+import WelcomeMessage from "../global components/welcome_message";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export default async function DashboardPage() {
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
-    <div className="p-4">
-      {/* Your inner dashboard content here */}
-      <h1 className="text-2xl">Welcome to your dashboard</h1>
+    <div className="flex flex-col items-center justify-start">
+      <WelcomeMessage user={user} />
     </div>
   );
 }

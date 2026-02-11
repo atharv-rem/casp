@@ -47,8 +47,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}
-      <div className="flex flex-col items-center justify-start w-[70%] h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
-        <div className="flex flex-row justify-between items-center h-[30px] w-full p-2 sticky top-0 z-10 bg-white pl-[25px] pr-[30px] pt-[26px]">
+      <div className="flex flex-col items-start justify-start w-[70%] h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
+        <div className="flex flex-row justify-between items-center h-[30px] w-full p-2 sticky top-0 z-10 bg-white pl-[20px] pr-[30px] pt-[25px]">
           <PageRoute org={organizationName} />
         </div>
         {children}  
