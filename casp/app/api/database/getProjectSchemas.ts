@@ -1,7 +1,7 @@
 import getProjectSchemas from "@/lib/database/project_schema";
 import { NextResponse } from "next/server";
 import {redirect} from "next/navigation";
-import { supabaseServerClient } from "@/lib/supabase/client";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type ProjectField = {
     "id": string,
@@ -16,7 +16,7 @@ type  ProjectSchema = {
 }
 
 export async function GET(request: Request) {
-    const supabase = await supabaseServerClient;
+    const supabase = await createSupabaseServerClient();
     
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {

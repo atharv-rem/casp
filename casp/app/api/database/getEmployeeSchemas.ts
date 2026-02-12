@@ -1,7 +1,7 @@
 import getEmployeeSchemas from "@/lib/database/employee_schema";
 import { NextResponse } from "next/server";
 import {redirect} from "next/navigation";
-import { supabaseServerClient } from "@/lib/supabase/client";
+import {createSupabaseServerClient} from "@/lib/supabase/server";
 
 type EmployeeField = {
     "id": string,
@@ -16,7 +16,7 @@ type  EmployeeSchema = {
 }
 
 export async function GET(request: Request) {
-    const supabase = await supabaseServerClient;
+    const supabase = await createSupabaseServerClient();
     
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {

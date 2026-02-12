@@ -91,7 +91,7 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="px-[10px]">
-        <div onClick={handleLogout} className="flex flex-row items-center justify-center text-[15px] w-auto hover:bg-gray-200 text-black font-rethink font-bold py-[2px]">
+        <div onClick={handleLogout} className="flex flex-row items-center justify-center text-[15px] w-auto hover:bg-gray-200 text-black font-rethink font-bold py-[2px] bg-[#ffffff] rounded-md cursor-pointer group-data-[state=collapsed]:bg-none border border-gray-300 group-data-[state=collapsed]:border-0">
           <Image src={logout_icon} alt="Logout Icon" className="w-[12px] h-[12px] mr-2 group-data-[state=collapsed]:size-5!" />
           <span className="group-data-[state=collapsed]:hidden">Logout</span>
         </div>

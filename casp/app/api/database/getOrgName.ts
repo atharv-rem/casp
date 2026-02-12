@@ -2,13 +2,10 @@ import getOrganizationNameByID from "@/lib/database/organization";
 import { NextRequest, NextResponse } from "next/server";
 import {supabaseServerClient} from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
-
-type OrganizationResponse = {
-    name: string,
-}
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
-    const supabase = supabaseServerClient;
+    const supabase = await createSupabaseServerClient();
 
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
@@ -25,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const organizationName: OrganizationResponse = await getOrganizationNameByID( { orgID: OrgId });
+        const organizationName: string = await getOrganizationNameByID( { orgID: OrgId });
         if (!organizationName) {
         return NextResponse.json(
             { error: "Organization not found" },
