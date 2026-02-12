@@ -1,6 +1,5 @@
 import getOrganizationNameByID from "@/lib/database/organization";
 import { NextRequest, NextResponse } from "next/server";
-import {supabaseServerClient} from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
