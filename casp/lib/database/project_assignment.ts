@@ -2,7 +2,7 @@ import { supabaseAdmin } from "../supabase/admin";
 
 export default async function getProjectAssignments({orgId, projectId}: {orgId: string, projectId: string}){
     const supabase = supabaseAdmin;
-    const { data: projectAssignments, error: projectAssignmentsError } = await supabase
+    const { data: projectAssignments} = await supabase
                 .from("employee_project_assignments")
                 .select(`
                     id,

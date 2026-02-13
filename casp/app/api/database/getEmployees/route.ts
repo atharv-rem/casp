@@ -1,6 +1,5 @@
 import getEmployeeById from "@/lib/database/employee"
-import { NextResponse } from "next/server";
-import {redirect} from "next/navigation";
+import { NextResponse,NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type System_Profile = {
@@ -15,11 +14,14 @@ type EmployeeDetails = {
     custom_profile?: Custom_Profile
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
-        redirect("/login");
+        return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+        );
     } 
     const OrgId: string = user.app_metadata?.organization_id;
     if (!OrgId) {
@@ -36,7 +38,7 @@ export async function GET(request: Request) {
             { status: 404 }
         );
         }   
-        return NextResponse.json({ employee: employee });
+        return NextResponse.json(employee);
     } catch (error: any) {
         return NextResponse.json(
         { error: error.message ?? "Failed to fetch employees" },

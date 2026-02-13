@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "@/lib/supabase/server";  
 import getEmployeeAssignments from "@/lib/database/employee_assignment";
 
 export async function GET (request: NextRequest) {
-    const { searchParams } = request.nextUrl;
-    const employeeId = searchParams.get("employee_id");
     const supabase = await createSupabaseServerClient();
-    
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
-        redirect("/login");
-    }
+        return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+        );
+    } 
     const orgId: string = user.app_metadata?.organization_id;
     if (!orgId) {
         return NextResponse.json(
@@ -19,6 +18,9 @@ export async function GET (request: NextRequest) {
         { status: 400 }
         );
     }
+
+    const body = await request.json();
+    const employeeId:string = body.employeeId;
     try {        
         const employeeAssignedToProjects = await getEmployeeAssignments({orgId: orgId, employeeId: employeeId});
         if (!employeeAssignedToProjects) {

@@ -1,6 +1,5 @@
 import getOrganizationNameByID from "@/lib/database/organization";
 import { NextRequest, NextResponse } from "next/server";
-import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
@@ -8,8 +7,11 @@ export async function GET(request: NextRequest) {
 
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
-        redirect("/login");
-      }
+        return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+        );
+    } 
     const AccountName: string = user.user_metadata?.name ?? "User";
     const OrgId: string = user.app_metadata?.organization_id;  
 

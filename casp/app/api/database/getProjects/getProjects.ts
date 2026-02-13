@@ -1,22 +1,16 @@
-import getEmployeeSchemas from "@/lib/database/employee_schema";
 import { NextResponse,NextRequest } from "next/server";
-import {createSupabaseServerClient} from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import getProjectsByOrgId from "@/lib/database/projects";
 
-type EmployeeField = {
-    "id": string,
-    "key": string,
-    "type": string,
-    "label": string,
-    "required": boolean
-}
+type customfields = Record<string, string>;
 
-type  EmployeeSchema = {
-    "field"?: EmployeeField[]
+type Projectdetails = {
+    "name": string,
+    "meta": customfields
 }
 
 export async function GET(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
-    
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
         return NextResponse.json(
@@ -32,18 +26,17 @@ export async function GET(request: NextRequest) {
         );
     }
     try {
-        const employeeSchemas: EmployeeSchema = await getEmployeeSchemas({orgId: OrgId});
-        if (!employeeSchemas) {
+        const projects: Projectdetails = await getProjectsByOrgId({orgId: OrgId});
+        if (!projects) {
         return NextResponse.json(
-            { error: "Employee schemas not found" },
+            { error: "Projects not found" },
             { status: 404 }
         );
-        }
-
-        return NextResponse.json({ employeeSchemas: employeeSchemas });
+        }   
+        return NextResponse.json(projects);
     } catch (error: any) {
         return NextResponse.json(
-        { error: error.message ?? "Failed to fetch employee schemas" },
+        { error: error.message ?? "Failed to fetch projects" },
         { status: 500 }
         );
     }

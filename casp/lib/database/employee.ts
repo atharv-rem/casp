@@ -1,4 +1,4 @@
-import {supabaseServerClient} from '../supabase/client'
+import {supabaseAdmin} from '../supabase/admin'
 
 type System_Profile = {
     "name": string,
@@ -11,7 +11,7 @@ type EmployeeDetails = {
 }
 
 export default async function getEmployeeById({orgId}: {orgId: string}): Promise<EmployeeDetails> {
-    const supabase = supabaseServerClient
+    const supabase = supabaseAdmin;
     const { data: employees} = await supabase
         .from('employees')
         .select('system_profile,custom_profile')
