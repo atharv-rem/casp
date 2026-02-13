@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         );
     }
     try {
-        const employee: EmployeeDetails = await getEmployeeById({orgId: OrgId});
+        const employee: EmployeeDetails[] = await getEmployeeById({orgId: OrgId});
         if (!employee) {
         return NextResponse.json(
             { error: "Employees not found" },

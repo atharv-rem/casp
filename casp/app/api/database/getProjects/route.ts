@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         );
     }
     try {
-        const projects: Projectdetails = await getProjectsByOrgId({orgId: OrgId});
+        const projects: Projectdetails[] = await getProjectsByOrgId({orgId: OrgId});
         if (!projects) {
         return NextResponse.json(
             { error: "Projects not found" },

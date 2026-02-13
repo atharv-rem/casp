@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import getProjectAssignment from "@/lib/database/project_assignment" 
 
 export async function GET(request:NextRequest){
-    const body = await request.json();
-    const projectId:string = body.projectId;
+    const projectId = request.nextUrl.searchParams.get("projectId");
     const supabase = await createSupabaseServerClient();
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
@@ -17,6 +16,12 @@ export async function GET(request:NextRequest){
     if (!orgId) {
         return NextResponse.json(
         { error: "Missing organization id" },
+        { status: 400 }
+        );
+    }
+    if (!projectId) {
+        return NextResponse.json(
+        { error: "Missing projectId query parameter" },
         { status: 400 }
         );
     }

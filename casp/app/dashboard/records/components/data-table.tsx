@@ -138,7 +138,7 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
   return (
     <>
     {/* table container */}
-    <div className="w-full">
+    <div className="w-full mt-[2px]">
       <div className="flex items-center justify-between pb-4 gap-4">
         <Input
           placeholder="Search all columns..."
@@ -175,8 +175,8 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
         </DropdownMenu>
       </div>
 
-      <div className="overflow-hidden rounded-md border">
-        <Table>
+      <div className="overflow-hidden">
+        <Table className="">
           <TableHeader className="items-start justify-start">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -206,7 +206,10 @@ export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, 
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="font-rethink text-left text-[14px]">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <div className="flex flex-row items-center">
+                        <Image src={usericon} alt="user icon" className="size-[10px] mr-2" />
+                        <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+                      </div>
                     </TableCell>
                   ))}
                 </TableRow>

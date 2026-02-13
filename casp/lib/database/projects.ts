@@ -7,13 +7,16 @@ type Projectdetails = {
     "meta": customfields
 }
 
-export default async function getProjectsByOrgId({orgId}: {orgId: string}): Promise<Projectdetails> {
+export default async function getProjectsByOrgId({orgId}: {orgId: string}): Promise<Projectdetails[]> {
     const supabase = supabaseAdmin;
-    const { data: projects } = await supabase
+    const { data: projects, error } = await supabase
         .from('projects')
         .select('name,meta')
         .eq('organization_id', orgId)
-        .single()
+
+    if (error) {
+        throw new Error(error.message)
+    }
   
-    return {name: projects?.name || '', meta: projects?.meta || {}};
+    return projects ?? [];
 }

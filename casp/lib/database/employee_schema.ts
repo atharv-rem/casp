@@ -18,7 +18,6 @@ export default async function getEmployeeSchema({orgId}: {orgId: string}): Promi
         .from('employee_schemas')
         .select('schema')
         .eq('organization_id', orgId)
-        .single();
-    
-    return employee_schemas?.schema
+        .single()
+    return employee_schemas?.schema ?? {};
 }

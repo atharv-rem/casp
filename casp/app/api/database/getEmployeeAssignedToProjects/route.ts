@@ -19,8 +19,14 @@ export async function GET (request: NextRequest) {
         );
     }
 
-    const body = await request.json();
-    const employeeId:string = body.employeeId;
+    const employeeId = request.nextUrl.searchParams.get("employeeId");
+    if (!employeeId) {
+        return NextResponse.json(
+        { error: "Missing employeeId query parameter" },
+        { status: 400 }
+        );
+    }
+
     try {        
         const employeeAssignedToProjects = await getEmployeeAssignments({orgId: orgId, employeeId: employeeId});
         if (!employeeAssignedToProjects) {

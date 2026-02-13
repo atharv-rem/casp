@@ -1,7 +1,4 @@
 "use client";
-
-import workplace from "@/public/assets/building.svg";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SidebarTrigger } from "@/components/ui/sidebar";

@@ -16,7 +16,6 @@ type  EmployeeSchema = {
 
 export async function GET(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
-    
     const {data: { user },} = await supabase.auth.getUser();
     if (!user) {
         return NextResponse.json(
@@ -40,7 +39,7 @@ export async function GET(request: NextRequest) {
         );
         }
 
-        return NextResponse.json({ employeeSchemas: employeeSchemas });
+        return NextResponse.json(employeeSchemas);
     } catch (error: any) {
         return NextResponse.json(
         { error: error.message ?? "Failed to fetch employee schemas" },

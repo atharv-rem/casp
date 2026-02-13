@@ -28,7 +28,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const supabase = await createSupabaseServerClient();
   const {  data: { user },} = await supabase.auth.getUser();
-
   if (!user) redirect("/login");
 
   const accountName:string = user.user_metadata?.name ?? "User";
@@ -47,7 +46,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}
-      <div className="flex flex-col items-start justify-start w-[70%] h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
+      <div className="flex flex-col items-start justify-start w-full h-full border-l-[1px] border-[#efefef] overflow-y-auto scrollbar-hide">
         <div className="flex flex-row justify-between items-center h-[30px] w-full p-2 sticky top-0 z-10 bg-white pl-[20px] pr-[30px] pt-[25px]">
           <PageRoute org={organizationName} />
         </div>
@@ -55,7 +54,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* RIGHT AI PANEL */}
-      <div className="flex flex-col items-start justify-center w-[350px] h-full border-l-[1px] border-[#efefef]">
+      <div className="flex flex-col items-start justify-center min-w-[290px] max-w-[290px] h-full border-l-[1px] border-[#efefef]">
         <h1 className="text-[30px] font-kal font-semibold leading-[30px] ml-[20px]">Chat with AI <br/> to get your tasks done</h1>
         <div className="flex flex-row">
           <p className="text-[15px] font-kal font-semibold ml-[20px]">powered by gemini</p>

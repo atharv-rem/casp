@@ -10,12 +10,11 @@ type EmployeeDetails = {
     custom_profile?: Custom_Profile
 }
 
-export default async function getEmployeeById({orgId}: {orgId: string}): Promise<EmployeeDetails> {
+export default async function getEmployeeById({orgId}: {orgId: string}): Promise<EmployeeDetails[]> {
     const supabase = supabaseAdmin;
     const { data: employees} = await supabase
         .from('employees')
         .select('system_profile,custom_profile')
         .eq('organization_id', orgId)
-        .single()
-    return {system_profile: employees?.system_profile, custom_profile: employees?.custom_profile};
+    return employees ?? [];
 }
