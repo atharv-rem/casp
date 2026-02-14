@@ -71,12 +71,25 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="p-2">
-      <SidebarHeader className="flex flex-row justify-between items-center bg-white border-[1px]  shadow-sm border-[#e5e7eb] rounded-md py-[2px] group-data-[state=collapsed]:py-[5px] mb-[10px]">
-        <div className="flex flex-row items-center justify-start">
-          <Image src={user} alt="User Icon" width={15} height={15} className="ml-[2px] mr-[8px] group-data-[state=collapsed]:size-4! shrink-0" />
-          <span className="text-[15px] font-rethink font-semibold group-data-[state=collapsed]:hidden">{AccountName.split(" ")[0]}</span>
-        </div>
-      </SidebarHeader>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SidebarHeader className="flex flex-row justify-between items-center bg-white border-[1px] border-[#e5e7eb] rounded-md py-[2px] group-data-[state=collapsed]:py-[5px] mb-[10px]">
+              <div className="flex flex-row items-center justify-start">
+                <Image src={user} alt="User Icon" width={15} height={15} className="ml-[2px] mr-[8px] group-data-[state=collapsed]:size-4! shrink-0" />
+                <span className="text-[15px] font-rethink font-semibold group-data-[state=collapsed]:hidden">{AccountName.split(" ")[0]}</span>
+              </div>
+            </SidebarHeader>
+          </TooltipTrigger>
+          <TooltipContent side="right" align="center" sideOffset={15} className="font-rethink mt-[5px] bg-white text-[12px] font-semibold text-black w-[200px] h-auto shadow-lg border-[2px] border-[#e5e7eb] animate-in fade-in zoom-in duration-200 p-[10px]">
+            <div className="flex flex-col">
+              <span className="text-[14px] leading-[10px] font-bold mb-[5px]">Account</span>
+              <span className="leading-[15px] text-gray-600">your logged in as <b>{AccountName}</b></span>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
       <SidebarContent>
         <SidebarMenu>
           {items.map((item) => {
@@ -86,7 +99,7 @@ export function AppSidebar({AccountName}: {AccountName: string}) {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <SidebarMenuButton asChild isActive={isActive} className={`transition-all duration-200 ${isActive ? "bg-white text-black border-[2px] border-[#e5e7eb]" : "text-gray-600 hover:bg-gray-200/50"}`}>
+                      <SidebarMenuButton asChild isActive={isActive} className={`transition-all duration-200 ${isActive ? "bg-white text-black border-[2px] border-[#e5e7eb]" : "text-black hover:text-gray-900"}`}>
                       <Link href={item.url} className="flex items-center gap-2">
                         <Image
                           src={item.icon}
