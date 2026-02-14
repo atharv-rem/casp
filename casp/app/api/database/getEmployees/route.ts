@@ -1,6 +1,6 @@
 import getEmployeeById from "@/lib/database/employee"
 import { NextResponse,NextRequest } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import getOrganizationID from "@/lib/database/organization_id";
 
 type System_Profile = {
     "name": string,
@@ -15,21 +15,14 @@ type EmployeeDetails = {
 }
 
 export async function GET(request: NextRequest) {
-    const supabase = await createSupabaseServerClient();
-    const {data: { user },} = await supabase.auth.getUser();
-    if (!user) {
+    const {OrgId} = await getOrganizationID();
+    if (!OrgId || OrgId === "cannot find organization id") {
         return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
         );
     } 
-    const OrgId: string = user.app_metadata?.organization_id;
-    if (!OrgId) {
-        return NextResponse.json(
-        { error: "Missing organization id" },
-        { status: 400 }
-        );
-    }
+    
     try {
         const employee: EmployeeDetails[] = await getEmployeeById({orgId: OrgId});
         if (!employee) {

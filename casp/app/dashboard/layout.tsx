@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "../global components/app_sidebar";
 import getOrganizationNameByID from "@/lib/database/organization";
+import getOrganizationID from "@/lib/database/organization_id";
 import {cache} from 'react'
 
 const kal = localFont({
@@ -24,25 +25,20 @@ export const metadata: Metadata = {
   title: "Dashboard"
 };
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {  
-
-  const supabase = await createSupabaseServerClient();
-  const {  data: { user },} = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const accountName:string = user.user_metadata?.name ?? "User";
-  const orgId:string = user.app_metadata?.organization_id;
-
-  if (!orgId) redirect("/login");
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) { 
+  
+  const {OrgId, AccountName} = await getOrganizationID();
+  if (!OrgId || OrgId === "cannot find organization id")
+     redirect("/login");
   const getCachedOrgName = cache(getOrganizationNameByID);
-  const organizationName:string = await getCachedOrgName({ orgID: orgId });
+  const organizationName = await getCachedOrgName({ orgID: OrgId });
 
   return (
     <SidebarProvider className={`${kal.variable} flex flex-row items-center justify-center h-dvh w-full bg-white overflow-hidden`}>
 
       {/* LEFT SIDEBAR */}
       <div className="flex flex-col items-center justify-start h-full bg-[#fafafa]">
-        <AppSidebar AccountName={accountName} />
+        <AppSidebar AccountName={AccountName} />
       </div>
 
       {/* MAIN MIDDLE CONTENT*/}

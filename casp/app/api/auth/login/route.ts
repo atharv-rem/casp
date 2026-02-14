@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import getOrganizationID from "@/lib/database/organization_id";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -33,9 +34,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const organizationId = data.user.app_metadata?.organization_id;
+    const {OrgId} = await getOrganizationID();
 
-    if (!organizationId) {
+    if (!OrgId || OrgId === "cannot find organization id") {
       return NextResponse.json(
         { error: "User is not associated with any organization" },
         { status: 403 }
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ success: true, organizationId });
+    return NextResponse.json({ success: true, organizationId: OrgId });
     } 
   catch (error: any) {
     return NextResponse.json(

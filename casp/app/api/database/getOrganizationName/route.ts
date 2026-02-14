@@ -1,26 +1,16 @@
 import getOrganizationNameByID from "@/lib/database/organization";
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import getOrganizationID from "@/lib/database/organization_id";
 
 export async function GET(request: NextRequest) {
-    const supabase = await createSupabaseServerClient();
-
-    const {data: { user },} = await supabase.auth.getUser();
-    if (!user) {
+    const {OrgId, AccountName} = await getOrganizationID();
+    if (!OrgId || OrgId === "cannot find organization id") {
         return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
         );
     } 
-    const AccountName: string = user.user_metadata?.name ?? "User";
-    const OrgId: string = user.app_metadata?.organization_id;  
-
-    if (!OrgId) {
-        return NextResponse.json(
-        { error: "Missing organization id" },
-        { status: 400 }
-        );
-    }
 
     try {
         const organizationName: string = await getOrganizationNameByID( { orgID: OrgId });
@@ -31,7 +21,7 @@ export async function GET(request: NextRequest) {
         );
         }
 
-        return NextResponse.json({ organizationName: organizationName ?? "Organization", accountName: AccountName });
+        return NextResponse.json({ Organization_Name: organizationName, Account_Name: AccountName });
     } catch (error: any) {
         return NextResponse.json(
         { error: error.message ?? "Failed to fetch organization" },

@@ -1,23 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import {createSupabaseServerClient} from "@/lib/supabase/server";  
+import getOrganizationID from "@/lib/database/organization_id";
 import getEmployeeAssignments from "@/lib/database/employee_assignment";
 
 export async function GET (request: NextRequest) {
-    const supabase = await createSupabaseServerClient();
-    const {data: { user },} = await supabase.auth.getUser();
-    if (!user) {
+    const {OrgId} = await getOrganizationID();
+    if (!OrgId || OrgId === "cannot find organization id") {
         return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
         );
     } 
-    const orgId: string = user.app_metadata?.organization_id;
-    if (!orgId) {
-        return NextResponse.json(
-        { error: "Missing organization id" },
-        { status: 400 }
-        );
-    }
 
     const employeeId = request.nextUrl.searchParams.get("employeeId");
     if (!employeeId) {
@@ -28,7 +20,7 @@ export async function GET (request: NextRequest) {
     }
 
     try {        
-        const employeeAssignedToProjects = await getEmployeeAssignments({orgId: orgId, employeeId: employeeId});
+        const employeeAssignedToProjects = await getEmployeeAssignments({orgId: OrgId, employeeId: employeeId});
         if (!employeeAssignedToProjects) {
         return NextResponse.json(
             { error: "Employee assignments not found" },    

@@ -1,24 +1,16 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import getOrganizationID from "@/lib/database/organization_id";
 import { NextRequest, NextResponse } from "next/server";
 import getProjectAssignment from "@/lib/database/project_assignment" 
 
 export async function GET(request:NextRequest){
     const projectId = request.nextUrl.searchParams.get("projectId");
-    const supabase = await createSupabaseServerClient();
-    const {data: { user },} = await supabase.auth.getUser();
-    if (!user) {
+    const {OrgId} = await getOrganizationID();
+    if (!OrgId || OrgId === "cannot find organization id") {
         return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
         );
     } 
-    const orgId: string = user.app_metadata?.organization_id;
-    if (!orgId) {
-        return NextResponse.json(
-        { error: "Missing organization id" },
-        { status: 400 }
-        );
-    }
     if (!projectId) {
         return NextResponse.json(
         { error: "Missing projectId query parameter" },
@@ -26,7 +18,7 @@ export async function GET(request:NextRequest){
         );
     }
     try{
-        const projectAssignments = await getProjectAssignment({orgId: orgId, projectId: projectId});
+        const projectAssignments = await getProjectAssignment({orgId: OrgId, projectId: projectId});
         if (!projectAssignments) {
             return NextResponse.json(
                 { error: "Failed to fetch project assignments" },

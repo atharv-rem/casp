@@ -80,6 +80,7 @@ export async function POST(req: Request) {
         {
           app_metadata: {
             organization_id: organization.id,
+            organization_name: organization.name,
             onboarding_completed: false,
           },
         }
