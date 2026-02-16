@@ -8,10 +8,7 @@ type ProjectField = {
     "required": boolean
 }
 
-type  ProjectSchema = {
-    "field"?: ProjectField[]
-}
-export default async function getProjectSchema({orgId}: {orgId: string}): Promise<ProjectSchema> {
+export default async function getProjectSchema({orgId}: {orgId: string}): Promise<ProjectField[]> {
     const supabase = supabaseAdmin;
     const { data: project_schemas} = await supabase
         .from('project_schemas')
@@ -19,5 +16,5 @@ export default async function getProjectSchema({orgId}: {orgId: string}): Promis
         .eq('organization_id', orgId)
         .single();
     
-    return project_schemas?.schema || {};
+    return project_schemas?.schema?.fields ?? [];
 }

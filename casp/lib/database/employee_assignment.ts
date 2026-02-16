@@ -9,6 +9,10 @@ export default async function getEmployeeAssignments({ orgId, employeeId }: { or
                 start_date,
                 end_date,
                 allocation_percentage,
+                employees!employee_id (
+                custom_profile,
+                system_profile
+                ),
                 projects!project_id (
                 id,
                 name,

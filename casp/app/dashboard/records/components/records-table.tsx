@@ -1,15 +1,21 @@
 "use client"
 
 import { DataTable } from "./data-table"
-import { getColumns, DynamicField, AssignmentRow } from "./column"
+import { getColumns} from "./column"
 
-interface RecordsTableProps {
-  employeeSchema: DynamicField[]
-  projectSchema: DynamicField[]
-  rows: AssignmentRow[]
+type EmployeeFields = {
+  id: string
+  key: string
+  type: string
+  label: string
+  required: boolean
 }
+type RecordsTableProps = {
+  employeeSchema: EmployeeFields[]
+  rows: Record<string, string>[]
+}  
 
-export function RecordsTable({ employeeSchema, projectSchema, rows }: RecordsTableProps) {
-  const columns = getColumns(employeeSchema, projectSchema)
-  return <DataTable columns={columns} data={rows} />
+export function RecordsTable({ employeeSchema, rows }: RecordsTableProps) {
+  const columns = getColumns(employeeSchema)
+  return <DataTable columns={columns} data={rows} employeeSchema={employeeSchema} />
 }

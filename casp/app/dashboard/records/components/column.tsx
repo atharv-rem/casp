@@ -1,64 +1,27 @@
 import { ColumnDef } from '@tanstack/react-table'
 
-export type AssignmentRow = {
-  id: string
-  employee_id: string
-  project_id: string
-  employee_name: string
-  employee_email: string
-  project_name: string
-  start_date: string
-  end_date?: string
-  allocation_percentage?: number
-  [key: string]: any
-}
+type Row = Record<string, string>
 
-export type DynamicField = {
+type EmployeeFields = {
   key: string
   label: string
 }
 
-export function getColumns(employeeFields: DynamicField[], projectFields: DynamicField[]): ColumnDef<AssignmentRow>[] {
+export function getColumns(employeeFields: EmployeeFields[]): ColumnDef<Row>[] {
 
   return [
     {
       accessorKey: 'employee_name',
-      header: () => <span className="font-rethink font-bold text-[14px]">EMPLOYEE NAME</span>,
+      header: () => <span className="font-rethink font-bold text-[14px]">Employee Name</span>,
     },
     {
       accessorKey: 'employee_email',
-      header: () => <span className="font-rethink font-bold text-[14px]">EMPLOYEE EMAIL</span>,
+      header: () => <span className="font-rethink font-bold text-[14px]">Employee Email</span>,
     },
     ...employeeFields.map(field => ({
       accessorKey: `${field.label}`,
-      header: () => <span className="font-rethink font-bold text-[14px]">{field.label.toUpperCase()}</span>,
-      cell: ({ row }) => row.getValue(`${field.label}`) ?? '—',
-    })) as ColumnDef<AssignmentRow>[],
-    {
-      accessorKey: 'project_name',
-      header: () => <span className="font-rethink font-bold text-[14px]">PROJECT NAME</span>,
-    },
-    ...projectFields.map(field => ({
-      accessorKey: `${field.label}`,
-      header: () => <span className="font-rethink font-bold text-[14px]">{field.label.toUpperCase()}</span>,
-      cell: ({ row }) => row.getValue(`${field.label}`) ?? '—',
-    })) as ColumnDef<AssignmentRow>[],
-    {
-      accessorKey: 'start_date',
-      header: () => <span className="font-rethink font-bold text-[14px]">START DATE</span>,
-    },
-    {
-      accessorKey: 'end_date',
-      header: () => <span className="font-rethink font-bold text-[14px]">END DATE</span>,
-    },
-    {
-      accessorKey: 'allocation_percentage',
-      header: () => <span className="font-rethink font-bold text-[14px]">ALLOCATION %</span>,
-      cell: ({ row }) => {
-        const value = row.getValue('allocation_percentage')
-        return value ? `${value}%` : '—'
-      },
-    },
+      header: () => <span className="font-rethink font-bold text-[14px]">{field.label.slice(0, 1).toUpperCase() + field.label.toLowerCase().slice(1)}</span>
+    })) 
   ]
 }
 

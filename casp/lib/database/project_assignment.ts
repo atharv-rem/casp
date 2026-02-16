@@ -10,11 +10,13 @@ export default async function getProjectAssignments({orgId, projectId}: {orgId: 
                     end_date,
                     allocation_percentage,
                     employees!employee_id (
-                    id,
-                    role,
-                    status,
                     system_profile,
                     custom_profile
+                    ),
+                    projects!project_id (
+                    id,
+                    name,
+                    meta
                     )
                 `)
                 .eq("organization_id", orgId)
