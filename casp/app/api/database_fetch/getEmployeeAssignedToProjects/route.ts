@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import getOrganizationID from "@/lib/database/organization_id";
-import getEmployeeAssignments from "@/lib/database/employee_assignment";
+import getOrganizationID from "@/lib/database fetch/organization_id";
+import getEmployeeAssignments from "@/lib/database fetch/employee_assignment";
 
 export async function GET (request: NextRequest) {
     const {OrgId} = await getOrganizationID();

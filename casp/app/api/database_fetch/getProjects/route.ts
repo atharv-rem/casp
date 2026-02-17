@@ -1,6 +1,6 @@
 import { NextResponse,NextRequest } from "next/server";
-import getProjectsByOrgId from "@/lib/database/projects";
-import getOrganizationID from "@/lib/database/organization_id";
+import getProjectsByOrgId from "@/lib/database fetch/projects";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 
 type customfields = Record<string, string>;
 

@@ -1,6 +1,6 @@
-import getOrganizationID from "@/lib/database/organization_id";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 import { NextRequest, NextResponse } from "next/server";
-import getProjectAssignment from "@/lib/database/project_assignment" 
+import getProjectAssignment from "@/lib/database fetch/project_assignment" 
 
 export async function GET(request:NextRequest){
     const projectId = request.nextUrl.searchParams.get("projectId");

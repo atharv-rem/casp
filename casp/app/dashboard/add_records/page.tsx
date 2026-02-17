@@ -1,9 +1,9 @@
 
 import {ChoosingRecords} from "@/app/dashboard/add_records/components/choosing record";
-import getOrganizationID from "@/lib/database/organization_id";
-import getEmployeeSchema from "@/lib/database/employee_schema";
-import getProjectSchema from "@/lib/database/project_schema";
-import getProjectsByOrgId from "@/lib/database/projects";
+import getOrganizationID from "@/lib/database fetch/organization_id";
+import getEmployeeSchema from "@/lib/database fetch/employee_schema";
+import getProjectSchema from "@/lib/database fetch/project_schema";
+import getProjectsByOrgId from "@/lib/database fetch/projects";
 
 export default async function RecordsPage() {
     const {OrgId} = await getOrganizationID()

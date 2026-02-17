@@ -1,7 +1,7 @@
-import getOrganizationNameByID from "@/lib/database/organization";
+import getOrganizationNameByID from "@/lib/database fetch/organization";
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import getOrganizationID from "@/lib/database/organization_id";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 
 export async function GET(request: NextRequest) {
     const {OrgId, AccountName} = await getOrganizationID();

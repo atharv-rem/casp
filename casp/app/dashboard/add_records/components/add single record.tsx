@@ -6,6 +6,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { toast } from "sonner";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,6 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
   const [projState, projFormAction, isProjPending] = useActionState(add_single_project_record, null);
   
   const [showEmpMessage, setShowEmpMessage] = useState(false);
-  const [showProjMessage, setShowProjMessage] = useState(false);
 
   // State for dynamic project field dates
   const [projFieldDates, setProjFieldDates] = useState<Record<string, Date | undefined>>({});
@@ -80,11 +80,10 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
 
   useEffect(() => {
     if (projState?.success) {
-      setShowProjMessage(true);
+      toast.success("Project added", { position: "top-center", duration: 500000 });
       setProjFieldDates({}); // Reset project field dates on success
 
       const timer = setTimeout(() => {
-        setShowProjMessage(false);
         router.refresh();
       }, 800);
 
@@ -92,9 +91,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     }
 
     if (projState?.error) {
-      setShowProjMessage(true);
-      const timer = setTimeout(() => setShowProjMessage(false), 2000);
-      return () => clearTimeout(timer);
+      toast.error(projState.error, { position: "top-center", duration: 500000 });
     }
   }, [projState, router]);
 
@@ -281,7 +278,6 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                         next[index].start_date = date;
                         setAssignments(next);
                       }}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -313,7 +309,6 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                         next[index].end_date = date;
                         setAssignments(next);
                       }}
-                      initialFocus
                       className="text-[12px]"
                     />
                   </PopoverContent>
@@ -373,7 +368,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
             <label htmlFor={field.id} className="text-[#686868] font-medium mb-[5px] text-[12px] font-rethink">{field.label.toLowerCase()}</label>
             {field.type === "date" ? (
               <>
-                <input type="hidden" name={field.id} value={projFieldDates[field.id] ? format(projFieldDates[field.id]!, "yyyy-MM-dd") : ""} />
+                <input type="hidden" name={`${field.id} || ${field.label}`} value={projFieldDates[field.id] ? format(projFieldDates[field.id]!, "yyyy-MM-dd") : ""} />
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -394,7 +389,6 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                       onSelect={(date) => {
                         setProjFieldDates(prev => ({ ...prev, [field.id]: date }));
                       }}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -405,12 +399,6 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
           </div>
         ))}
         <div className="flex flex-col">
-          {showProjMessage && projState?.success && (
-          <p className="text-green-500 text-[13px] font-bold font-rethink mb-2">Project added</p>
-          )}
-          {showProjMessage && projState?.error && (
-            <p className="text-red-500 text-[13px] font-bold font-rethink mb-2">{projState.error}</p>
-          )}
           <button type="submit" className="text-[14px] w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
               <span>{isProjPending ? "PROCESSING..." : "ADD PROJECT"}</span>
               <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import getOrganizationID from "@/lib/database/organization_id";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 import { z } from "zod";
 
 const loginSchema = z.object({

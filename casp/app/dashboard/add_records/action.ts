@@ -2,6 +2,13 @@
 
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import add_project from "@/lib/database add/addProject";
+
+type custom_project_fields = {
+  id: string;
+  label: string;
+  value: any;
+}[];
 
 export async function add_single_employee_record(prevState: any,formData: FormData) {
   const organization_id = formData.get("organization_id") as string;
@@ -85,25 +92,24 @@ export async function add_single_employee_record(prevState: any,formData: FormDa
 export async function add_single_project_record(prevState: any, formData: FormData) {
   try {
     const organization_id = formData.get("organization_id") as string;
-    const custom_project_fields: Record<string, any> = {};
+    const custom_project_fields: custom_project_fields = [];
     const project_name = formData.get("project_name") as string;
     for (const [key, value] of formData.entries()) {
       if (key === "organization_id" || key === "project_name" || key.startsWith("$ACTION_ID_")) {
-        continue;
+        continue; // Skip these fields as they have already been mapped
       }
-      custom_project_fields[key] = value;
+      if (key.includes("||")) {
+        const [id, label] = key.split("||");
+        custom_project_fields.push({
+          id: id,
+          label: label,
+          value: value
+        });
+      }
     }
-    const { error } = await supabaseAdmin
-      .from("projects")
-      .insert({
-        organization_id,
-        name: project_name,
-        meta: custom_project_fields,
-      });
-    
-    if (error) {
-      console.error(error);
-      return { success: false, error: "Failed to create project" };
+    const result = await add_project(organization_id, custom_project_fields, project_name);
+    if (!result.success) {
+      return { success: false, error: result.error };
     }
 
     return { success: true };

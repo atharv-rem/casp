@@ -1,6 +1,6 @@
-import getEmployeeById from "@/lib/database/employee"
+import getEmployeeById from "@/lib/database fetch/employee"
 import { NextResponse,NextRequest } from "next/server";
-import getOrganizationID from "@/lib/database/organization_id";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 
 type System_Profile = {
     "name": string,

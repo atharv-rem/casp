@@ -1,8 +1,8 @@
-import getEmployeeSchemas from "@/lib/database/employee_schema";
+import getProjectSchemas from "@/lib/database fetch/project_schema";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 import { NextResponse,NextRequest } from "next/server";
-import getOrganizationID from "@/lib/database/organization_id";
 
-type EmployeeField = {
+type ProjectSchema = {
     "id": string,
     "key": string,
     "type": string,
@@ -10,9 +10,7 @@ type EmployeeField = {
     "required": boolean
 }
 
-type  EmployeeSchema = {
-    "field"?: EmployeeField[]
-}
+
 
 export async function GET(request: NextRequest) {
     const {OrgId} = await getOrganizationID();
@@ -22,20 +20,19 @@ export async function GET(request: NextRequest) {
         { status: 401 }
         );
     } 
-
     try {
-        const employeeSchemas: EmployeeSchema = await getEmployeeSchemas({orgId: OrgId});
-        if (!employeeSchemas) {
+        const projectSchemas: ProjectSchema[] = await getProjectSchemas({orgId: OrgId});
+        if (!projectSchemas) {
         return NextResponse.json(
-            { error: "Employee schemas not found" },
+            { error: "Project schemas not found" },
             { status: 404 }
         );
         }
 
-        return NextResponse.json(employeeSchemas);
+        return NextResponse.json(projectSchemas);
     } catch (error: any) {
         return NextResponse.json(
-        { error: error.message ?? "Failed to fetch employee schemas" },
+        { error: error.message ?? "Failed to fetch project schemas" },
         { status: 500 }
         );
     }

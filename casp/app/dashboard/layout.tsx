@@ -9,8 +9,8 @@ import gemini from "@/public/assets/gemini.svg"
 import { redirect } from "next/navigation";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "../global components/app_sidebar";
-import getOrganizationNameByID from "@/lib/database/organization";
-import getOrganizationID from "@/lib/database/organization_id";
+import getOrganizationNameByID from "@/lib/database fetch/organization";
+import getOrganizationID from "@/lib/database fetch/organization_id";
 import {cache} from 'react'
 
 const kal = localFont({

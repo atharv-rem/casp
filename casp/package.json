@@ -33,6 +33,7 @@
     "lucide-react": "^0.562.0",
     "motion": "^12.33.0",
     "next": "^16.1.4",
+    "next-themes": "^0.4.6",
     "postcss": "^8.5.6",
     "radix-ui": "^1.4.3",
     "react": "^19.2.3",
@@ -40,6 +41,7 @@
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.71.1",
     "read-excel-file": "^6.0.1",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.5",
     "zustand": "^5.0.10"
