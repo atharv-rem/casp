@@ -6,16 +6,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-export function ChoosingRecords( {orgId, empfields, projfields, projectList }: {orgId: string, empfields: any[], projfields: any[], projectList: any[]}) {
+
+type Schema = {
+  id: string;
+  key: string;
+  type: string;
+  label: string;
+  required: boolean;
+}
+
+type meta = Record<string, string>;
+type ProjectSchema = { 
+  "id": string;
+  "name": string;
+  "meta": meta;
+}
+
+
+export function ChoosingRecords( {orgId, empfields, projfields, projectList }: {orgId: string, empfields: Schema[], projfields: Schema[], projectList: ProjectSchema[]}) {
     const [numberOfRecords, setNumberOfRecords] = useState('single');
     const [recordType, setRecordType] = useState('employee');
     return (
         <>
         <div className="w-full flex flex-row items-center justify-start gap-6">
             <Tabs defaultValue="single record">
-                <TabsList>
-                    <TabsTrigger value="single record" onClick={() => setNumberOfRecords('single')} className="font-rethink font-bold">Single Record</TabsTrigger>
-                    <TabsTrigger value="bulk records" onClick={() => setNumberOfRecords('bulk')} className="font-rethink font-bold">Bulk Records</TabsTrigger>
+                <TabsList className="">
+                    <TabsTrigger value="single record" onClick={() => setNumberOfRecords('single')} className="font-rethink font-bold h-[25px]">Single Record</TabsTrigger>
+                    <TabsTrigger value="bulk records" onClick={() => setNumberOfRecords('bulk')} className="font-rethink font-bold h-[25px]">Bulk Records</TabsTrigger>
                 </TabsList>
                 <TabsContent value="single record"></TabsContent>
                 <TabsContent value="bulk records"></TabsContent>

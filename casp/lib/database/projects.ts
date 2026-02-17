@@ -3,6 +3,7 @@ import {supabaseAdmin} from '../supabase/admin'
 type customfields = Record<string, string>;
 
 type Projectdetails = {
+    "id": string,
     "name": string,
     "meta": customfields
 }
@@ -11,7 +12,7 @@ export default async function getProjectsByOrgId({orgId}: {orgId: string}): Prom
     const supabase = supabaseAdmin;
     const { data: projects, error } = await supabase
         .from('projects')
-        .select('name,meta')
+        .select('id,name,meta')
         .eq('organization_id', orgId)
 
     if (error) {

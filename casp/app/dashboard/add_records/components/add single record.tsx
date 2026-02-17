@@ -2,7 +2,7 @@ import { add_single_employee_record } from "@/app/dashboard/add_records/action";
 import { add_single_project_record } from "@/app/dashboard/add_records/action";
 import Image from "next/image";
 import arrowRight from '@/public/assets/arrow icon.svg'
-import React, { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -13,13 +13,22 @@ import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils/utils";
 
-interface Field {
+type Schema = {  
   id: string;
+  key: string;
+  type: string;
   label: string;
-  type?: string;
+  required: boolean;
 }
 
-export default function AddSingleRecord({ orgId, empfields, projfields, projectList, recordType }: { orgId: string; empfields: Field[]; projfields: Field[]; projectList: any[]; recordType: string }) {
+type meta = Record<string, string>;
+type ProjectSchema = {
+  "id": string;
+  "name": string;
+  "meta": meta;
+}
+
+export default function AddSingleRecord({ orgId, empfields, projfields, projectList, recordType }: { orgId: string; empfields: Schema[]; projfields: Schema[]; projectList: ProjectSchema[]; recordType: string }) {
   const router = useRouter();
   const [empState, empFormAction, isEmpPending] = useActionState(add_single_employee_record, null);
   const [projState, projFormAction, isProjPending] = useActionState(add_single_project_record, null);
@@ -165,7 +174,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                       aria-expanded={comboboxOpen[index]}
                       className="w-full justify-between rounded-[10px] text-[12px] font-rethink"
                     >
-                      {assignment.project_id && assignment.project_id !== "none"
+                      {assignment.project_id
                         ? projectList.find((p) => p.id === assignment.project_id)?.name.toUpperCase()
                         : "Select a project..."}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

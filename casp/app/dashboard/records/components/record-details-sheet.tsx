@@ -304,7 +304,7 @@ export function RecordDetailsSheet({
             })}
             <div className="col-span-2 p-[20px] flex flex-row items-center justify-center">
                 <Image src={erroricon} alt="error icon" className="size-[20px] mr-2" />
-                <span className="font-rethink font-semibold text-[14px] text-red-500">Could'nt display details for {selectedRow?.original?.name}</span>
+                <span className="font-rethink font-semibold text-[14px] text-red-500">Couldn&apos;t display details for {selectedRow?.original?.employee_name || "this employee"}</span>
             </div>
           </div>
         )}

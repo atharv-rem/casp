@@ -5,6 +5,7 @@ import getOrganizationID from "@/lib/database/organization_id";
 type customfields = Record<string, string>;
 
 type Projectdetails = {
+    "id": string,
     "name": string,
     "meta": customfields
 }

@@ -2,7 +2,7 @@ import getProjectSchemas from "@/lib/database/project_schema";
 import getOrganizationID from "@/lib/database/organization_id";
 import { NextResponse,NextRequest } from "next/server";
 
-type ProjectField = {
+type ProjectSchema = {
     "id": string,
     "key": string,
     "type": string,
@@ -10,9 +10,7 @@ type ProjectField = {
     "required": boolean
 }
 
-type  ProjectSchema = {
-    "field"?: ProjectField[]
-}
+
 
 export async function GET(request: NextRequest) {
     const {OrgId} = await getOrganizationID();
@@ -23,7 +21,7 @@ export async function GET(request: NextRequest) {
         );
     } 
     try {
-        const projectSchemas: ProjectSchema = await getProjectSchemas({orgId: OrgId});
+        const projectSchemas: ProjectSchema[] = await getProjectSchemas({orgId: OrgId});
         if (!projectSchemas) {
         return NextResponse.json(
             { error: "Project schemas not found" },
