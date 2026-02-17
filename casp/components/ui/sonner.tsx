@@ -15,14 +15,20 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
+      position = "top-center"
+      duration={2000}
+      visibleToasts={3}
+      toastOptions={{
+        className:"font-rethink !text-[17px] !text-center items-center justify-center !w-[200px] !py-[10px] !rounded-[20px] !shadow-2xl !left-1/2 !-translate-x-1/2 !border-2 !border-gray-200",
+      }}
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{
-        success: <CircleCheckIcon className="size-4" />,
+        success: <CircleCheckIcon className="size-6" />,
         info: <InfoIcon className="size-4" />,
         warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
+        error: <OctagonXIcon className="size-6" />,
+        loading: <Loader2Icon className="size-6 animate-spin" />,
       }}
       style={
         {

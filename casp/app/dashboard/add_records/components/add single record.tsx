@@ -2,7 +2,7 @@ import { add_single_employee_record } from "@/app/dashboard/add_records/action";
 import { add_single_project_record } from "@/app/dashboard/add_records/action";
 import Image from "next/image";
 import arrowRight from '@/public/assets/arrow icon.svg'
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -35,6 +35,8 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
   const [projState, projFormAction, isProjPending] = useActionState(add_single_project_record, null);
   
   const [showEmpMessage, setShowEmpMessage] = useState(false);
+  const empLoadingToastId = useRef<string | number | null>(null);
+  const projLoadingToastId = useRef<string | number | null>(null);
 
   // State for dynamic project field dates
   const [projFieldDates, setProjFieldDates] = useState<Record<string, Date | undefined>>({});
@@ -61,6 +63,28 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
 
 
   useEffect(() => {
+    if (isEmpPending && !empLoadingToastId.current) {
+      empLoadingToastId.current = toast.loading("Adding employee...", { position: "top-center" });
+    }
+
+    if (!isEmpPending && empLoadingToastId.current) {
+      toast.dismiss(empLoadingToastId.current);
+      empLoadingToastId.current = null;
+    }
+  }, [isEmpPending]);
+
+  useEffect(() => {
+    if (isProjPending && !projLoadingToastId.current) {
+      projLoadingToastId.current = toast.loading("Adding project...", { position: "top-center" });
+    }
+
+    if (!isProjPending && projLoadingToastId.current) {
+      toast.dismiss(projLoadingToastId.current);
+      projLoadingToastId.current = null;
+    }
+  }, [isProjPending]);
+
+  useEffect(() => {
     if (empState?.success) {
       setShowEmpMessage(true);
       setAssignments([{ project_id: "", allocation_percentage: 0, start_date: undefined, end_date: undefined }]);
@@ -80,7 +104,8 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
 
   useEffect(() => {
     if (projState?.success) {
-      toast.success("Project added", { position: "top-center", duration: 500000 });
+      
+      toast.success("Project added");
       setProjFieldDates({}); // Reset project field dates on success
 
       const timer = setTimeout(() => {
@@ -91,7 +116,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     }
 
     if (projState?.error) {
-      toast.error(projState.error, { position: "top-center", duration: 500000 });
+      toast.error(projState.error);
     }
   }, [projState, router]);
 
@@ -337,7 +362,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
 
         
         <button disabled={isEmpPending} type="submit" className="w-auto bg-[#000000] text-[14px] text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-sm hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
-            <span>{isEmpPending ? "PROCESSING..." : "ADD EMPLOYEE"}</span>
+          <span>ADD EMPLOYEE</span>
             <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
         </button>
 
@@ -399,8 +424,8 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
           </div>
         ))}
         <div className="flex flex-col">
-          <button type="submit" className="text-[14px] w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
-              <span>{isProjPending ? "PROCESSING..." : "ADD PROJECT"}</span>
+            <button disabled={isProjPending} type="submit" className="text-[14px] w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span>ADD PROJECT</span>
               <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
           </button>
         </div>
