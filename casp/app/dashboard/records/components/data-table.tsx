@@ -96,7 +96,7 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
       if (!EmployeeId) return null
 
       const response = await fetch(
-        `/api/database/getEmployeeAssignedToProjects?employeeId=${EmployeeId}`
+        `/api/database_fetch/getEmployeeAssignedToProjects?employeeId=${EmployeeId}`
       )
 
       if (!response.ok) {
@@ -121,7 +121,7 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
       queryKey: ["project", projectId],
       queryFn: async () => {
         const response = await fetch(
-          `/api/database/getProjectsAssignedToEmployees?projectId=${projectId}`
+          `/api/database_fetch/getProjectsAssignedToEmployees?projectId=${projectId}`
         )
 
         if (!response.ok) {

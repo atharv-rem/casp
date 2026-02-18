@@ -1,3 +1,4 @@
+'use client'
 import { add_single_employee_record } from "@/app/dashboard/add_records/action";
 import { add_single_project_record } from "@/app/dashboard/add_records/action";
 import Image from "next/image";
@@ -34,7 +35,8 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
   const [empState, empFormAction, isEmpPending] = useActionState(add_single_employee_record, null);
   const [projState, projFormAction, isProjPending] = useActionState(add_single_project_record, null);
   
-  const [showEmpMessage, setShowEmpMessage] = useState(false);
+  const empFormRef = useRef<HTMLFormElement>(null);
+  const projFormRef = useRef<HTMLFormElement>(null);
   const empLoadingToastId = useRef<string | number | null>(null);
   const projLoadingToastId = useRef<string | number | null>(null);
 
@@ -86,19 +88,18 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
 
   useEffect(() => {
     if (empState?.success) {
-      setShowEmpMessage(true);
+      toast.success("Employee added");
+      empFormRef.current?.reset();
       setAssignments([{ project_id: "", allocation_percentage: 0, start_date: undefined, end_date: undefined }]);
+      setComboboxOpen({});
       setEmpFieldDates({}); // Reset employee field dates on success
       const timer = setTimeout(() => {
-        setShowEmpMessage(false);
         router.refresh();
       }, 800);
       return () => clearTimeout(timer);
     }
     if (empState?.error) {
-      setShowEmpMessage(true);
-      const timer = setTimeout(() => setShowEmpMessage(false), 2000);
-      return () => clearTimeout(timer);
+      toast.error(empState.error);
     }
   }, [empState, router]);
 
@@ -106,6 +107,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     if (projState?.success) {
       
       toast.success("Project added");
+      projFormRef.current?.reset();
       setProjFieldDates({}); // Reset project field dates on success
 
       const timer = setTimeout(() => {
@@ -127,7 +129,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     <div className="flex flex-col items-start mb-[20px] mt-[10px]">
       <h1 className="text-[25px] font-rethink font-semibold text-black w-full">Add Employee</h1>
       <p className="text-[14px] font-rethink text-[#686868] mb-[10px] w-full">fill out the form below to add a new employee.</p>
-      <form action={empFormAction} className="grid grid-cols-2 gap-[12px]">
+      <form ref={empFormRef} action={empFormAction} className="grid grid-cols-2 gap-[12px]">
         <input type="hidden" name="organization_id" value={orgId} />
         <div className="w-full flex flex-col">
           <label className="text-[#686868] font-rethink font-medium mb-[5px] text-[12px]">name</label>
@@ -355,25 +357,16 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
         <button type="button"
             disabled={remainingPercentage <= 0 || assignments.length >= projectList.length}
             onClick={() => setAssignments([...assignments, { project_id: "", allocation_percentage: 0, start_date: undefined, end_date: undefined },])}
-            className="text-[14px] shadow-sm bg-white text-black font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] border-[1px] border-[#e8e8e8] flex flex-row items-center justify-center hover:translate-x-1 hover:duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-[14px] shadow-sm bg-white text-black font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] border-[1px] border-[#e8e8e8] flex flex-row items-center justify-center hover:translate-x-1 hover:duration-300 disabled:opacity-50 disabled:cursor-not-allowed col-span-2"
         >
           ASSIGN ANOTHER PROJECT
         </button>
 
         
-        <button disabled={isEmpPending} type="submit" className="w-auto bg-[#000000] text-[14px] text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-sm hover:translate-x-1 hover:duration-300 hover:bg-gray-800">
+        <button disabled={isEmpPending} type="submit" className="w-auto bg-[#000000] text-[14px] text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-sm hover:translate-x-1 hover:duration-300 hover:bg-gray-800 col-span-2">
           <span>ADD EMPLOYEE</span>
             <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
         </button>
-
-        <div className="col-span-2">
-          {showEmpMessage && empState?.success && (
-          <p className="text-green-500 text-[13px] font-bold font-rethink mb-2">Employee added</p>
-          )}
-          {showEmpMessage && empState?.error && (
-            <p className="text-red-500 text-[13px] font-bold font-rethink mb-2">{empState.error}</p>
-          )}
-        </div>
       </form>
     </div>
     )}
@@ -382,7 +375,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
     <div className="flex flex-col items-start mb-[20px] mt-[10px]">
       <h1 className="text-[25px] font-rethink font-semibold text-black w-full">Add Project</h1>
       <p className="text-[14px] font-rethink text-[#686868] mb-[10px] w-full">fill out the form below to add a new project.</p>
-      <form action={projFormAction} className="grid grid-cols-2 gap-[20px]">
+      <form ref={projFormRef} action={projFormAction} className="grid grid-cols-2 gap-[20px]">
         <input type="hidden" name="organization_id" value={orgId} />
         <div className="w-full flex flex-col">
           <label className="text-[#686868] font-medium mb-[5px] text-[12px] font-rethink">project name</label>
@@ -423,12 +416,10 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
             )}
           </div>
         ))}
-        <div className="flex flex-col">
-            <button disabled={isProjPending} type="submit" className="text-[14px] w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
-              <span>ADD PROJECT</span>
-              <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
-          </button>
-        </div>
+        <button disabled={isProjPending} type="submit" className="text-[14px] w-auto bg-black text-white font-rethink font-bold pl-[15px] pr-[10px] py-[5px] rounded-[10px] flex flex-row items-center justify-center shadow-md hover:translate-x-1 hover:duration-300 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed col-span-2">
+            <span>ADD PROJECT</span>
+            <Image src={arrowRight} alt="Arrow Right" width={22} height={22} className="ml-[5px]" />
+        </button>
       </form>
     </div>
     )}

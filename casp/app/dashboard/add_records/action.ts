@@ -10,10 +10,16 @@ type custom_project_fields = {
   value: any;
 }[];
 
+type custom_employee_fields = {
+  id: string;
+  label: string;
+  value: any;
+}[];
+
 export async function add_single_employee_record(prevState: any,formData: FormData) {
   const organization_id = formData.get("organization_id") as string;
   const default_employee_fields: Record<string, any> = {};
-  const custom_employee_fields: Record<string, any> = {};
+  const custom_employee_fields: custom_employee_fields = [];
   const assignments: Record<string, any>[] = [];
 
   for (const [key, value] of formData.entries()) {
@@ -36,7 +42,12 @@ export async function add_single_employee_record(prevState: any,formData: FormDa
     if (key.startsWith("system_")) {
       default_employee_fields[key.replace("system_", "")] = value;
     } else {
-      custom_employee_fields[key] = value;
+      const [id, label] = key.split("||");
+      custom_employee_fields.push({
+        id: id,
+        label: label,
+        value: value,
+      });
     }
   }
   
