@@ -3,6 +3,8 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import add_project from "@/lib/database add/addProject";
+import add_employee from "@/lib/database add/addEmployee";
+import add_assignment from "@/lib/database add/addAssignment";
 
 type custom_project_fields = {
   id: string;
@@ -16,14 +18,42 @@ type custom_employee_fields = {
   value: any;
 }[];
 
+type default_employee_fields = {
+  name: string;
+  email: string;
+}
+
+type assignment_fields = {
+  organization_id: string;
+  employee_id: string;
+  project_id: string;
+  allocation_percentage: number;
+  start_date: string;
+  end_date?: string | null;
+}
+
+type assignment_form_fields = Partial<Pick<assignment_fields, "project_id" | "allocation_percentage" | "start_date" | "end_date">>;
+
+type complete_assignment_form_fields = {
+  project_id: string;
+  allocation_percentage: number;
+  start_date: string;
+  end_date?: string | null;
+};
+
 export async function add_single_employee_record(prevState: any,formData: FormData) {
   const organization_id = formData.get("organization_id") as string;
-  const default_employee_fields: Record<string, any> = {};
+  const systemName = formData.get("system_name")?.toString().trim() ?? "";
+  const systemEmail = formData.get("system_email")?.toString().trim() ?? "";
+  const default_employee_fields: default_employee_fields = {
+    "name": systemName,
+    "email": systemEmail,
+  };
   const custom_employee_fields: custom_employee_fields = [];
-  const assignments: Record<string, any>[] = [];
+  const assignments: assignment_form_fields[] = [];
 
   for (const [key, value] of formData.entries()) {
-    if (key === "organization_id" || key.startsWith("$ACTION_ID_")) {
+    if (key === "organization_id" || key === "system_name" || key === "system_email" || key.startsWith("$ACTION_ID_")    ) {
       continue;
     }
 
@@ -34,68 +64,65 @@ export async function add_single_employee_record(prevState: any,formData: FormDa
       const index = Number(match[1]);
       const field = match[2];
 
-      assignments[index] = assignments[index] || {};
-      assignments[index][field] = value;
+      const currentAssignment = assignments[index] || {};
+
+      if (field === "project_id") {
+        currentAssignment.project_id = String(value);
+      } else if (field === "start_date") {
+        currentAssignment.start_date = String(value);
+      } else if (field === "end_date") {
+        currentAssignment.end_date = String(value);
+      } else if (field === "allocation_percentage") {
+        currentAssignment.allocation_percentage = Number(value);
+      }
+
+      assignments[index] = currentAssignment;
       continue;
     }
 
-    if (key.startsWith("system_")) {
-      default_employee_fields[key.replace("system_", "")] = value;
-    } else {
+    else if (key.includes("||")) {
       const [id, label] = key.split("||");
       custom_employee_fields.push({
-        id: id,
-        label: label,
+        id: id.trim(),
+        label: label.trim(),
         value: value,
       });
     }
   }
   
-  const { data: employee, error } = await supabaseAdmin
-    .from("employees")
-    .insert({
-      organization_id,
-      role: "employee",
-      status: "active",
-      system_profile: default_employee_fields,
-      custom_profile: custom_employee_fields,
-      auth_user_id: null,
-    })
-    .select("id")
-    .single();
+  const EmployeeResult = await add_employee(organization_id, default_employee_fields, custom_employee_fields); 
 
-  if (error || !employee) {
-    console.error(error);
+  if (EmployeeResult.error) {
     return { success: false, error: "Failed to create employee" };
   }
 
   const validAssignments = assignments.filter(
-    (a) => a?.project_id && a?.allocation_percentage
+    (a): a is complete_assignment_form_fields =>
+      typeof a?.project_id === "string" &&
+      a.project_id.length > 0 &&
+      typeof a?.allocation_percentage === "number" &&
+      !Number.isNaN(a.allocation_percentage) &&
+      typeof a?.start_date === "string" &&
+      a.start_date.length > 0
   );
 
   if (validAssignments.length > 0) {
     const rows = validAssignments.map((a) => ({
       organization_id,
-      employee_id: employee.id,
+      employee_id: EmployeeResult.employeeID,
       project_id: a.project_id,
       allocation_percentage: Number(a.allocation_percentage),
       start_date: a.start_date,
       end_date: a.end_date || null,
     }));
 
-    const { error: assignError } = await supabaseAdmin
-      .from("employee_project_assignments")
-      .insert(rows);
+    const assignmentResults = await add_assignment(organization_id, rows);
 
-    if (assignError) {
-      console.error(assignError);
-      return {
-        success: false,
-        error: "Employee created but project assignment failed",
-      };
+    if (assignmentResults.error) {
+      return {success: false, error: "Employee created but project assignment failed"};
     }
   }
-
+  
   return { success: true };
 }
 

@@ -19,7 +19,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       duration={2000}
       visibleToasts={3}
       toastOptions={{
-        className:"font-rethink !text-[17px] !text-center items-center justify-center !w-[200px] !py-[10px] !rounded-[20px] !shadow-2xl !left-1/2 !-translate-x-1/2 !border-2 !border-gray-200",
+        className:"font-rethink !text-[17px] !text-center items-center justify-center !w-[250px] !py-[10px] !rounded-[20px] !shadow-2xl !left-1/2 !-translate-x-1/2 !border-2 !border-gray-200",
       }}
       theme={theme as ToasterProps["theme"]}
       className="toaster group"

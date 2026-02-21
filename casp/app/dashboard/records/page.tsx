@@ -29,6 +29,7 @@ export default async function ShowAllRecords() {
   const fieldMap = Object.fromEntries(employeeFields.map(f => [f.id, f.label.toLowerCase()]))
 
   const rows = employees?.map(row => {
+    
     const mappedCustomFields = Object.fromEntries(
       Object.entries(row.custom_profile ?? {})
         .map(([id, value]) => {const key = fieldMap[id]

@@ -1,7 +1,5 @@
 "use client"
-import { useQuery,useQueries } from "@tanstack/react-query"
-
-
+import { useQuery,useQueries, useQueryClient} from "@tanstack/react-query"
 import usericon from "@/public/assets/user icon.svg"
 import emailicon from "@/public/assets/mail black.svg"
 import Image from "next/image"
@@ -65,6 +63,7 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [globalFilter, setGlobalFilter] = useState("")
+    const queryClient = useQueryClient()
 
     const table = useReactTable({
     data,
@@ -84,242 +83,273 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
       columnVisibility,
       globalFilter,
     },
-  })
+    })
 
-  const [selectedRow, setSelectedRow] = useState<any>(null)
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [EmployeeId, setEmployeeId] = useState<string | null>(null)
+    const [selectedRow, setSelectedRow] = useState<any>(null)
+    const [isSheetOpen, setIsSheetOpen] = useState(false)
+    const [EmployeeId, setEmployeeId] = useState<string | null>(null)
 
-  const {data: employeeAssignments, isLoading,} = useQuery({
-    queryKey: ["recordDetails", EmployeeId],
-    queryFn: async () => {
-      if (!EmployeeId) return null
-
-      const response = await fetch(
-        `/api/database_fetch/getEmployeeAssignedToProjects?employeeId=${EmployeeId}`
-      )
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch record details")
-      }
-      return response.json()
-    },
-    enabled: !!EmployeeId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-  })
-
-  const projectIds: string[] = (employeeAssignments ?? []).map(
-    (assignedProjects: { projects: { id: string } }) => assignedProjects.projects.id
-  )
-
-  const projectAssignment = useQueries({
-    queries: projectIds.map((projectId) => ({
-      queryKey: ["project", projectId],
+    //fetching employee assignments based on the selected employee id
+    const {data: employeeAssignments, isLoading,} = useQuery({
+      queryKey: ["recordDetails", EmployeeId],
       queryFn: async () => {
+        if (!EmployeeId) return null
         const response = await fetch(
-          `/api/database_fetch/getProjectsAssignedToEmployees?projectId=${projectId}`
+          `/api/database_fetch/getEmployeeAssignedToProjects?employeeId=${EmployeeId}`
         )
 
         if (!response.ok) {
-          throw new Error("Failed to fetch project")
+          throw new Error("Failed to fetch record details")
         }
-
         return response.json()
       },
-      staleTime: 5 * 60 * 1000,
-    })),
-  })
+      enabled: !!EmployeeId, //the query will only run if there is an EmployeeId to save resoources
+      staleTime: 5 * 60 * 1000,//data is fresh for 5 minutes
+      gcTime: 30 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+    })
 
-  const projectAssignmentData = projectAssignment.flatMap((query) =>
-    Array.isArray(query.data) ? query.data : []
-  )
+    //exrtacting project ids from the employee assignments to fetch project details, we use useQueries to fetch multiple projects in parallel based on the projct ids
+    const projectIds: string[] = (employeeAssignments ?? []).map(
+      (assignedProjects: { projects: { id: string } }) => assignedProjects.projects.id
+    )
 
-  const handleRowClick = (row: any) => {
-    const employeeId = row.original.employee_id ?? row.original.id
-    setSelectedRow(row)
-    setIsSheetOpen(true)
-    setEmployeeId(employeeId)
+    //fetching details of all projects assigned to this specific employee
+    const projectAssignment = useQueries({
+      queries: projectIds.map((projectId) => ({
+        queryKey: ["project", projectId],
+        queryFn: async () => {
+          const response = await fetch(
+            `/api/database_fetch/getProjectsAssignedToEmployees?projectId=${projectId}`
+          )
 
-  }
+          if (!response.ok) {
+            throw new Error("Failed to fetch project")
+          }
 
-  return (
-    <>
-    {/* table container */}
-    <div className="w-full mt-[2px]">
-      <div className="flex items-center justify-between pb-4 gap-4">
-        <Input
-          placeholder="Search for an employee..."
-          value={globalFilter ?? ""}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className=" h-[30px] max-w-sm rounded-[10px] font-rethink text-[12px]"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="h-[30px] ml-auto rounded-[10px] font-rethink text-[12px]">
-              <Settings2 className="mr-2 h-[15px] w-[15px]" />
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[200px]">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize font-rethink text-[14px]"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id.replace(/_/g, " ")}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+          return response.json()
+        },
+        staleTime: 5 * 60 * 1000,
+      })),
+    })
 
-      <div className="overflow-hidden">
-        <Table className="">
-          {/*render table header, we loop through the header groups and render each header, we use flexRender to render the header based on whether it's a string or a React component, we also check if the header is a placeholder, if it is we don't render anything*/}
-          <TableHeader className="items-start justify-start">
-            {table.getHeaderGroups().map((headerGroup) => (//tanstack wraps header in a group so we map over that
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {//we loop through each header and render it, flexRender is a tanstack function that takes care of rendering the header based on whether it's a string or a React component
+    //usequeries returns an array of results so we extract the data from each query to get the result
+    const projectAssignmentData = projectAssignment.flatMap((query) =>
+      Array.isArray(query.data) ? query.data : []
+    )
+
+    //prefetching employee asignments on hover
+    const prefetchRecordDetails = (employeeId: string) => {
+      queryClient.prefetchQuery({
+        queryKey: ["recordDetails", employeeId],
+        queryFn: async () => {
+          const response = await fetch(
+            `/api/database_fetch/getEmployeeAssignedToProjects?employeeId=${employeeId}`
+          )
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch record details")
+          }
+
+          return response.json()
+        },
+        staleTime: 5 * 60 * 1000,
+        gcTime: 30 * 60 * 1000,
+      })
+    }
+    
+    const handleRowClick = (row: any) => {
+      const employeeId = row.original.employee_id ?? row.original.id
+      setSelectedRow(row)
+      setIsSheetOpen(true)
+      setEmployeeId(employeeId)
+
+    }
+
+    const handleRowHover = (row: any) => {
+      const employeeId = row.original.employee_id ?? row.original.id
+      if (!employeeId) return
+      prefetchRecordDetails(employeeId)
+    }
+
+    return (
+      <>
+      {/* table container */}
+      <div className="w-full mt-[2px]">
+        <div className="flex items-center justify-between pb-4 gap-4">
+          <Input
+            placeholder="Search for an employee..."
+            value={globalFilter ?? ""}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            className=" h-[30px] max-w-sm rounded-[10px] font-rethink text-[12px]"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-[30px] ml-auto rounded-[10px] font-rethink text-[12px]">
+                <Settings2 className="mr-2 h-[15px] w-[15px]" />
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[200px]">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
                   return (
-                    <TableHead key={header.id} className="text-left">
-                      {header.isPlaceholder ? null :flexRender(header.column.columnDef.header,header.getContext())}{/*this is where the header is rendered*/}
-                    </TableHead>
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize font-rethink text-[14px]"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id.replace(/_/g, " ")}
+                    </DropdownMenuCheckboxItem>
                   )
                 })}
-              </TableRow>
-            ))}
-          </TableHeader>
-
-          {/*render table body, we check if there are rows to display, if not we show a message, otherwise we render the rows, we also add an onClick handler to each row to open the details sheet when clicked*/}
-          <TableBody>
-            {table.getRowModel().rows?.length ? (//if there are rows to display we map over them and render them, otherwise we show a message saying no results found
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => handleRowClick(row)}
-                  className="cursor-pointer hover:bg-muted"
-                >
-                  {row.getVisibleCells().map((cell) => (//It returns only the cells for columns that are currently visible. If a column is hidden via your “Columns” dropdown:It disappears here automatically.
-                    <TableCell key={cell.id} className="font-rethink text-left text-[14px]">{/*we render the cell value using flexRender, we also check if the cell is in the employee_name column, if it is we add a user icon next to it*/}
-                      <div className="flex flex-row items-center">
-                        {cell.column.id === "employee_name" && (
-                          <Image src={usericon} alt="user icon" className="size-[10px] mr-2" />
-                        )}
-
-                        {cell.column.id === "employee_email" && (
-                          <Image src={emailicon} alt="email icon" className="size-[15px] mr-2" />
-                        )}
-                        <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>{/*this is where the cell value is rendered, flexRender is a tanstack function that takes care of rendering the cell based on whether it's a string or a React component*/}
-                      </div>
-                    </TableCell>
-                  ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
+        {/* table */}
+        <div className="overflow-hidden">
+          <Table className="">
+            {/*render table header, we loop through the header groups and render each header, we use flexRender to render the header based on whether it's a string or a React component, we also check if the header is a placeholder, if it is we don't render anything*/}
+            <TableHeader className="items-start justify-start">
+              {table.getHeaderGroups().map((headerGroup) => (//tanstack wraps header in a group so we map over that
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {//we loop through each header and render it, flexRender is a tanstack function that takes care of rendering the header based on whether it's a string or a React component
+                    return (
+                      <TableHead key={header.id} className="text-left">
+                        {header.isPlaceholder ? null :flexRender(header.column.columnDef.header,header.getContext())}{/*this is where the header is rendered*/}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) 
-            : 
-            (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center font-rethink text-[12px]">
-                  No results found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      
-      {/* pagination */}
-      <div className="flex items-center justify-between py-4">
-        <div className="flex items-center gap-2 text-[12px] text-muted-foreground font-rethink">
-          <span>
-            Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
-            {Math.min(
-              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-              table.getFilteredRowModel().rows.length
-            )}{" "}
-            of {table.getFilteredRowModel().rows.length} results
-          </span>
+              ))}
+            </TableHeader>
+
+            {/*render table body, we check if there are rows to display, if not we show a message, otherwise we render the rows, we also add an onClick handler to each row to open the details sheet when clicked*/}
+            <TableBody>
+              {table.getRowModel().rows?.length ? (//if there are rows to display we map over them and render them, otherwise we show a message saying no results found
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => handleRowClick(row)}
+                    onMouseEnter={() => handleRowHover(row)}//prefetching data on hover to make the details sheet load faster when the user clicks on the row
+                    className="cursor-pointer hover:bg-muted"
+                  >
+                    {row.getVisibleCells().map((cell) => (//It returns only the cells for columns that are currently visible. If a column is hidden via your “Columns” dropdown:It disappears here automatically.
+                      <TableCell key={cell.id} className="font-rethink text-left text-[14px]">{/*we render the cell value using flexRender, we also check if the cell is in the employee_name column, if it is we add a user icon next to it*/}
+                        <div className="flex flex-row items-center">
+                          {cell.column.id === "employee_name" && (
+                            <Image src={usericon} alt="user icon" className="size-[10px] mr-2" />
+                          )}
+
+                          {cell.column.id === "employee_email" && (
+                            <Image src={emailicon} alt="email icon" className="size-[15px] mr-2" />
+                          )}
+                          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>{/*this is where the cell value is rendered, flexRender is a tanstack function that takes care of rendering the cell based on whether it's a string or a React component*/}
+                        </div>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) 
+              : 
+              (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center font-rethink text-[12px]">
+                    No results found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-rethink text-muted-foreground">Rows per page</span>
-            <Select
-              value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value))
-              }}
-            >
-              <SelectTrigger size="xs" className=" w-[70px] rounded-[6px] text-[12px] font-rethink px-2 py-0">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`} className="text-[12px] font-rethink">
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 rounded-[6px]"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronsLeft className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 rounded-[6px]"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronLeft className="h-3.5 w-3.5" />
-            </Button>
-            <span className="text-[12px] font-rethink px-2">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+        
+        {/* pagination */}
+        <div className="flex items-center justify-between py-4">
+          <div className="flex items-center gap-2 text-[12px] text-muted-foreground font-rethink">
+            <span>
+              Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+                table.getFilteredRowModel().rows.length
+              )}{" "}
+              of {table.getFilteredRowModel().rows.length} results
             </span>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 rounded-[6px]"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronRight className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 rounded-[6px]"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronsRight className="h-3.5 w-3.5" />
-            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[12px] font-rethink text-muted-foreground">Rows per page</span>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value))
+                }}
+              >
+                <SelectTrigger size="xs" className=" w-[70px] rounded-[6px] text-[12px] font-rethink px-2 py-0">
+                  <SelectValue placeholder={table.getState().pagination.pageSize} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`} className="text-[12px] font-rethink">
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-[6px]"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronsLeft className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-[6px]"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </Button>
+              <span className="text-[12px] font-rethink px-2">
+                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-[6px]"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-[6px]"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronsRight className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     
 
     <RecordDetailsSheet
