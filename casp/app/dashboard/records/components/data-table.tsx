@@ -3,6 +3,7 @@ import { useQuery,useQueries, useQueryClient} from "@tanstack/react-query"
 import usericon from "@/public/assets/user icon.svg"
 import emailicon from "@/public/assets/mail black.svg"
 import Image from "next/image"
+import Link from "next/link"
 import { useState } from "react"
 import {
   ColumnDef,
@@ -223,7 +224,10 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {//we loop through each header and render it, flexRender is a tanstack function that takes care of rendering the header based on whether it's a string or a React component
                     return (
-                      <TableHead key={header.id} className="text-left">
+                      <TableHead
+                        key={header.id}
+                        className={`text-left ${header.column.id === "employee_name" ? "sticky left-0 z-30 bg-background" : ""}`}
+                      >
                         {header.isPlaceholder ? null :flexRender(header.column.columnDef.header,header.getContext())}{/*this is where the header is rendered*/}
                       </TableHead>
                     )
@@ -241,10 +245,13 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
                     data-state={row.getIsSelected() && "selected"}
                     onClick={() => handleRowClick(row)}
                     onMouseEnter={() => handleRowHover(row)}//prefetching data on hover to make the details sheet load faster when the user clicks on the row
-                    className="cursor-pointer hover:bg-muted"
+                    className="group cursor-pointer hover:bg-muted"
                   >
                     {row.getVisibleCells().map((cell) => (//It returns only the cells for columns that are currently visible. If a column is hidden via your “Columns” dropdown:It disappears here automatically.
-                      <TableCell key={cell.id} className="font-rethink text-left text-[14px]">{/*we render the cell value using flexRender, we also check if the cell is in the employee_name column, if it is we add a user icon next to it*/}
+                      <TableCell
+                        key={cell.id}
+                        className={`font-rethink text-left text-[14px] ${cell.column.id === "employee_name" ? "sticky left-0 z-20 bg-background group-hover:bg-muted" : ""}`}
+                      >{/*we render the cell value using flexRender, we also check if the cell is in the employee_name column, if it is we add a user icon next to it*/}
                         <div className="flex flex-row items-center">
                           {cell.column.id === "employee_name" && (
                             <Image src={usericon} alt="user icon" className="size-[10px] mr-2" />
@@ -264,7 +271,9 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
               (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center font-rethink text-[12px]">
-                    No results found
+                    <Link href="/dashboard/add_records" className="border-1 px-[10px] py-1 rounded-md border-gray-300 hover:bg-gray-100">
+                      add record
+                    </Link>
                   </TableCell>
                 </TableRow>
               )}
@@ -359,7 +368,6 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
       isLoading={isLoading}
       employeeAssignment={employeeAssignments}
       projectAssignment={projectAssignmentData}
-      employeeSchema={employeeSchema}
     />
     </>
   )

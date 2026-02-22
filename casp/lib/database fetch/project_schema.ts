@@ -16,5 +16,5 @@ export default async function getProjectSchema({orgId}: {orgId: string}): Promis
         .eq('organization_id', orgId)
         .single();
     
-    return project_schemas?.schema?.fields ?? [];
+    return project_schemas?.schema?.fields  ?? [];
 }

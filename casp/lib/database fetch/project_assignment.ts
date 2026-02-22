@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "../supabase/admin";
 
+
 export default async function getProjectAssignments({orgId, projectId}: {orgId: string, projectId: string}){
     const supabase = supabaseAdmin;
     const { data: projectAssignments} = await supabase
@@ -21,5 +22,5 @@ export default async function getProjectAssignments({orgId, projectId}: {orgId: 
                 `)
                 .eq("organization_id", orgId)
                 .eq("project_id", projectId);
-    return projectAssignments
+    return projectAssignments;
 }

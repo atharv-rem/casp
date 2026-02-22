@@ -10,9 +10,18 @@ type EmployeeFields = {
   label: string
   required: boolean
 }
+
+type Row = {
+  "id":string,
+  "employee_name": string,
+  "employee_email": string,
+  [key: string]: string
+
+}
+
 type RecordsTableProps = {
   employeeSchema: EmployeeFields[]
-  rows: Record<string, string>[]
+  rows: Row[]
 }  
 
 export function RecordsTable({ employeeSchema, rows }: RecordsTableProps) {

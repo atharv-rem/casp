@@ -1,14 +1,6 @@
 import {supabaseAdmin} from '../supabase/admin'
 
-type customfields = Record<string, string>;
-
-type Projectdetails = {
-    "id": string,
-    "name": string,
-    "meta": customfields
-}
-
-export default async function getProjectsByOrgId({orgId}: {orgId: string}): Promise<Projectdetails[]> {
+export default async function getProjectsByOrgId({orgId}: {orgId: string}) {
     const supabase = supabaseAdmin;
     const { data: projects, error } = await supabase
         .from('projects')

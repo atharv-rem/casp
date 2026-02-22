@@ -20,29 +20,26 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import erroricon from "@/public/assets/error icon.svg"
 
-type EmployeeFields = {
-  id: string
-  key: string
-  type: string
-  label: string
-  required: boolean
-}
 
 type systemProfile = {
   "name": string 
   "email": string
 }
 
-type customProfile = Record<string, string>
+type customcolumns = {
+  id: string
+  label: string
+  value: string | number | null
+}
 
 type Employee = {
-  custom_profile: customProfile
+  custom_profile: customcolumns[]
   system_profile: systemProfile
 }
 
 type Project = {
   id: string
-  meta: Record<string, string>
+  meta: customcolumns[]
   name: string
 }
 
@@ -63,7 +60,6 @@ interface RecordDetailsSheetProps {
   isLoading: boolean
   employeeAssignment: Assignment[] | null
   projectAssignment: Assignment[] | null
-  employeeSchema: EmployeeFields[]
 }
 
 export function RecordDetailsSheet({
@@ -72,8 +68,7 @@ export function RecordDetailsSheet({
   selectedRow,
   isLoading,
   employeeAssignment,
-  projectAssignment,
-  employeeSchema,
+  projectAssignment
 }: RecordDetailsSheetProps) {
   const formatLabel = (label: string) => {
     return label.replace(/_/g, " ").toUpperCase()
@@ -126,19 +121,17 @@ export function RecordDetailsSheet({
             </TabsList>
 
             <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
-              {employee?.custom_profile && Object.keys(employee.custom_profile).length > 0 && (
+              {employee?.custom_profile && employee.custom_profile.length > 0 && (
                 <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(employee.custom_profile)
-                    .map(([id, value]) => {
-                      const field = employeeSchema?.find(f => f.id === id)
-                      const label = field?.label || ''
+                  {employee.custom_profile
+                    .map((field) => {
                       return (
-                        <div key={id}>
+                        <div key={field.id}>
                           <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
-                            {formatLabel(label)}
+                            {formatLabel(field.label)}
                           </p>
                           <p className="font-rethink text-[14px] font-bold text-black">
-                            {String(value) || "—"}
+                            {field.value == null || field.value === "" ? "—" : String(field.value)}
                           </p>
                         </div>
                       )
@@ -181,24 +174,19 @@ export function RecordDetailsSheet({
                   </div>
                 </div>
 
-                {currentProject?.meta && Object.keys(currentProject.meta).length > 0 && (
+                {currentProject?.meta && currentProject.meta.length > 0 && (
                   <div>
                     <div className="grid grid-cols-2 gap-3">
-                      {Object.entries(currentProject.meta)
-                        .map(([id, value]) => {
-                          const label = id
-                          if (typeof value === 'object' && value !== null) return null
-                          return (
-                            <div key={id}>
-                              <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
-                                {formatLabel(label)}
-                              </p>
-                              <p className="font-rethink text-[14px] font-medium text-black">
-                                {String(value) || "—"}
-                              </p>
-                            </div>
-                          )
-                        })}
+                      {currentProject.meta.map((field) => (
+                        <div key={field.id}>
+                          <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                            {formatLabel(field.label)}
+                          </p>
+                          <p className="font-rethink text-[14px] font-medium text-black">
+                            {field.value == null || field.value === "" ? "—" : String(field.value)}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}

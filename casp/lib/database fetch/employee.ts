@@ -4,11 +4,15 @@ type System_Profile = {
     "name": string,
     "email": string,
 }
-type Custom_Profile = Record<string, string>;
+type Custom_Profile = {
+    id: string,
+    label: string,
+    value: string
+}
 type EmployeeDetails = {
     id: string,
     system_profile?: System_Profile,
-    custom_profile?: Custom_Profile
+    custom_profile?: Custom_Profile[]
 }
 
 export default async function getEmployeeById({orgId}: {orgId: string}): Promise<EmployeeDetails[]> {
