@@ -2,6 +2,9 @@
 
 import usericon from "@/public/assets/user icon.svg"
 import mail from "@/public/assets/mail grey.svg"
+import cube from "@/public/assets/cube.svg"
+import piechart from "@/public/assets/piechart.svg"
+import calendar from "@/public/assets/calendar.svg"
 import Image from "next/image"
 import { flexRender } from "@tanstack/react-table"
 import {
@@ -74,6 +77,23 @@ export function RecordDetailsSheet({
     return label.replace(/_/g, " ").toUpperCase()
   }
 
+  const formatDate = (dateValue: string | null | undefined) => {
+    if (!dateValue) return "—"
+
+    const parsedDate = new Date(dateValue)
+    if (Number.isNaN(parsedDate.getTime())) return dateValue
+
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(parsedDate)
+  }
+
+  const formatDateRange = (startDate: string | null | undefined, endDate: string | null | undefined) => {
+    return `${formatDate(startDate)} - ${endDate ? formatDate(endDate) : "Present"}`
+  }
+
   const assignments = employeeAssignment ?? []
   const teamAssignments = projectAssignment ?? []
   const currentAssignment = assignments[0]
@@ -114,10 +134,10 @@ export function RecordDetailsSheet({
         : 
         assignments.length > 0 ? (
           <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
-            <TabsList className="grid w-full grid-cols-3 items-center justify-center py-[4px] px-[5px] shadow-xs h-[35px]">
-              <TabsTrigger value="details" className="font-rethink font-bold text-[14px]">Details</TabsTrigger>
-              <TabsTrigger value="project" className="font-rethink font-bold text-[14px]">Project Details</TabsTrigger>
-              <TabsTrigger value="assignments" className="font-rethink font-bold text-[14px]">Assignments</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 items-center justify-center h-[36px] p-[5px] gap-[4px]">
+                <TabsTrigger value="details" className="h-full w-full font-rethink font-bold text-[14px]">Details</TabsTrigger>
+                <TabsTrigger value="project" className="h-full w-full font-rethink font-bold text-[14px]">Project Details</TabsTrigger>
+                <TabsTrigger value="assignments" className="h-full w-full font-rethink font-bold text-[14px]">Assignments</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
@@ -141,18 +161,23 @@ export function RecordDetailsSheet({
 
               {assignments.length > 0 ? (
                 <>
-                  <h3 className="font-rethink text-[11px] font-medium mt-4 text-[#909090]">ASSIGNED PROJECTS</h3>
-                  <div className="space-y-2 mt-[5px] w-auto">
+                  <div className="mt-[15px] w-auto rounded-[10px] flex flex-col border-[1.5px] border-[#f2f2f2] bg-[#f9f9f9] ">
+                    <div className="tracking-wider flex flex-row items-center justify-start px-[10px] py-[5px] rounded-t-[8px]">
+                      <Image src={cube} alt="cube icon" className="size-[15px] inline-block mr-2" />
+                      <span className="font-rethink text-[12px] font-medium text-[#575757] ">ASSIGNMENT DETAILS</span>
+                    </div>
                     {assignments.map((assignment) => (
-                      <div key={assignment.id} className="p-3 bg-[#fafafa] rounded-[8px]">
-                        <p className="font-rethink text-[14px] font-bold">{assignment.projects?.name || "—"}</p>
-                        <div className="flex gap-4 mt-1">
-                          <span className="font-rethink text-[12px] text-[#686868]">
-                            {assignment.allocation_percentage}% allocation
-                          </span>
-                          <span className="font-rethink text-[12px] text-[#686868]">
-                            {assignment.start_date} - {assignment.end_date || "Present"}
-                          </span>
+                      <div key={assignment.id} className="rounded-[10px] border-t-[1px] border-[#eaeaea] bg-white">
+                        <p className="px-[10px] py-[10px] font-rethink text-[16px] font-bold border-dashed border-b-[1.5px] border-[#e0d8d8]">{assignment.projects?.name || "—"}</p>
+                        <div className="flex flex-row gap-4 mt-1 px-[10px] py-[8px]">
+                          <div className="flex flex-row items-center justify-start">
+                            <Image src={piechart} alt="allocation icon" className="size-[15px] mr-[5px]" />
+                            <span className="font-rethink font-semibold text-[14px] text-[#575757]">{assignment.allocation_percentage}% allocated</span>
+                          </div>
+                          <div className="flex flex-row items-center justify-start">
+                            <Image src={calendar} alt="calendar icon" className="size-[15px] mr-[5px]" />
+                            <span className="font-rethink font-semibold text-[14px] text-[#575757]">{formatDateRange(assignment.start_date, assignment.end_date)}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -205,7 +230,7 @@ export function RecordDetailsSheet({
                               {assignment.allocation_percentage}% allocation
                             </span>
                             <span className="font-rethink text-[12px] text-[#686868]">
-                              {assignment.start_date} - {assignment.end_date || "Present"}
+                              {formatDateRange(assignment.start_date, assignment.end_date)}
                             </span>
                           </div>
                         </div>
@@ -235,7 +260,7 @@ export function RecordDetailsSheet({
                         {selectedRow?.original?.allocation_percentage}% allocation
                       </span>
                       <span className="font-rethink text-[12px] text-[#686868]">
-                        {selectedRow?.original?.start_date} - {selectedRow?.original?.end_date || "Present"}
+                        {formatDateRange(selectedRow?.original?.start_date, selectedRow?.original?.end_date)}
                       </span>
                     </div>
                   </div>
@@ -258,7 +283,7 @@ export function RecordDetailsSheet({
                               {assignment.allocation_percentage}% allocation
                             </span>
                             <span className="font-rethink text-[12px] text-[#686868]">
-                              {assignment.start_date} - {assignment.end_date || "Present"}
+                              {formatDateRange(assignment.start_date, assignment.end_date)}
                             </span>
                           </div>
                         </div>
