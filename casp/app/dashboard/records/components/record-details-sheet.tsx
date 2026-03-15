@@ -3,9 +3,9 @@
 import usericon from "@/public/assets/user icon.svg"
 import mail from "@/public/assets/mail grey.svg"
 import cube from "@/public/assets/cube.svg"
-import piechart from "@/public/assets/piechart.svg"
 import calendar from "@/public/assets/calendar.svg"
 import Image from "next/image"
+import { motion } from "motion/react"
 import { flexRender } from "@tanstack/react-table"
 import {
   Sheet,
@@ -63,6 +63,30 @@ interface RecordDetailsSheetProps {
   isLoading: boolean
   employeeAssignment: Assignment[] | null
   projectAssignment: Assignment[] | null
+}
+
+function AllocationProgressBar({ percentage }: { percentage: number }) {
+  const safePercentage = Number.isFinite(percentage)
+    ? Math.max(0, Math.min(100, percentage))
+    : 0
+  const isFullyAllocated = safePercentage >= 100
+
+  return (
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-1">
+        <span className="font-rethink font-semibold text-[12px] text-[#575757]">Allocated</span>
+        <span className="font-rethink font-semibold text-[12px] text-black">{safePercentage}%</span>
+      </div>
+      <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+        <motion.div
+          initial={{ width: "0%" }}
+          animate={{ width: `${safePercentage}%` }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className={`h-full w-0 rounded-full transition-colors duration-300 ${isFullyAllocated ? "bg-emerald-400" : "bg-[#575757]"}`}
+        />
+      </div>
+    </div>
+  )
 }
 
 export function RecordDetailsSheet({
@@ -134,10 +158,10 @@ export function RecordDetailsSheet({
         : 
         assignments.length > 0 ? (
           <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
-              <TabsList className="grid w-full grid-cols-3 items-center justify-center h-[36px] p-[5px] gap-[4px]">
-                <TabsTrigger value="details" className="h-full w-full font-rethink font-bold text-[14px]">Details</TabsTrigger>
-                <TabsTrigger value="project" className="h-full w-full font-rethink font-bold text-[14px]">Project Details</TabsTrigger>
-                <TabsTrigger value="assignments" className="h-full w-full font-rethink font-bold text-[14px]">Assignments</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 items-center justify-center">
+                <TabsTrigger value="details" className="h-full w-full font-rethink font-bold !text-[14px]">Details</TabsTrigger>
+                <TabsTrigger value="project" className="h-full w-full font-rethink font-bold !text-[14px]">Project Details</TabsTrigger>
+                <TabsTrigger value="assignments" className="h-full w-full font-rethink font-bold !text-[14px]">Assignments</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
@@ -169,10 +193,9 @@ export function RecordDetailsSheet({
                     {assignments.map((assignment) => (
                       <div key={assignment.id} className="rounded-[10px] border-t-[1px] border-[#eaeaea] bg-white">
                         <p className="px-[10px] py-[10px] font-rethink text-[16px] font-bold border-dashed border-b-[1.5px] border-[#e0d8d8]">{assignment.projects?.name || "—"}</p>
-                        <div className="flex flex-row gap-4 mt-1 px-[10px] py-[8px]">
+                        <div className="flex flex-col gap-3 mt-1 px-[10px] py-[8px]">
                           <div className="flex flex-row items-center justify-start">
-                            <Image src={piechart} alt="allocation icon" className="size-[15px] mr-[5px]" />
-                            <span className="font-rethink font-semibold text-[14px] text-[#575757]">{assignment.allocation_percentage}% allocated</span>
+                            <AllocationProgressBar percentage={assignment.allocation_percentage} />
                           </div>
                           <div className="flex flex-row items-center justify-start">
                             <Image src={calendar} alt="calendar icon" className="size-[15px] mr-[5px]" />
@@ -225,10 +248,10 @@ export function RecordDetailsSheet({
                           <p className="font-rethink text-[14px] font-medium">
                             {assignment.employees?.system_profile?.name || "—"}
                           </p>
+                          <div className="mt-2">
+                            <AllocationProgressBar percentage={assignment.allocation_percentage} />
+                          </div>
                           <div className="flex gap-4 mt-1">
-                            <span className="font-rethink text-[12px] text-[#686868]">
-                              {assignment.allocation_percentage}% allocation
-                            </span>
                             <span className="font-rethink text-[12px] text-[#686868]">
                               {formatDateRange(assignment.start_date, assignment.end_date)}
                             </span>
@@ -256,9 +279,7 @@ export function RecordDetailsSheet({
                       </div>
                     </div>
                     <div className="flex gap-4 mt-2">
-                      <span className="font-rethink text-[12px] text-[#686868]">
-                        {selectedRow?.original?.allocation_percentage}% allocation
-                      </span>
+                      <AllocationProgressBar percentage={selectedRow?.original?.allocation_percentage ?? 0} />
                       <span className="font-rethink text-[12px] text-[#686868]">
                         {formatDateRange(selectedRow?.original?.start_date, selectedRow?.original?.end_date)}
                       </span>
@@ -278,10 +299,10 @@ export function RecordDetailsSheet({
                           className={`p-3 rounded-[8px] ${assignment.projects?.id === currentProject?.id ? 'bg-[#fafafa]' : 'bg-[#fafafa]'}`}
                         >
                           <p className="font-rethink text-[14px] font-medium">{assignment.projects?.name || "—"}</p>
+                          <div className="mt-2">
+                            <AllocationProgressBar percentage={assignment.allocation_percentage} />
+                          </div>
                           <div className="flex gap-4 mt-1">
-                            <span className="font-rethink text-[12px] text-[#686868]">
-                              {assignment.allocation_percentage}% allocation
-                            </span>
                             <span className="font-rethink text-[12px] text-[#686868]">
                               {formatDateRange(assignment.start_date, assignment.end_date)}
                             </span>

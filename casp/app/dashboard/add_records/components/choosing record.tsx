@@ -31,8 +31,8 @@ export function ChoosingRecords( {orgId, empfields, projfields, projectList }: {
         <div className="w-full flex flex-row items-center justify-start gap-6">
             <Tabs defaultValue="single record">
                 <TabsList className="">
-                    <TabsTrigger value="single record" onClick={() => setNumberOfRecords('single')} className="font-rethink font-bold h-[25px]">Single Record</TabsTrigger>
-                    <TabsTrigger value="bulk records" onClick={() => setNumberOfRecords('bulk')} className="font-rethink font-bold h-[25px]">Bulk Records</TabsTrigger>
+                    <TabsTrigger value="single record" onClick={() => setNumberOfRecords('single')} className="font-rethink font-bold h-[25px] !text-[14px]">Single Record</TabsTrigger>
+                    <TabsTrigger value="bulk records" onClick={() => setNumberOfRecords('bulk')} className="font-rethink font-bold h-[25px] !text-[14px]">Bulk Records</TabsTrigger>
                 </TabsList>
                 <TabsContent value="single record"></TabsContent>
                 <TabsContent value="bulk records"></TabsContent>

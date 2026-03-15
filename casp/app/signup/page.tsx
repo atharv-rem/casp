@@ -31,8 +31,9 @@ export default function SignupPage() {
   const [signupError, setSignupError] = useState<string | null>(null);
   const [signupButtonState, setSignupButtonState] = useState<string | null>("Create");
 
+  // Function to handle form submission
   const Signupsubmit = async (data: SignupSchema) => {
-    const signup_api = await fetch("/api/signup", {
+    const signup_api = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -49,12 +50,12 @@ export default function SignupPage() {
 
   return (
     <>
-    <div className="flex flex-row items-center justify-between h-dvh w-full bg-white">
-      <div className="w-1/2 h-full flex flex-col items-center justify-center">
-        <div className="w-3/4 items-start justify-center">
+    <div className="flex flex-row items-center lg:items-stretch justify-between min-h-dvh w-full bg-white">
+      <div className="lg:w-1/2 w-full min-h-dvh lg:h-full flex flex-col items-center justify-center px-8 py-10 sm:px-20">
+        <div className="w-full max-w-md lg:max-w-xl items-start justify-center">
           <div className="flex flex-row justify-start items-center">
-            <h1 className="text-[30px] font-rethink font-medium">Create Organization</h1>
-            <Image src={building} alt="building" width={30} height={30} className="ml-2"/>
+            <h1 className="text-[26px] sm:text-[30px] font-rethink font-medium">Create Organization</h1>
+            <Image src={building} alt="building" width={30} height={30} className="ml-2 w-6 h-6 sm:w-8 sm:h-8"/>
           </div>
           {signupError && 
             <div className="flex flex-row items-center mt-1 mb-1">
@@ -62,53 +63,53 @@ export default function SignupPage() {
               <p className="text-red-500 font-rethink font-bold text-[12px]">{signupError}</p>
             </div>
           }
-          <p className="w-full items-center justify-center text-gray-500 font-rethink text-[14px] mb-[10px]">
+          <p className="w-full items-center justify-center text-gray-500 font-rethink text-[13px] sm:text-[14px] mb-2 sm:mb-2.5">
             Already have an account? <Link href="/login" className="text-black underline cursor-pointer font-semibold">log in</Link>
           </p>
 
-          <form onSubmit={handleSubmit(Signupsubmit)} className="w-3/4 items-start justify-center">
-              <div className="flex flex-col gap-2 mb-[10px]">
+          <form onSubmit={handleSubmit(Signupsubmit)} className="w-full sm:w-4/5 lg:w-3/4 items-start justify-center">
+              <div className="flex flex-col gap-2 mb-2 sm:mb-2.5">
                 <Label htmlFor="name" className="text-gray-700 text-[12px] font-rethink font-semibold">Name</Label>
                 {errors.name && <p className="text-red-500 text-[12px] font-bold">{errors.name.message}</p>}
                 <Input {...register("name")} id="name" type="text" placeholder="john doe" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
               </div>
               
-              <div className="flex flex-col gap-2 mb-[10px]">
+              <div className="flex flex-col gap-2 mb-2 sm:mb-2.5">
                 <Label htmlFor="email" className="text-gray-700 text-[12px] font-rethink font-semibold">Email</Label>
                 {errors.email && <p className="text-red-500 text-[12px] font-bold">{errors.email.message}</p>}
                 <Input {...register("email")} id="email" type="email" placeholder="john.doe@example.com" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
               </div>
               
-              <div className="flex flex-col gap-2 mb-[10px]">
+              <div className="flex flex-col gap-2 mb-2 sm:mb-2.5">
                 <Label htmlFor="password" className="text-gray-700 text-[12px] font-rethink font-semibold">Password</Label>
                 {errors.password && <p className="text-red-500 text-[12px] font-bold">{errors.password.message}</p>}
                 <Input {...register("password")} id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
               </div>
                             
-              <div className="flex flex-col gap-2 mb-[15px]">
+              <div className="flex flex-col gap-2 mb-3 sm:mb-4">
                 <Label htmlFor="organizationName" className="text-gray-700 text-[12px] font-rethink font-semibold">Organization Name</Label>
                 {errors.organizationName && <p className="text-red-500 text-[12px] font-bold">{errors.organizationName.message}</p>}
                 <Input {...register("organizationName")} id="organizationName" type="text" placeholder="acme inc" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
               </div>
               
-              <div className="flex flex-row items-center gap-2 mb-[15px]">
-                <Checkbox id="terms" className="rounded-[4px]" />
-                <Label htmlFor="terms" className="font-rethink text-[12px] text-gray-400 cursor-pointer flex flex-row text-wrap">
+              <div className="flex flex-row items-start gap-2 mb-3 sm:mb-4">
+                <Checkbox id="terms" className="rounded-lg" />
+                <Label htmlFor="terms" className="font-rethink text-[12px] text-gray-400 cursor-pointer flex flex-row flex-wrap">
                   agree to <span className="underline cursor-pointer text-black">Terms of Service</span> and <span className="underline cursor-pointer text-black">Privacy Policy</span>.
                 </Label>
               </div>
               
-              <button disabled={isSubmitting} type="submit" className=" bg-black hover:bg-gray-800 text-white font-geist font-bold py-[4px] px-[14px] rounded-[12px]">{signupButtonState}</button>
+              <button disabled={isSubmitting} type="submit" className="bg-black hover:bg-gray-800 text-white font-geist font-bold py-1 px-4 rounded-[10px] lg:rounded-2xl w-full sm:w-auto">{signupButtonState}</button>
           </form>
         </div>
       </div>
-      <div className="relative w-1/2 h-full">
+      <div className="relative hidden lg:block lg:w-1/2 lg:min-h-dvh">
         <Image src={signupImage} alt="signup image" placeholder="blur" fill className="object-cover"/>
       </div>
     </div>
-    <div className="w-auto fixed bottom-7 right-7 z-50">
+    <div className="w-auto fixed bottom-7 right-7 z-50 lg:block hidden">
       <p className="font-rethink text-[20px] text-black font-medium text-right">“efficiently manage and</p>
-      <p className="font-rethink text-[20px] text-black font-medium text-right leading-[12px]"> assign stuff to your workforce”</p>
+      <p className="font-rethink text-[20px] text-black font-medium text-right leading-3"> assign stuff to your workforce”</p>
     </div>
     </>
   );
