@@ -4,8 +4,9 @@ import usericon from "@/public/assets/user icon.svg"
 import mail from "@/public/assets/mail grey.svg"
 import cube from "@/public/assets/cube.svg"
 import calendar from "@/public/assets/calendar.svg"
+import pie from "@/public/assets/piechart.svg"
+import team from "@/public/assets/team.svg"
 import Image from "next/image"
-import { motion } from "motion/react"
 import { flexRender } from "@tanstack/react-table"
 import {
   Sheet,
@@ -65,30 +66,6 @@ interface RecordDetailsSheetProps {
   projectAssignment: Assignment[] | null
 }
 
-function AllocationProgressBar({ percentage }: { percentage: number }) {
-  const safePercentage = Number.isFinite(percentage)
-    ? Math.max(0, Math.min(100, percentage))
-    : 0
-  const isFullyAllocated = safePercentage >= 100
-
-  return (
-    <div className="w-full">
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-rethink font-semibold text-[12px] text-[#575757]">Allocated</span>
-        <span className="font-rethink font-semibold text-[12px] text-black">{safePercentage}%</span>
-      </div>
-      <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: "0%" }}
-          animate={{ width: `${safePercentage}%` }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className={`h-full w-0 rounded-full transition-colors duration-300 ${isFullyAllocated ? "bg-emerald-400" : "bg-[#575757]"}`}
-        />
-      </div>
-    </div>
-  )
-}
-
 export function RecordDetailsSheet({
   open,
   onOpenChange,
@@ -122,10 +99,6 @@ export function RecordDetailsSheet({
   const teamAssignments = projectAssignment ?? []
   const currentAssignment = assignments[0]
   const employee = currentAssignment?.employees
-  const currentProject = currentAssignment?.projects
-  const currentProjectTeamAssignments = teamAssignments.filter(
-    (assignment) => !currentProject?.id || assignment.projects?.id === currentProject.id
-  )
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -157,11 +130,10 @@ export function RecordDetailsSheet({
         // If not loading and fetch worked, show the details in tabs
         : 
         assignments.length > 0 ? (
-          <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
-              <TabsList className="grid w-full grid-cols-3 items-center justify-center">
-                <TabsTrigger value="details" className="h-full w-full font-rethink font-bold !text-[14px]">Details</TabsTrigger>
-                <TabsTrigger value="project" className="h-full w-full font-rethink font-bold !text-[14px]">Project Details</TabsTrigger>
-                <TabsTrigger value="assignments" className="h-full w-full font-rethink font-bold !text-[14px]">Assignments</TabsTrigger>
+          <Tabs defaultValue="details" className="overflow-hidden flex flex-col">
+            <TabsList className="inline-grid p-1 !bg-[#f9f9f9] w-full grid-cols-2 items-center justify-center">
+              <TabsTrigger value="details" className="h-full font-rethink font-bold !text-[14px]">Employee Details</TabsTrigger>
+              <TabsTrigger value="project" className="h-full font-rethink font-bold !text-[14px]">Project Details</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
@@ -193,15 +165,16 @@ export function RecordDetailsSheet({
                     {assignments.map((assignment) => (
                       <div key={assignment.id} className="rounded-[10px] border-t-[1px] border-[#eaeaea] bg-white">
                         <p className="px-[10px] py-[10px] font-rethink text-[16px] font-bold border-dashed border-b-[1.5px] border-[#e0d8d8]">{assignment.projects?.name || "—"}</p>
-                        <div className="flex flex-col gap-3 mt-1 px-[10px] py-[8px]">
-                          <div className="flex flex-row items-center justify-start">
-                            <AllocationProgressBar percentage={assignment.allocation_percentage} />
+                          <div className="flex flex-row items-center justify-between px-[10px] py-[10px]">
+                            <div className="flex flex-row items-center justify-start">
+                              <Image src={pie} alt="allocation icon" className="size-[15px] mr-1" />
+                              <div><span className="font-bold">{assignment.allocation_percentage}%</span> allocated</div>
+                            </div>
+                            <div className="flex flex-row items-center justify-end">
+                              <Image src={calendar} alt="calendar icon" className="size-[15px] mr-1" />
+                              <span className="font-rethink font-semibold text-[14px] text-[#575757]">{formatDateRange(assignment.start_date, assignment.end_date)}</span>
+                            </div>  
                           </div>
-                          <div className="flex flex-row items-center justify-start">
-                            <Image src={calendar} alt="calendar icon" className="size-[15px] mr-[5px]" />
-                            <span className="font-rethink font-semibold text-[14px] text-[#575757]">{formatDateRange(assignment.start_date, assignment.end_date)}</span>
-                          </div>
-                        </div>
                       </div>
                     ))}
                   </div>
@@ -212,108 +185,76 @@ export function RecordDetailsSheet({
             </TabsContent>
 
             <TabsContent value="project" className="flex-1 overflow-y-auto mt-4">
-              <div className="space-y-4">
-                <div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">NAME</p>
-                      <p className="font-rethink text-[14px] font-medium text-black">{currentProject?.name || "—"}</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-[25px]">
+                {assignments.map((assignment, index) => {
+                  const assignmentProject = assignment.projects
+                  const projectTeamAssignments = teamAssignments.filter(
+                    (teamAssignment) => !assignmentProject?.id || teamAssignment.projects?.id === assignmentProject.id
+                  )
 
-                {currentProject?.meta && currentProject.meta.length > 0 && (
-                  <div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {currentProject.meta.map((field) => (
-                        <div key={field.id}>
-                          <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
-                            {formatLabel(field.label)}
-                          </p>
-                          <p className="font-rethink text-[14px] font-medium text-black">
-                            {field.value == null || field.value === "" ? "—" : String(field.value)}
-                          </p>
+                  return (
+                    <div key={assignment.id} className="grid grid-cols-2 border-[1.5px] border-[#f2f2f2] rounded-[10px]">
+
+                      <div className="col-span-2 flex flex-row items-center justify-start px-[10px] py-[4px] rounded-t-[8px] bg-[#f9f9f9] border-dashed border-b-[1.5px] border-[#e0d8d8]">
+                        <Image src={cube} alt="cube icon" className="size-[15px] inline-block mr-2" />
+                        <div className="font-rethink text-[14px] font-medium text-[#575757]">PROJECT {index + 1}</div>
+                      </div>
+                      <div className="font-rethink text-[16px] font-bold text-black col-span-2 border-dashed border-b-[1.5px] border-[#e0d8d8]">
+                        <p className="px-[10px] py-[5px]">{assignmentProject?.name || "—"}</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 col-span-2 px-[10px] py-[5px] bg-[#f9f9f9] border-dashed border-b-[1.5px] border-[#e0d8d8]">
+                        {assignmentProject?.meta && assignmentProject.meta.length > 0 && (
+                          <>
+                            {assignmentProject.meta.map((field) => (
+                              <div key={field.id}>
+                                <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                                  {formatLabel(field.label)}
+                                </p>
+                                <p className="font-rethink text-[14px] font-medium text-black">
+                                  {field.value == null || field.value === "" ? "—" : String(field.value)}
+                                </p>
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      </div>
+
+                      <div className="col-span-2">
+                        <div className="flex flex-row items-center justify-start py-[5px] px-[10px] border-dashed border-b-[1.5px] border-[#e0d8d8]">
+                          <Image src={team} alt="team icon" className="size-[15px] inline-block mr-2" />
+                          <h3 className="font-rethink text-[12px] font-medium text-[#575757]">TEAM MEMBERS</h3>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <h3 className="font-rethink text-[11px] font-medium mt-4 text-[#909090]">TEAM MEMBERS</h3>
-                  {currentProjectTeamAssignments.length > 0 ? (
-                    <div className="space-y-2 mt-[5px]">
-                      {currentProjectTeamAssignments.map((assignment) => (
-                        <div key={assignment.id} className="p-3 bg-[#fafafa] rounded-[8px]">
-                          <p className="font-rethink text-[14px] font-medium">
-                            {assignment.employees?.system_profile?.name || "—"}
-                          </p>
-                          <div className="mt-2">
-                            <AllocationProgressBar percentage={assignment.allocation_percentage} />
+                        {projectTeamAssignments.length > 0 ? (
+                          <div className="bg-[#f9f9f9] rounded-b-[10px]">
+                            {projectTeamAssignments.map((teamAssignment) => (
+                              <div key={teamAssignment.id} className="px-[10px] py-[10px] first:border-t-0 border-t-[1px] border-[#eaeaea]">
+                                <div className="flex flex-row items-center justify-start">
+                                  <Image src={usericon} alt="user icon" className="size-[12px] inline-block mr-2" />
+                                  <p className="font-rethink text-[14px] font-medium">
+                                    {teamAssignment.employees?.system_profile?.name || "—"}
+                                  </p>
+                                </div>
+                                <div className="flex flex-row items-center justify-between mt-[5px]">
+                                  <div className="flex flex-row items-center justify-start">
+                                    <Image src={pie} alt="allocation icon" className="size-[14px] mr-1" />
+                                    <div><span className="font-bold">{teamAssignment.allocation_percentage}%</span> allocated</div>
+                                  </div>
+                                  <div className="flex flex-row items-center justify-end">
+                                    <Image src={calendar} alt="calendar icon" className="size-[14px] mr-1" />
+                                    <span className="font-rethink font-semibold text-[14px] text-[#575757]">{formatDateRange(teamAssignment.start_date, teamAssignment.end_date)}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                          <div className="flex gap-4 mt-1">
-                            <span className="font-rethink text-[12px] text-[#686868]">
-                              {formatDateRange(assignment.start_date, assignment.end_date)}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="font-rethink text-[14px] text-[#686868]">No team members assigned</p>
-                  )}
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="assignments" className="flex-1 overflow-y-auto mt-4">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-rethink text-[11px] font-medium mb-3 text-[#909090]">CURRENT ASSIGNMENT</h3>
-                  <div className="p-3 bg-[#fafafa] rounded-[8px]">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-rethink text-[14px] font-medium">
-                          {currentProject?.name || "—"}
-                        </p>
+                        ) : (
+                          <p className="font-rethink text-[14px] text-[#686868]">No team members assigned</p>
+                        )}
                       </div>
                     </div>
-                    <div className="flex gap-4 mt-2">
-                      <AllocationProgressBar percentage={selectedRow?.original?.allocation_percentage ?? 0} />
-                      <span className="font-rethink text-[12px] text-[#686868]">
-                        {formatDateRange(selectedRow?.original?.start_date, selectedRow?.original?.end_date)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-rethink text-[11px] font-medium mb-3 text-[#909090]">
-                    ALL ASSIGNMENTS FOR {employee?.system_profile?.name.toUpperCase() || "EMPLOYEE"}
-                  </h3>
-                  {assignments.length > 0 ? (
-                    <div className="space-y-2">
-                      {assignments.map((assignment) => (
-                        <div
-                          key={assignment.id}
-                          className={`p-3 rounded-[8px] ${assignment.projects?.id === currentProject?.id ? 'bg-[#fafafa]' : 'bg-[#fafafa]'}`}
-                        >
-                          <p className="font-rethink text-[14px] font-medium">{assignment.projects?.name || "—"}</p>
-                          <div className="mt-2">
-                            <AllocationProgressBar percentage={assignment.allocation_percentage} />
-                          </div>
-                          <div className="flex gap-4 mt-1">
-                            <span className="font-rethink text-[12px] text-[#686868]">
-                              {formatDateRange(assignment.start_date, assignment.end_date)}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="font-rethink text-[14px] text-[#686868]">No assignments found</p>
-                  )}
-                </div>
+                  )
+                })}
               </div>
             </TabsContent>
           </Tabs>

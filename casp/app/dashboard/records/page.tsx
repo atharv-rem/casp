@@ -46,7 +46,7 @@ export default async function ShowAllRecords() {
   }) ?? []
 
   return (
-    <div className="w-full h-dvh pl-[20px] pr-[30px] pt-[15px]">
+    <div className="w-full h-dvh pl-[20px] pr-[20px] pt-[15px]">
       <RecordsTable
         employeeSchema={employeeSchema}
         rows={rows}
