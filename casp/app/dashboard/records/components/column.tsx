@@ -21,6 +21,7 @@ export function getColumns(employeeFields: EmployeeFields[]): ColumnDef<Row>[] {
     },
     ...employeeFields.map(field => ({
       accessorKey: field.id,
+      meta:{ label: field.label },
       header: () => <span className="font-rethink font-bold text-[14px]">{field.label.slice(0, 1).toUpperCase() + field.label.toLowerCase().slice(1)}</span>
     })) 
   ]

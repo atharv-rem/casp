@@ -91,7 +91,7 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
     const [EmployeeId, setEmployeeId] = useState<string | null>(null)
 
     //fetching employee assignments based on the selected employee id
-    const {data: employeeAssignments, isLoading,} = useQuery({
+    const {data: employeeAssignments, isLoading, isFetching, isError, refetch} = useQuery({
       queryKey: ["recordDetails", EmployeeId],
       queryFn: async () => {
         if (!EmployeeId) return null
@@ -366,8 +366,13 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
       onOpenChange={setIsSheetOpen}
       selectedRow={selectedRow}
       isLoading={isLoading}
+      isError={isError}
       employeeAssignment={employeeAssignments}
       projectAssignment={projectAssignmentData}
+      onRetry={() => {
+        void refetch()
+      }}
+      isRetrying={isFetching && !isLoading}
     />
     </>
   )

@@ -15,6 +15,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button"
 import {
   Tabs,
   TabsContent,
@@ -62,8 +63,11 @@ interface RecordDetailsSheetProps {
   onOpenChange: (open: boolean) => void
   selectedRow: any
   isLoading: boolean
+  isError?: boolean
   employeeAssignment: Assignment[] | null
   projectAssignment: Assignment[] | null
+  onRetry?: () => void
+  isRetrying?: boolean
 }
 
 export function RecordDetailsSheet({
@@ -71,8 +75,11 @@ export function RecordDetailsSheet({
   onOpenChange,
   selectedRow,
   isLoading,
+  isError = false,
   employeeAssignment,
-  projectAssignment
+  projectAssignment,
+  onRetry,
+  isRetrying = false,
 }: RecordDetailsSheetProps) {
   const formatLabel = (label: string) => {
     return label.replace(/_/g, " ").toUpperCase()
@@ -97,8 +104,6 @@ export function RecordDetailsSheet({
 
   const assignments = employeeAssignment ?? []
   const teamAssignments = projectAssignment ?? []
-  const currentAssignment = assignments[0]
-  const employee = currentAssignment?.employees
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -137,24 +142,24 @@ export function RecordDetailsSheet({
             </TabsList>
 
             <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
-              {employee?.custom_profile && employee.custom_profile.length > 0 && (
-                <div className="grid grid-cols-2 gap-3">
-                  {employee.custom_profile
-                    .map((field) => {
+              <div className="grid grid-cols-2">
+                {selectedRow && selectedRow.getVisibleCells().map((cell: any) => {
+                    const columnMeta = cell.column.columnDef.meta as { label?: string } | undefined
+                    const columnLabel = columnMeta?.label ?? cell.column.id
+                    if (columnLabel != "employee_name" && columnLabel != "employee_email") {
                       return (
-                        <div key={field.id}>
-                          <p className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
-                            {formatLabel(field.label)}
-                          </p>
-                          <p className="font-rethink text-[14px] font-bold text-black">
-                            {field.value == null || field.value === "" ? "—" : String(field.value)}
-                          </p>
-                        </div>
+                          <div key={cell.id} className="">
+                              <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                                {columnLabel.replace(/_/g, " ")}
+                              </h3>
+                              <div className="font-rethink text-[14px] font-medium text-black">
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </div>
+                          </div>
                       )
-                    })}
-                </div>
-              )}
-
+                  }
+                })}
+              </div>
               {assignments.length > 0 ? (
                 <>
                   <div className="mt-[15px] w-auto rounded-[10px] flex flex-col border-[1.5px] border-[#f2f2f2] bg-[#f9f9f9] ">
@@ -162,21 +167,23 @@ export function RecordDetailsSheet({
                       <Image src={cube} alt="cube icon" className="size-[15px] inline-block mr-2" />
                       <span className="font-rethink text-[12px] font-medium text-[#575757] ">ASSIGNMENT DETAILS</span>
                     </div>
-                    {assignments.map((assignment) => (
-                      <div key={assignment.id} className="rounded-[10px] border-t-[1px] border-[#eaeaea] bg-white">
-                        <p className="px-[10px] py-[10px] font-rethink text-[16px] font-bold border-dashed border-b-[1.5px] border-[#e0d8d8]">{assignment.projects?.name || "—"}</p>
-                          <div className="flex flex-row items-center justify-between px-[10px] py-[10px]">
-                            <div className="flex flex-row items-center justify-start">
-                              <Image src={pie} alt="allocation icon" className="size-[15px] mr-1" />
-                              <div><span className="font-bold">{assignment.allocation_percentage}%</span> allocated</div>
+                    <div className="bg-white rounded-[10px]">
+                      {assignments.map((assignment) => (
+                        <div key={assignment.id} className="first:rounded-[10px] first:border-t-[1px] rounded-b-[10px] border-t-[1.5px] border-[#eaeaea] bg-white">
+                          <p className="px-[10px] py-[5px] font-rethink text-[16px] font-bold border-dashed border-b-[1.5px] border-[#e0d8d8]">{assignment.projects?.name || "—"}</p>
+                            <div className="flex flex-row items-center justify-between px-[10px] py-[5px]">
+                              <div className="flex flex-row items-center justify-start">
+                                <Image src={pie} alt="allocation icon" className="size-[15px] mr-1" />
+                                <div><span className="font-bold">{assignment.allocation_percentage}%</span> allocated</div>
+                              </div>
+                              <div className="flex flex-row items-center justify-end">
+                                <Image src={calendar} alt="calendar icon" className="size-[15px] mr-1" />
+                                <span className="font-rethink font-semibold text-[14px] text-[#575757]">{formatDateRange(assignment.start_date, assignment.end_date)}</span>
+                              </div>  
                             </div>
-                            <div className="flex flex-row items-center justify-end">
-                              <Image src={calendar} alt="calendar icon" className="size-[15px] mr-1" />
-                              <span className="font-rethink font-semibold text-[14px] text-[#575757]">{formatDateRange(assignment.start_date, assignment.end_date)}</span>
-                            </div>  
-                          </div>
-                      </div>
-                    ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </>
               ) : (
@@ -249,7 +256,7 @@ export function RecordDetailsSheet({
                             ))}
                           </div>
                         ) : (
-                          <p className="font-rethink text-[14px] text-[#686868]">No team members assigned</p>
+                          <p className="font-rethink text-[14px] text-[#686868] rounded-[10px] py-[10px] px-[10px] bg-[#fefefe] text-center">No team members assigned</p>
                         )}
                       </div>
                     </div>
@@ -265,21 +272,29 @@ export function RecordDetailsSheet({
           <div className="grid grid-cols-2 overflow-y-auto mt-4">
             {selectedRow &&
               selectedRow.getVisibleCells().map((cell: any) => {
-                const header = cell.column.columnDef.header
-                return (
-                    <div key={cell.id} className="">
-                        <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
-                        {typeof header === "string" ? header : cell.column.id.replace(/_/g, " ")}
-                        </h3>
-                        <div className="font-rethink text-[14px] font-medium text-black mb-[20px]">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                    </div>
-                )
+                const columnMeta = cell.column.columnDef.meta as { label?: string } | undefined
+                const columnLabel = columnMeta?.label ?? cell.column.id
+                if (columnLabel != "employee_name" && columnLabel != "employee_email") {
+                  return (
+                      <div key={cell.id} className="">
+                          <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
+                            {columnLabel.replace(/_/g, " ")}
+                          </h3>
+                          <div className="font-rethink text-[14px] font-medium text-black mb-[20px]">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                      </div>
+                  )
+              }
             })}
-            <div className="col-span-2 p-[20px] flex flex-row items-center justify-center">
-                <Image src={erroricon} alt="error icon" className="size-[20px] mr-2" />
-                <span className="font-rethink font-semibold text-[14px] text-red-500">Couldn&apos;t display details for {selectedRow?.original?.employee_name || "this employee"}</span>
+            <div className="col-span-2 py-[10px]  px-[10px] flex flex-row items-center justify-between border-[1.5px] border-dashed bg-[#fefefe] border-[#eaeaea] rounded-[10px]">
+                <div className="flex flex-row items-center justify-center text-center">
+                  <Image src={erroricon} alt="error icon" className="size-[20px] mr-2" />
+                  <span className="font-rethink font-semibold text-[14px] leading-[15px] text-red-500">Couldn&apos;t display details</span>
+                </div>
+                <Button type="button" variant="outline" className="font-rethink text-[14px] py-0 px-[20px] rounded-[10px]" onClick={onRetry} disabled={!onRetry || isRetrying || !isError}>
+                  {isRetrying ? "Retrying..." : "Retry"}
+                </Button>
             </div>
           </div>
         )}
