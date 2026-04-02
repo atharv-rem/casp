@@ -7,6 +7,8 @@ import calendar from "@/public/assets/calendar.svg"
 import pie from "@/public/assets/piechart.svg"
 import team from "@/public/assets/team.svg"
 import Image from "next/image"
+import occupied from "@/public/assets/occupied.svg"
+import free from "@/public/assets/freeuser.svg"
 import { flexRender } from "@tanstack/react-table"
 import {
   Sheet,
@@ -108,6 +110,21 @@ export function RecordDetailsSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[400px] p-[20px] flex flex-col">
+          <div className="font-rethink text-[12px] font-medium text-black flex flex-row items-center justify-start w-fit border-[1.5px] border-dashed border-[#eaeaea] rounded-[8px] px-[8px] py-[2px]">
+            {assignments.reduce((total, assignment) => total + Number(assignment.allocation_percentage), 0)
+            === 100 ? (
+              <>          
+                <Image src={occupied} alt="fully occupied icon" className="size-[15px] mr-1" />
+                <span className="">Fully Occupied</span>
+              </>
+            ) 
+            : 
+              <>
+              <Image src={free} alt="partially occupied icon" className="size-[15px] mr-1" />
+              <span>Free by {100 - assignments.reduce((total, assignment) => total + Number(assignment.allocation_percentage), 0)}%</span>
+              </>
+            }
+          </div>
         <SheetHeader>
           <div className="flex flex-row items-center justify-start mb-[5px]">
             <SheetTitle className="font-rethink hidden">Record Details</SheetTitle>
@@ -187,7 +204,7 @@ export function RecordDetailsSheet({
                   </div>
                 </>
               ) : (
-                <p className="font-rethink text-[14px] text-[#686868]">No other project assignments</p>
+                <p className="font-rethink text-[14px] text-[#686868] border-[1.5px] border-dashed border-[#eaeaea] rounded-[10px] px-[10px] py-[5px] bg-[#f9f9f9]">No other project assignments</p>
               )}
             </TabsContent>
 
