@@ -69,11 +69,7 @@ function normalizeSystemProfile(value: unknown): { name?: string; email?: string
 export function RecordsTable({ employeeSchema }: RecordsTableProps) {
   const columns = getColumns(employeeSchema)
 
-  const {
-    data: employees = [],
-    isLoading,
-    isError,
-  } = useLiveQuery((q) => q.from({ employees: employeeCollection }), [])
+  const {data: employees = [],isLoading, isError,} = useLiveQuery((q) => q.from({ employees: employeeCollection }), [])
 
   const rows: Row[] = employees.map((employee: Employee) => {
     const customProfile = normalizeCustomProfile(employee.custom_profile)

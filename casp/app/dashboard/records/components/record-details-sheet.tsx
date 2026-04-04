@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
 import erroricon from "@/public/assets/error icon.svg"
+import { useRouter } from "next/navigation"
 
 
 type systemProfile = {
@@ -83,6 +84,8 @@ export function RecordDetailsSheet({
   onRetry,
   isRetrying = false,
 }: RecordDetailsSheetProps) {
+  const router = useRouter()
+
   const formatLabel = (label: string) => {
     return label.replace(/_/g, " ").toUpperCase()
   }
@@ -126,19 +129,27 @@ export function RecordDetailsSheet({
             }
           </div>
         <SheetHeader>
-          <div className="flex flex-row items-center justify-start mb-[5px]">
+          <div className="flex flex-row items-center justify-between mb-[5px]">
             <SheetTitle className="font-rethink hidden">Record Details</SheetTitle>
             <SheetDescription className="hidden font-rethink"></SheetDescription>
-            <div className="size-[50px] bg-[#FAFAFA] rounded-[10px] flex items-center justify-center mr-4">
-              <Image src={usericon} alt="user icon" className="size-[26px]" />
-            </div>
-            <div className=" flex flex-col items-start justify-center gap-1">
-              <div className="font-rethink text-[22px] font-semibold mb-0 leading-none">{selectedRow?.original?.employee_name || ""}</div>
-              <div className="flex flex-row items-center justify-center leading-none">
-                <Image src={mail} alt="mail icon" className="size-[15px] mr-2" />
-                <span className="font-rethink text-[12px] font-medium text-[#909090] leading-none">{selectedRow?.original?.employee_email || ""}</span>
+            <div className="flex flex-row items-center justify-center">
+              <div className="size-[50px] bg-[#FAFAFA] rounded-[10px] flex items-center justify-center mr-4">
+                <Image src={usericon} alt="user icon" className="size-[26px]" />
+              </div>
+              <div className=" flex flex-col items-start justify-center gap-1">
+                <div className="font-rethink text-[22px] font-semibold mb-0 leading-none">{selectedRow?.original?.employee_name || ""}</div>
+                <div className="flex flex-row items-center justify-center leading-none">
+                  <Image src={mail} alt="mail icon" className="size-[15px] mr-2" />
+                  <span className="font-rethink text-[12px] font-medium text-[#909090] leading-none">{selectedRow?.original?.employee_email || ""}</span>
+                </div>
               </div>
             </div>
+            <button
+              onClick={() => router.push(`/dashboard/employee/${selectedRow?.original?.employee_id}`)}
+              className=" bg-[#ffffff] justify-center items-center border-[1.5px] border-dashed border-[#eaeaea] rounded-[8px] px-[10px]"
+            >
+              <span className="font-rethink text-[14px] font-medium text-black">edit</span>
+            </button>
           </div>
         </SheetHeader>
 
