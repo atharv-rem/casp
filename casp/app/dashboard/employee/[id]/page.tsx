@@ -118,7 +118,7 @@ export default function EmployeeDetailPage({ params }: PageProps) {
       {/* Employee Card with QR Code */}
       {!hideEmployeeCard && <div className="flex w-1/2 items-center justify-center">
         <motion.div
-          className="relative h-[420px] w-[280px] flex items-center justify-center"
+          className="relative h-[390px] w-[250px] flex items-center justify-center"
           initial="rest"
           whileHover="hover"
           animate="rest"
@@ -131,7 +131,7 @@ export default function EmployeeDetailPage({ params }: PageProps) {
           
           {/* 2. The Back Card */}
           <motion.div
-            className="absolute top-0 left-0 z-0 flex h-[420px] w-[280px] origin-center flex-col items-start justify-end rounded-xl bg-black pl-[35px] pb-[20px] shadow-2xl"
+            className="absolute top-0 left-0 z-0 flex h-[390px] w-[250px] origin-center flex-col items-start justify-end rounded-xl bg-black pl-[35px] pb-[20px] shadow-2xl"
             variants={{
               rest: { rotate: 5, x: 0, y: 0 },
               hover: { rotate: 9, x: -10, y: -6 },
@@ -146,7 +146,7 @@ export default function EmployeeDetailPage({ params }: PageProps) {
 
           {/* The Front Card */}
           <motion.div
-            className="relative z-10 flex h-[420px] w-[280px] flex-col items-center justify-center overflow-hidden rounded-xl bg-[url('/assets/woman.jpg')] bg-cover bg-center shadow-2xl"
+            className="relative z-10 flex h-[390px] w-[250px] flex-col items-center justify-center overflow-hidden rounded-xl bg-[url('/assets/woman.jpg')] bg-cover bg-center shadow-2xl"
             variants={{
               rest: { opacity: 1, y: 0, rotate: 0 },
               hover: { opacity: 0.2, y: -6, rotate: -1.2 },
