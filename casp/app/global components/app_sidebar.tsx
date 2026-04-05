@@ -34,10 +34,10 @@ const items = [
     TooltipContent: "overview of your account, including recent activity, statistics, and important notifications"
   },
   {
-    title: "Records",
-    url: "/dashboard/records",
+    title: "Employees",
+    url: "/dashboard/employees",
     icon: database,
-    TooltipContent: "view and manage all the records associated with your account"
+    TooltipContent: "view and manage all the employees associated with your account"
   },
   {
     title: "Add Records",

@@ -1,4 +1,4 @@
-import { RecordsTableClient } from "@/app/dashboard/records/components/records-table-client"
+import { RecordsTableClient } from "@/app/dashboard/employees/components/records-table-client"
 import getEmployeeSchema from "@/lib/database fetch/employee_schema"
 import getOrganizationID from "@/lib/database fetch/organization_id"
 
