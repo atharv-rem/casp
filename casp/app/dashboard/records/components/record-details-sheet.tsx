@@ -145,7 +145,9 @@ export function RecordDetailsSheet({
               </div>
             </div>
             <button
-              onClick={() => router.push(`/dashboard/employee/${selectedRow?.original?.employee_id}`)}
+              onClick={() => {
+                const id = selectedRow?.original?.id?.slice(4)
+                router.push(`/dashboard/employee/${id}`)}}
               className=" bg-[#ffffff] justify-center items-center border-[1.5px] border-dashed border-[#eaeaea] rounded-[8px] px-[10px]"
             >
               <span className="font-rethink text-[14px] font-medium text-black">edit</span>
