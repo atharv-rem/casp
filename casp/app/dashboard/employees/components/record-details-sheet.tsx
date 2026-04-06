@@ -86,6 +86,12 @@ export function RecordDetailsSheet({
 }: RecordDetailsSheetProps) {
   const router = useRouter()
 
+  const getEmployeeRoute = () => {
+    const id = selectedRow?.original?.id
+    if (!id) return null
+    return `/dashboard/employees/${id}`
+  }
+
   const formatLabel = (label: string) => {
     return label.replace(/_/g, " ").toUpperCase()
   }
@@ -145,9 +151,21 @@ export function RecordDetailsSheet({
               </div>
             </div>
             <button
+              onMouseEnter={() => {
+                const href = getEmployeeRoute()
+                if (!href) return
+                router.prefetch(href)
+              }}
+              onFocus={() => {
+                const href = getEmployeeRoute()
+                if (!href) return
+                router.prefetch(href)
+              }}
               onClick={() => {
-                const id = selectedRow?.original?.id?.slice(4)
-                router.push(`/dashboard/employees/${id}`)}}
+                const href = getEmployeeRoute()
+                if (!href) return
+                router.push(href)
+              }}
               className=" bg-[#ffffff] justify-center items-center border-[1.5px] border-dashed border-[#eaeaea] rounded-[8px] px-[10px] cursor-pointer hover:bg-[#f9f9f9] transition-colors duration-200"
             >
               <span className="font-rethink text-[14px] font-medium text-black">edit</span>

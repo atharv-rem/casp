@@ -1,9 +1,8 @@
 "use client"
-
-import { useLiveQuery } from "@tanstack/react-db"
 import { DataTable } from "./data-table"
 import { getColumns } from "./column"
-import { employeeCollection, type Employee } from "@/lib/sync/collection"
+import { useEmployeeSync } from "./sync-provider"
+import type { Employee } from "@/lib/sync/collection"
 
 type EmployeeFields = {
   id: string
@@ -68,9 +67,7 @@ function normalizeSystemProfile(value: unknown): { name?: string; email?: string
 
 export function RecordsTable({ employeeSchema }: RecordsTableProps) {
   const columns = getColumns(employeeSchema)
-
-  const {data: employees = [],isLoading, isError,} = useLiveQuery((q) => q.from({ employees: employeeCollection }), [])
-
+  const { employees, isLoading, isError } = useEmployeeSync()
   const rows: Row[] = employees.map((employee: Employee) => {
     const customProfile = normalizeCustomProfile(employee.custom_profile)
     const systemProfile = normalizeSystemProfile(employee.system_profile)
@@ -92,7 +89,7 @@ export function RecordsTable({ employeeSchema }: RecordsTableProps) {
 
   if (isLoading) {
     return (
-      <div className="w-full rounded-md border border-gray-200 p-4 text-sm text-gray-500">
+      <div className="flex w-full h-full text-sm text-gray-600 font-rethink font-regular">
         Syncing employee records...
       </div>
     )
@@ -100,7 +97,7 @@ export function RecordsTable({ employeeSchema }: RecordsTableProps) {
 
   if (isError) {
     return (
-      <div className="w-full rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+      <div className="flex w-full h-full text-sm text-red-600 font-rethink font-regular">
         Failed to load live employee records.
       </div>
     )

@@ -1,4 +1,4 @@
-import { RecordsTableClient } from "@/app/dashboard/employees/components/records-table-client"
+import { RecordsTable } from "@/app/dashboard/employees/components/records-table"
 import getEmployeeSchema from "@/lib/database fetch/employee_schema"
 import getOrganizationID from "@/lib/database fetch/organization_id"
 
@@ -10,7 +10,7 @@ type EmployeeField = {
   required: boolean
 }
 
-export default async function ShowAllRecords() {
+export default async function EmployeesPage() {
   const { OrgId } = await getOrganizationID()
 
   const employeeFields = await getEmployeeSchema({ orgId: OrgId })
@@ -22,7 +22,7 @@ export default async function ShowAllRecords() {
 
   return (
     <div className="w-full h-dvh pl-[20px] pr-[20px] pt-[15px]">
-      <RecordsTableClient employeeSchema={employeeSchema} />
+      <RecordsTable employeeSchema={employeeSchema} />
     </div>
   )
 }
