@@ -16,10 +16,10 @@ export function RightAiPanel() {
           <motion.aside
             key="ai-panel"
             initial={{ width: 0, opacity: 0, x: 24 }}
-            animate={{ width: 450, opacity: 1, x: 0 }}
+            animate={{ width: 280, opacity: 1, x: 0 }}
             exit={{ width: 0, opacity: 0, x: 24 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="h-full overflow-hidden border-l border-[#efefef]"
+            className="h-full shrink-0 overflow-hidden border-l border-[#efefef]"
           >
             <div className="flex h-full w-full flex-col bg-[#fdfdfd]">
               {/* CENTER CONTENT */}

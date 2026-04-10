@@ -194,7 +194,7 @@ export function RecordDetailsSheet({
                 {selectedRow && selectedRow.getVisibleCells().map((cell: any) => {
                     const columnMeta = cell.column.columnDef.meta as { label?: string } | undefined
                     const columnLabel = columnMeta?.label ?? cell.column.id
-                    if (columnLabel != "employee_name" && columnLabel != "employee_email") {
+                    if (columnLabel != "employee_name" && columnLabel != "employee_email" && cell.column.id != "actions") {
                       return (
                           <div key={cell.id} className="">
                               <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
@@ -322,7 +322,7 @@ export function RecordDetailsSheet({
               selectedRow.getVisibleCells().map((cell: any) => {
                 const columnMeta = cell.column.columnDef.meta as { label?: string } | undefined
                 const columnLabel = columnMeta?.label ?? cell.column.id
-                if (columnLabel != "employee_name" && columnLabel != "employee_email") {
+                if (columnLabel != "employee_name" && columnLabel != "employee_email" && cell.column.id != "actions") {
                   return (
                       <div key={cell.id} className="">
                           <h3 className="font-rethink text-[11px] font-medium text-[#909090] uppercase tracking-wider">
