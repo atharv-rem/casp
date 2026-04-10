@@ -89,7 +89,7 @@ export function RecordsTable({ employeeSchema }: RecordsTableProps) {
 
   if (isLoading) {
     return (
-      <div className="flex w-full h-full text-sm text-gray-600 font-rethink font-regular">
+      <div className="flex items-center justify-center w-full h-full text-sm text-gray-600 font-rethink font-regular">
         Syncing employee records...
       </div>
     )
@@ -97,7 +97,7 @@ export function RecordsTable({ employeeSchema }: RecordsTableProps) {
 
   if (isError) {
     return (
-      <div className="flex w-full h-full text-sm text-red-600 font-rethink font-regular">
+      <div className="flex flex-col items-center justify-center w-full h-full text-sm text-red-600 font-rethink font-regular">
         Failed to load live employee records.
       </div>
     )

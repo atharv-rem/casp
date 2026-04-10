@@ -23,9 +23,18 @@ export type Employee = {
   system_profile: SystemProfile | null
 }
 
+export type Project = {
+  id: string
+  name: string
+  organization_id: string
+  created_at: string
+  meta: Record<string, string>
+}
+
 const appUrl = typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
 const employeeShapeUrl = new URL("/api/sync/employee", appUrl).toString()
+const projectShapeUrl = new URL("/api/sync/project", appUrl).toString()
 
 export const employeeCollection = createCollection(
   electricCollectionOptions({
@@ -59,5 +68,19 @@ export const employeeCollection = createCollection(
         throw new Error(error?.error ?? "Failed to update employee")
       }
     },
+  })
+)
+
+export const projectCollection = createCollection(
+  electricCollectionOptions({
+    id: "projects",
+    shapeOptions: {
+      url: projectShapeUrl,
+      params: { table: "projects" },
+      onError: (error) => {
+        console.error("Project sync error:", error)
+      },
+    },
+    getKey: (project: Project) => project.id,
   })
 )
