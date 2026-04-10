@@ -37,7 +37,7 @@ export function RightAiPanel() {
               {/*AI chat */}
               <div className="p-4">
                 <div className="flex flex-row items-center justify-start gap-2 rounded-[10px] border border-[#efefef] px-[10px] py-[5px] shadow-md hover:shadow-lg bg-white">
-                  <Image src={ai} alt="AI icon" width={18} height={18} />
+                  <Image src={ai} alt="AI icon" width={18} height={18} loading="eager" />
                   <p className="font-rethink text-[15px] font-semibold">
                     what would you like me do?
                   </p>

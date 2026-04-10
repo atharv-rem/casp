@@ -15,10 +15,15 @@
 
 /* Font utilities mapping to next/font CSS variables */
 .font-rethink { font-family: var(--font-rethink), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
-.font-cal { font-family: var(--font-cal), var(--font-rethink), ui-sans-serif, system-ui; }
 /* Kalamayka (local font provided by dashboard layout) */
 .font-kal { font-family: var(--font-kal), var(--font-rethink), ui-sans-serif, system-ui; }
 .font-geist { font-family: var(--font-geist), ui-sans-serif, system-ui; }
+
+.dotted-bg {
+  background-color: #ffffff;
+  background-image: radial-gradient(circle, #c9ccd1 1px, transparent 1px);
+  background-size: 20px 20px;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

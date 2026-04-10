@@ -7,7 +7,7 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
 import { useAiPanelStore } from "@/zustand-global-storage"
 import { useEmployeeSync } from "../components/sync-provider"
-import getEmployeeSchema from "@/lib/database fetch/employee_schema"
+import  { employeeCollection } from "@/lib/sync/collection"
 
 function QR({ url }: { url: string }) {
   return (
@@ -29,21 +29,22 @@ type PageProps = {
   params: Promise<{ id: string }>
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function Field({ label,name, value }: { label: string; name: string; value: string }) {
   return (
     <label className="block">
       <span className="sr-only">{label}</span>
       <Input
         title={label}
+        name={name}
         placeholder={label}
         defaultValue={value}
-        className="h-9 rounded-[10px] border-[#d9d9d9] px-3 text-[14px]"
+        className="h-9 rounded-[10px] border-[#ededed] px-3 text-[14px]"
       />
     </label>
   )
 }
 
-function normalizeSystemProfile(value: unknown): Record<string, unknown> | null {
+function normalizeSystemProfile(value: unknown): Record<string, string> | null {
   if (!value) return null
 
   if (typeof value === "string") {
@@ -56,7 +57,7 @@ function normalizeSystemProfile(value: unknown): Record<string, unknown> | null 
   }
 
   if (typeof value === "object") {
-    return value as Record<string, unknown>
+    return value as Record<string, string>
   }
 
   return null
@@ -77,6 +78,26 @@ function normalizeCustomProfile(value: unknown): Array<{ id: string; label?: str
   }
 
   return []
+}
+
+const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>, id: string) => {
+  e.preventDefault()
+
+  const data = Object.fromEntries(new FormData(e.currentTarget))
+
+  await employeeCollection.update(id, (draft) => {
+    draft.role = String(data.role ?? "")
+    draft.status = String(data.status ?? "")
+    draft.system_profile = {
+      name: String(data.name ?? ""),
+      email: String(data.email ?? ""),
+    }
+    draft.custom_profile =
+      draft.custom_profile?.map((field) => ({
+        ...field,
+        value: String(data[field.id] ?? field.value ?? ""),
+      })) ?? null
+  })
 }
 
 export default function EmployeeDetailPage({ params }: PageProps) {
@@ -103,46 +124,55 @@ export default function EmployeeDetailPage({ params }: PageProps) {
   const systemProfile = normalizeSystemProfile(employee.system_profile)
   const customProfile = normalizeCustomProfile(employee.custom_profile)
 
-  const name = systemProfile?.name.split(" ") ?? []
-  const email = systemProfile?.email ?? ""
-  const role = employee.role ?? ""
-  const status = employee.status ?? ""
-
   return (
-    <div className="flex w-full h-full gap-6 px-6 pt-4">
-      <div className={hideEmployeeCard ? "w-full border-l border-r border-[2px] border-[#fafafa] mt-[5px]" : "w-1/2 border-t-0 border-b-0 border-[2px] rounded-[10px] border-[#fafafa] mt-[5px]"}>
+    <div className="flex w-full h-full gap-6 px-6 pt-4 pb-4">
+      <div className={hideEmployeeCard ? "w-full border-t-0 rounded-[10px] border-[2px] border-[#fafafa] mt-[5px] h-[calc(100dvh-60px)] overflow-y-auto" : "w-1/2 border-t-0 border-[2px] rounded-[10px] border-[#fafafa] mt-[5px] h-[calc(100dvh-60px)] overflow-y-auto"}>
         <div className="max-w-[1280px] overflow-hidden bg-white">
           <div className="h-[100px] bg-[#fafafa] rounded-t-[10px]" />
           <div className="px-4 pb-2 -mt-12">
             <div className="w-25 h-25 rounded-full bg-gray-200 border-5 border-white" />           
           </div>
-          <div className="space-y-2 p-4">
-            <h2 className="font-rethink text-[13px] font-semibold text-[#606060]">Basic Info</h2>
-            <Field label="Employee Name" value={name} />
-            <Field label="Employee Email" value={email} />
-            <div className="grid grid-cols-2 gap-2">
-              <Field label="Role" value={role} />
-              <Field label="Status" value={status} />
+          <form onSubmit={(e)=>handleSubmit(e,id)}>
+            <div className="space-y-2 p-4">
+              <h2 className="font-rethink text-[13px] font-semibold text-[#606060]">Basic Info</h2>
+              <Field
+                label="Employee Name"
+                name="name"
+                value={typeof systemProfile?.name === "string" ? systemProfile.name : ""}
+              />
+              <Field
+                label="Employee Email"
+                name="email"
+                value={typeof systemProfile?.email === "string" ? systemProfile.email : ""}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <Field label="Role" name="role" value={employee.role ?? ""} />
+                <Field label="Status" name="status" value={employee.status ?? ""} />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2 p-4">
-            <h2 className="font-rethink text-[13px] font-semibold text-[#606060]">Custom Fields</h2>
-            <div className="grid grid-cols-2 gap-2">
-              {customProfile.map((field) => (
-                <Field
-                  key={field.id}
-                  label={field.label ?? field.id}
-                  value={field.value ?? ""}
-                />
-              ))}
+            <div className="space-y-2 p-4">
+              <h2 className="font-rethink text-[13px] font-semibold text-[#606060]">Custom Fields</h2>
+              <div className="grid grid-cols-2 gap-2">
+                {customProfile.map((field) => (
+                  <Field
+                    key={field.id}
+                    label={field.label ?? field.id}
+                    name={field.id}
+                    value={field.value ?? ""}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+            <button type="submit" className="mb-4 ml-4 px-4 py-2 bg-black text-white transition rounded-[10px] hover:bg-gray-800">
+              Save Changes
+            </button>
+          </form>
         </div>
       </div>
 
       {!hideEmployeeCard && (
-        <div className="flex w-1/2 items-center justify-center">
+        <div className="flex flex-col w-1/2 h-[calc(100dvh-60px)] items-center justify-center dotted-bg">
           <motion.div
             className="relative h-[370px] w-[230px] flex items-center justify-center"
             initial="rest"
@@ -221,9 +251,10 @@ export default function EmployeeDetailPage({ params }: PageProps) {
               >
                 <div className="flex flex-col gap-1 text-left">
                   <p className="font-rethink text-[19px] font-medium leading-[19px]">
-                    {name[0] || "—"}<br></br>{name[1] || ""}
+                    {(typeof systemProfile?.name === "string" ? systemProfile.name : "").split(" ")[0] || "—"}<br></br>
+                    {(typeof systemProfile?.name === "string" ? systemProfile.name : "").split(" ")[1] || ""}
                   </p>
-                  <p className="font-rethink text-[12px] text-[#484848]">{role || "employee"}</p>
+                  <p className="font-rethink text-[12px] text-[#484848]">{employee.role || "employee"}</p>
                 </div>
                 <QR url={`https://localhost:3000/dashboard/employees/${id}`} />
               </motion.div>

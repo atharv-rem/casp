@@ -10,7 +10,14 @@ export default function PageRoute({ org }: { org: string }) {
     const pathname = usePathname();
     const isOpen = useAiPanelStore((state) => state.isAiPanelOpen);
     const toggle = useAiPanelStore((state) => state.toggleAiPanel);
-    const pathSegments = pathname.split("/").filter(Boolean).map(segment => segment.replace(/_/g, " ")).join(" / ");
+    let pathSegments = pathname.split("/").filter(Boolean).map(segment => segment.replace(/_/g, " ")).join(" / ");
+    if (pathname.startsWith("/dashboard/employees/")) {
+        pathSegments = "dashboard / employee details"
+    }
+    if (pathname === "/dashboard/projects") {
+        pathSegments = "dashboard / project details"
+    }
+    console.log("pathname:", pathname, "pathSegments:", pathSegments);
     return (
         <div className="flex flex-row items-center justify-between w-full">
             <div className="flex flex-row items-center justify-start gap-1">
