@@ -1,12 +1,12 @@
 "use client"
 
-import { qrcodeDataURI } from "etiket"
 import { motion } from "motion/react"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
 import { useAiPanelStore } from "@/zustand-global-storage"
 import { useEmployeeSync } from "../../components/sync-provider"
 import { employeeCollection } from "@/lib/sync/collection"
+import { EmployeeQR } from "./employee-qr"
 
 type EmployeeField = {
   id: string
@@ -14,22 +14,6 @@ type EmployeeField = {
   type: string
   label: string
   required: boolean
-}
-
-function QR({ url }: { url: string }) {
-  return (
-    <img
-      src={qrcodeDataURI(url, {
-        margin: 0,
-        dotType: "dots",
-        dotSize: 1,
-        color: "#000000",
-      })}
-      alt="QR Code"
-      width={60}
-      height={60}
-    />
-  )
 }
 
 function Field({ label, name, value }: { label: string; name: string; value: string }) {
@@ -103,7 +87,15 @@ const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>, id: string) =
   })
 }
 
-export default function EmployeeDetail({ id, employeeSchema }: { id: string; employeeSchema: EmployeeField[] }) {
+export default function EmployeeDetail({
+  id,
+  employeeSchema,
+  logoDataUri,
+}: {
+  id: string
+  employeeSchema: EmployeeField[]
+  logoDataUri: string
+}) {
   const { open: isSidebarOpen } = useSidebar()
   const isAiPanelOpen = useAiPanelStore((state) => state.isAiPanelOpen)
   const hideEmployeeCard = isSidebarOpen && isAiPanelOpen
@@ -263,7 +255,11 @@ export default function EmployeeDetail({ id, employeeSchema }: { id: string; emp
                   </p>
                   <p className="font-rethink text-[12px] text-[#484848]">{employee.role || "employee"}</p>
                 </div>
-                <QR url={`https://localhost:3000/dashboard/employees/${id}`} />
+                <EmployeeQR
+                  url={`https://localhost:3000/dashboard/employees/${id}`}
+                  size={60}
+                  logoDataUri={logoDataUri}
+                />
               </motion.div>
             </motion.div>
           </motion.div>
