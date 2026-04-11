@@ -1,4 +1,6 @@
 "use client"
+import UnicodeSpinner from "@/app/global components/unicode_spinner"
+import { TextShimmer } from "@/components/ui/shimmer"
 import { DataTable } from "./data-table"
 import { getColumns } from "./column"
 import { useEmployeeSync } from "./sync-provider"
@@ -89,8 +91,13 @@ export function RecordsTable({ employeeSchema }: RecordsTableProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center w-full h-full text-md text-gray-600 font-rethink font-regular">
-        Syncing employee records...
+      <div className="flex items-center justify-center w-full h-full">
+        <div className="flex items-center gap-2">
+          <UnicodeSpinner name="orbit" className="font-mono text-[16px] leading-none text-black" />
+          <TextShimmer className="font-rethink text-md font-regular" colors={["transparent", "rgb(0, 0, 0)", "transparent"]}>
+            Syncing employee records...
+          </TextShimmer>
+        </div>
       </div>
     )
   }

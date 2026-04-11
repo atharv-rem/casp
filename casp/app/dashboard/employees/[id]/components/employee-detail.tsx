@@ -3,6 +3,8 @@
 import { motion } from "motion/react"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
+import { TextShimmer } from "@/components/ui/shimmer"
+import UnicodeSpinner from "@/app/global components/unicode_spinner"
 import { useAiPanelStore } from "@/zustand-global-storage"
 import { useEmployeeSync } from "../../components/sync-provider"
 import { employeeCollection } from "@/lib/sync/collection"
@@ -104,7 +106,16 @@ export default function EmployeeDetail({
   const employee = employees.find((item) => item.id === id)
 
   if (isLoading) {
-    return <div className="flex w-full h-full font-rethink text-2xl items-center justify-center text-gray-600">Loading employee...</div>
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <div className="flex items-center gap-2">
+          <UnicodeSpinner name="orbit" />
+          <TextShimmer className="font-rethink text-sm font-semibold" colors={["transparent", "rgb(150, 150, 150)", "transparent"]}>
+            Loading employee...
+          </TextShimmer>
+        </div>
+      </div>
+    )
   }
 
   if (isError) {

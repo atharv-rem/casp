@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import UnicodeSpinner from "@/app/global components/unicode_spinner";
 
 //hooks and libraries
 import {useRouter } from "next/navigation";
@@ -98,44 +99,56 @@ export default function LoginPage() {
     <>
     <div className="flex flex-row items-center justify-between h-dvh w-full bg-white">
       <div className="w-1/2 h-full flex flex-col items-center justify-center">
-        <div className="w-3/4 items-start justify-center">
-          <div className="flex flex-row justify-start items-center">
-            <h1 className="text-[30px] font-rethink font-medium">Login</h1>
-            <Image src={building} alt="building" width={30} height={30} className="ml-2"/>
+        {isSubmitting ? (
+          <div className="flex w-3/4 items-center justify-center">
+            <div className="flex items-center gap-2 rounded-[10px] py-[5px]">
+              <UnicodeSpinner name="orbit"  />
+              <TextShimmer className="font-rethink font-semibold text-[15px]" colors={["transparent", "rgb(0, 0, 0)", "transparent"]}>
+                Loading your Dashboard....
+              </TextShimmer>
+            </div>
           </div>
-          {loginError && 
-            <div className="flex flex-row items-center mt-1 mb-1">
-              <Image src={erroricon} alt="error icon" width={20} height={20} className="mr-2"/>
-              <p className="text-red-500 font-rethink font-bold text-[12px]">{loginError}</p>
+        ) 
+        : 
+        (
+          <div className="w-3/4 items-start justify-center">
+            <div className="flex flex-row justify-start items-center">
+              <h1 className="text-[30px] font-rethink font-medium">Login</h1>
+              <Image src={building} alt="building" width={30} height={30} className="ml-2"/>
             </div>
-          }
-          <p className="w-full items-center justify-center text-gray-500 font-rethink text-[14px] mb-[10px]">
-            Don't have an account? <Link href="/signup" className="text-black underline cursor-pointer font-semibold">sign up</Link>
-          </p>
+            {loginError && 
+              <div className="flex flex-row items-center mt-1 mb-1">
+                <Image src={erroricon} alt="error icon" width={20} height={20} className="mr-2"/>
+                <p className="text-red-500 font-rethink font-bold text-[12px]">{loginError}</p>
+              </div>
+            }
+            <p className="w-full items-center justify-center text-gray-500 font-rethink text-[14px] mb-[10px]">
+              Don't have an account? <Link href="/signup" className="text-black underline cursor-pointer font-semibold">sign up</Link>
+            </p>
 
-          <form onSubmit={handleSubmit(LoginSubmit)} className="w-3/4">
-            <div className="mb-4">
-              <div className="flex flex-col gap-[5px] mb-[10px]">
-                <Label htmlFor="email" className="text-gray-700 text-[12px] font-rethink font-semibold">Email</Label>
-                {errors.email && <p className="text-red-500 text-[12px] font-bold">{errors.email.message}</p>}
-                <Input {...register("email")} id="email" type="email" placeholder="john.doe@example.com" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
+            <form onSubmit={handleSubmit(LoginSubmit)} className="w-3/4">
+              <div className="mb-4">
+                <div className="flex flex-col gap-[5px] mb-[10px]">
+                  <Label htmlFor="email" className="text-gray-700 text-[12px] font-rethink font-semibold">Email</Label>
+                  {errors.email && <p className="text-red-500 text-[12px] font-bold">{errors.email.message}</p>}
+                  <Input {...register("email")} id="email" type="email" placeholder="john.doe@example.com" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
+                </div>
+                <div className="flex flex-col gap-[5px] mb-[15px] items-start justify-center">
+                  <Label htmlFor="password" className="text-gray-700 text-[12px] font-rethink font-semibold">Password</Label>
+                  {errors.password && <p className="text-red-500 text-[12px] font-bold">{errors.password.message}</p>}
+                  <Input {...register("password")} id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold rounded-[10px]" />
+                  <button type="button" onClick={forgotPassword} className="text-[14px] font-rethink font-semibold text-black underline">Forgot password?</button>
+                </div>
+                <button type="submit" className="cursor-pointer text-[15px] bg-[#000000] text-white items-center justify-center block hover:bg-gray-800 font-rethink font-bold w-full rounded-[10px] py-[5px]">
+                  Login
+                </button>
               </div>
-              <div className={`flex flex-col gap-[5px] ${isSubmitting ? "mb-[5px]" : "mb-[15px]"} items-start justify-center`}>
-                <Label htmlFor="password" className="text-gray-700 text-[12px] font-rethink font-semibold">Password</Label>
-                {errors.password && <p className="text-red-500 text-[12px] font-bold">{errors.password.message}</p>}
-                <Input {...register("password")} id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold rounded-[10px]" />
-                <button type="button" onClick={forgotPassword} className="text-[14px] font-rethink font-semibold text-black underline">Forgot password?</button>
-              </div>
-              <button disabled={isSubmitting} type="submit" className={`cursor-pointer text-[15px] font-semibold bg-[#000000] text-white items-center justify-center ${isSubmitting ? "hidden"  : "block"} hover:bg-gray-800 font-rethink font-bold w-full rounded-[10px] py-[5px]`}>
-                Login
-              </button>
-              {isSubmitting ? <TextShimmer className="font-rethink font-semibold  text-[15px]" colors={["transparent", "rgb(150, 150, 150)","transparent"]}>Loading your Dashboard....</TextShimmer> : null}
-            </div>
-          </form>
-        </div>
+            </form>
+          </div>
+        )}
       </div>
       <div className="relative w-1/2 h-full">
-        <Image src={loginImage} alt="login image" fill placeholder="blur" className="object-cover"/>
+        <Image src={loginImage} alt="login image" fill sizes="50vw" placeholder="blur" className="object-cover"/>
       </div>
     </div>
     <div className="w-auto fixed bottom-5 right-5 z-50">
