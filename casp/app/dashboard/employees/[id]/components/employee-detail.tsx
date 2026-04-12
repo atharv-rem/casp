@@ -3,12 +3,14 @@
 import { motion } from "motion/react"
 import { useSidebar } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 import { TextShimmer } from "@/components/ui/shimmer"
 import UnicodeSpinner from "@/app/global components/unicode_spinner"
 import { useAiPanelStore } from "@/zustand-global-storage"
 import { useEmployeeSync } from "../../components/sync-provider"
 import { employeeCollection } from "@/lib/sync/collection"
 import { EmployeeQR } from "./employee-qr"
+import ProjectAssignments from "./project-assignments"
 
 type EmployeeField = {
   id: string
@@ -33,6 +35,7 @@ function Field({ label, name, value }: { label: string; name: string; value: str
   )
 }
 
+// System profile is stored as a JSON string of { name: string, email: string } or as an object of the same structure. This function normalizes both formats to an object of { name: string, email: string }.
 function normalizeSystemProfile(value: unknown): Record<string, string> | null {
   if (!value) return null
 
@@ -52,6 +55,7 @@ function normalizeSystemProfile(value: unknown): Record<string, string> | null {
   return null
 }
 
+// Custom profile can be stored as an array of { id, label?, value } or as a JSON string of the same structure. This function normalizes both formats to an array of { id, label?, value }.
 function normalizeCustomProfile(value: unknown): Array<{ id: string; label?: string; value: string | null }> {
   if (Array.isArray(value)) {
     return value as Array<{ id: string; label?: string; value: string | null }>
@@ -69,6 +73,7 @@ function normalizeCustomProfile(value: unknown): Array<{ id: string; label?: str
   return []
 }
 
+// on submit the data should be saved to the employee collection in the sync store, which will then be synced to the server and other clients
 const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>, id: string) => {
   e.preventDefault()
 
@@ -102,6 +107,7 @@ export default function EmployeeDetail({
   const isAiPanelOpen = useAiPanelStore((state) => state.isAiPanelOpen)
   const hideEmployeeCard = isSidebarOpen && isAiPanelOpen
 
+  // Fetch employee data from sync store
   const { employees, isLoading, isError } = useEmployeeSync()
   const employee = employees.find((item) => item.id === id)
 
@@ -144,6 +150,9 @@ export default function EmployeeDetail({
           <div className="px-4 pb-2 -mt-12">
             <div className="w-25 h-25 rounded-full bg-gray-200 border-5 border-white" />
           </div>
+          <div className="px-4 font-rethink font-regular text-black text-[12px] leading-[14px] bg-[#fafafa] border border-[#f0f0f0] rounded-[10px] mx-4 p-3">
+            <span>click on any field to edit it. once you are satisfied, click the "Save Changes" button.</span>
+          </div>
           <form onSubmit={(e) => handleSubmit(e, id)}>
             <div className="space-y-4 p-4">
               <Field
@@ -174,10 +183,14 @@ export default function EmployeeDetail({
                 ))}
               </div>
             </div>
-            <button type="submit" className="mt-[10px] mb-[10px] ml-4 px-4 py-[3px] bg-white shadow-sm text-black border-[1px] border-[#e0e0e0] transition rounded-[10px] hover:border-[#c0c0c0]">
+            <button type="submit" className="mt-[10px] ml-4 mb-[10px] px-4 py-[3px] bg-[#f0f0f0] text-black transition rounded-[10px] hover:bg-[#e0e0e0] font-rethink font-semibold">
               Save Changes
             </button>
           </form>
+
+          <Separator className="!h-[3px] my-[10px] bg-[#fafafa]" />
+          
+          <ProjectAssignments employeeId={id} />
         </div>
       </div>
 

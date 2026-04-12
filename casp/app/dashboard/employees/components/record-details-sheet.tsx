@@ -86,7 +86,7 @@ export function RecordDetailsSheet({
 }: RecordDetailsSheetProps) {
   const router = useRouter()
 
-  const getEmployeeRoute = () => {
+  const editemployeeroute = () => {
     const id = selectedRow?.original?.id
     if (!id) return null
     return `/dashboard/employees/${id}`
@@ -152,17 +152,17 @@ export function RecordDetailsSheet({
             </div>
             <button
               onMouseEnter={() => {
-                const href = getEmployeeRoute()
+                const href = editemployeeroute()
                 if (!href) return
                 router.prefetch(href)
               }}
               onFocus={() => {
-                const href = getEmployeeRoute()
+                const href = editemployeeroute()
                 if (!href) return
                 router.prefetch(href)
               }}
               onClick={() => {
-                const href = getEmployeeRoute()
+                const href = editemployeeroute()
                 if (!href) return
                 router.push(href)
               }}

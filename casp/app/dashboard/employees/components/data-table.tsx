@@ -112,7 +112,7 @@ export function DataTable<TData, TValue>({columns,data, employeeSchema}: DataTab
       refetchOnMount: false,
     })
 
-    //exrtacting project ids from the employee assignments to fetch project details, we use useQueries to fetch multiple projects in parallel based on the projct ids
+    //extracting project ids from the employee assignments to fetch project details, we use useQueries to fetch multiple projects in parallel based on the project ids
     const projectIds: string[] = (employeeAssignments ?? []).map(
       (assignedProjects: { projects: { id: string } }) => assignedProjects.projects.id
     )
