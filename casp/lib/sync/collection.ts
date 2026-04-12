@@ -36,17 +36,43 @@ export type EmployeeProjectAssignment = {
   organization_id: string
   employee_id: string
   project_id: string
-  allocation_percentage: number
+  allocation_percentage: number | null
   start_date: string
   end_date: string | null
   created_at: string
 }
+
+export type SchemaField = {
+  id: string
+  key: string
+  type: string
+  label: string
+  required: boolean
+}
+
+export type EmployeeSchemaRow = {
+  organization_id: string
+  schema: {
+    fields: SchemaField[]
+  }
+}
+
+export type ProjectSchemaRow = {
+  organization_id: string
+  schema: {
+    fields: SchemaField[]
+  }
+}
+
 
 const appUrl = typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
 const employeeShapeUrl = new URL("/api/sync/employee", appUrl).toString()
 const projectShapeUrl = new URL("/api/sync/project", appUrl).toString()
 const assignmentShapeUrl = new URL("/api/sync/employee-project-assignment", appUrl).toString()
+const employeeSchemaShapeUrl = new URL("/api/sync/employee-schema", appUrl).toString()
+const projectSchemaShapeUrl = new URL("/api/sync/project-schema", appUrl).toString()
+
 
 export const employeeCollection = createCollection(
   electricCollectionOptions({
@@ -113,7 +139,6 @@ export const employeeProjectAssignmentCollection = createCollection(
 
     onUpdate: async ({ transaction }) => {
       const mutation = transaction.mutations[0]
-
       const response = await fetch("/api/database_update/updateEmployeeProjectAssignment", {
         method: "PATCH",
         headers: {
@@ -128,6 +153,78 @@ export const employeeProjectAssignmentCollection = createCollection(
       if (!response.ok) {
         const error = await response.json().catch(() => null)
         throw new Error(error?.error ?? "Failed to update assignment")
+      }
+    },
+  })
+)
+
+export const employeeSchemaCollection = createCollection(
+  electricCollectionOptions({
+    id: "employee-schemas",
+    shapeOptions: {
+      url: employeeSchemaShapeUrl,
+      params: {
+        table: "employee_schemas",
+      },
+      onError: (error) => {
+        console.error("Employee schema sync error:", error)
+      },
+    },
+    getKey: (row: EmployeeSchemaRow) => row.organization_id,
+
+    onUpdate: async ({ transaction }) => {
+      const mutation = transaction.mutations[0]
+
+      const response = await fetch("/api/database_update/updateEmployeeSchema", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          organization_id: mutation.original.organization_id,
+          schema: mutation.modified.schema,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null)
+        throw new Error(error?.error ?? "Failed to update employee schema")
+      }
+    },
+  })
+)
+
+export const projectSchemaCollection = createCollection(
+  electricCollectionOptions({
+    id: "project-schemas",
+    shapeOptions: {
+      url: projectSchemaShapeUrl,
+      params: {
+        table: "project_schemas",
+      },
+      onError: (error) => {
+        console.error("Project schema sync error:", error)
+      },
+    },
+    getKey: (row: ProjectSchemaRow) => row.organization_id,
+
+    onUpdate: async ({ transaction }) => {
+      const mutation = transaction.mutations[0]
+
+      const response = await fetch("/api/database_update/updateProjectSchema", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          organization_id: mutation.original.organization_id,
+          schema: mutation.modified.schema,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null)
+        throw new Error(error?.error ?? "Failed to update project schema")
       }
     },
   })

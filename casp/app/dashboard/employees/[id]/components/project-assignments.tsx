@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { employeeProjectAssignmentCollection } from "@/lib/sync/collection"
 import { eq, useLiveQuery } from "@tanstack/react-db"
@@ -99,7 +98,7 @@ export default function ProjectAssignments({
                 min={0}
                 max={100}
                 name={`allocation_percentage_${assignment.id}`}
-                defaultValue={assignment.allocation_percentage}
+                defaultValue={assignment.allocation_percentage ?? ""}
                 className="w-full rounded-[8px] border border-[#e5e5e5] px-3 py-1.5 font-rethink text-[13px]"
               />
 
@@ -122,9 +121,12 @@ export default function ProjectAssignments({
           )
         })}
 
-        <Button type="submit" className="font-rethink text-[13px]">
+        <button
+          type="submit"
+          className="mt-[10px] mb-[10px] px-4 py-[3px] bg-[#f0f0f0] text-black transition rounded-[10px] hover:bg-[#e0e0e0] font-rethink font-semibold"
+        >
           Save Changes
-        </Button>
+        </button>
       </form>
     </div>
   )

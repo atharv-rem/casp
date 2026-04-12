@@ -14,17 +14,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    if (!process.env.ELECTRIC_SOURCE_ID || !process.env.ELECTRIC_SECRET) {
-      return NextResponse.json(
-        { error: "Missing Electric configuration" },
-        { status: 500 }
-      )
-    }
-
     const requestUrl = new URL(request.url)
     const electricUrl = new URL("https://api.electric-sql.cloud/v1/shape")
 
-    electricUrl.searchParams.set("source_id", process.env.ELECTRIC_SOURCE_ID)
+    electricUrl.searchParams.set("source_id", process.env.ELECTRIC_SOURCE_ID!)
     electricUrl.searchParams.set("table", "employee_project_assignments")
     electricUrl.searchParams.set("where", `organization_id='${OrgId}'`)
 
@@ -45,19 +38,6 @@ export async function GET(request: NextRequest) {
       cache: "no-store",
     })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error("Electric assignment sync upstream error:", response.status, errorText)
-
-      return new Response(errorText, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: {
-          "Content-Type": response.headers.get("content-type") ?? "application/json",
-        },
-      })
-    }
-
     const headers = new Headers(response.headers)
     headers.delete("content-encoding")
     headers.delete("content-length")
@@ -68,10 +48,10 @@ export async function GET(request: NextRequest) {
       headers,
     })
   } catch (error) {
-    console.error("Electric assignment sync error:", error)
+    console.error("Electric employee project assignment sync error:", error)
 
     return NextResponse.json(
-      { error: "Failed to sync assignments" },
+      { error: "Failed to sync employee project assignments" },
       { status: 500 }
     )
   }
