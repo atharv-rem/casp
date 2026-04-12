@@ -1,6 +1,8 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
+import { TextShimmer } from "@/components/ui/shimmer"
+import UnicodeSpinner from "@/app/global components/unicode_spinner"
 import { employeeProjectAssignmentCollection } from "@/lib/sync/collection"
 import { eq, useLiveQuery } from "@tanstack/react-db"
 
@@ -53,7 +55,15 @@ export default function ProjectAssignments({
   if (assignmentsLoading) {
     return (
       <div className="px-4 pb-4">
-        <p>Loading assignments...</p>
+        <div className="flex items-center gap-2 py-2">
+          <UnicodeSpinner name="orbit" />
+          <TextShimmer
+            className="font-rethink text-sm font-semibold"
+            colors={["transparent", "rgb(150, 150, 150)", "transparent"]}
+          >
+            Loading assignments...
+          </TextShimmer>
+        </div>
       </div>
     )
   }
