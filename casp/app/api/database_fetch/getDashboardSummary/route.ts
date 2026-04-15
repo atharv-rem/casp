@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { fetchSummary } from "@/lib/database fetch/dashboard";
 import getOrganizationID from "@/lib/database fetch/organization_id";
+import { redis } from "@/lib/redis";
 
 export async function GET() {
   const { OrgId } = await getOrganizationID();
@@ -11,8 +12,20 @@ export async function GET() {
         { status: 401 });
   }
 
+  const cacheKey = `dashboard_summary:${OrgId}`;
+
   try {
+    // Attempt cache read
+    const cachedSummary = await redis.get(cacheKey);
+    if (cachedSummary) {
+      return NextResponse.json(cachedSummary);
+    }
+
     const summary = await fetchSummary(OrgId);
+
+    // Cache for 10 minutes
+    await redis.set(cacheKey, summary, { ex: 600 });
+
     return NextResponse.json(summary ?? {});
   } catch (error: any) {
     return NextResponse.json(
