@@ -1,6 +1,7 @@
 "use client";
 
 import { useQueries } from "@tanstack/react-query";
+import { GeistPixelSquare } from "geist/font/pixel";
 
 type SummaryResponse = {
   total_employees: number;
@@ -197,44 +198,44 @@ return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Total employees</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{n(summary?.total_employees)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.total_employees)}</p>
       </article>
 
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Active projects</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{n(summary?.active_projects)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.active_projects)}</p>
       </article>
 
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Inactive projects</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{n(summary?.inactive_projects)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.inactive_projects)}</p>
       </article>
 
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Unassigned employees</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{n(summary?.unassigned_employees)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.unassigned_employees)}</p>
       </article>
 
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Average utilization</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{pct(summary?.avg_utilization)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{pct(summary?.avg_utilization)}</p>
       </article>
     </div>
 
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Total capacity</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{hrs(summary?.total_capacity_hrs)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{hrs(summary?.total_capacity_hrs)}</p>
       </article>
 
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Allocated capacity</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{hrs(summary?.total_allocated_hrs)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{hrs(summary?.total_allocated_hrs)}</p>
       </article>
 
       <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <p className="text-sm text-gray-500">Remaining capacity</p>
-        <p className="mt-2 text-3xl font-semibold text-black">{hrs(summary?.remaining_capacity_hrs)}</p>
+        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{hrs(summary?.remaining_capacity_hrs)}</p>
       </article>
     </div>
 
@@ -242,22 +243,22 @@ return (
       <div className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <h3 className="text-lg font-semibold text-black">Employee Allocation Insights</h3>
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-gray-700">
-          <div>Underutilized: {n(summary?.underutilized_count)}</div>
-          <div>Optimal: {n(summary?.optimal_count)}</div>
-          <div>Multi-project: {n(summary?.multi_project_count)}</div>
-          <div>Fully booked: {n(summary?.fully_booked)}</div>
-          <div>Partial allocation: {n(summary?.partial_alloc_count)}</div>
-          <div>Unassigned: {n(summary?.unassigned_employees)}</div>
+          <div>Underutilized: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.underutilized_count)}</span></div>
+          <div>Optimal: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.optimal_count)}</span></div>
+          <div>Multi-project: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.multi_project_count)}</span></div>
+          <div>Fully booked: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.fully_booked)}</span></div>
+          <div>Partial allocation: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.partial_alloc_count)}</span></div>
+          <div>Unassigned: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.unassigned_employees)}</span></div>
         </div>
       </div>
 
       <div className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <h3 className="text-lg font-semibold text-black">Work Tracking</h3>
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-gray-700">
-          <div>Hours today: {n(summary?.hours_logged_today)}</div>
-          <div>Hours this week: {n(summary?.hours_logged_week)}</div>
-          <div>No hours logged: {n(summary?.no_hours_count)}</div>
-          <div>Most active employees: {mostActive.length}</div>
+          <div>Hours today: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.hours_logged_today)}</span></div>
+          <div>Hours this week: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.hours_logged_week)}</span></div>
+          <div>No hours logged: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.no_hours_count)}</span></div>
+          <div>Most active employees: <span className={`${GeistPixelSquare.className} tabular-nums`}>{mostActive.length}</span></div>
         </div>
         <div className="mt-4 space-y-2 text-sm text-gray-700">
           {mostActive.length > 0 ? (
@@ -285,7 +286,7 @@ return (
               className="flex items-center justify-between text-sm"
             >
               <span className="text-gray-800">{employee.name ?? "Unnamed employee"}</span>
-              <span className="text-gray-500">
+              <span className={`${GeistPixelSquare.className} text-gray-500 tabular-nums`}>
                 {n(employee.allocation_pct)}% allocated • {employee.free_hrs} hrs free
               </span>
             </div>
@@ -312,7 +313,7 @@ return (
               <p className="font-medium text-black">{project.name}</p>
               <span className="text-xs text-gray-500">{project.status}</span>
             </div>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className={`${GeistPixelSquare.className} mt-2 text-sm text-gray-600 tabular-nums`}>
               {project.assigned_count} employees • {project.total_allocation_pct}% allocation • {project.hours_this_week} hrs this week
             </p>
           </div>
@@ -338,8 +339,8 @@ return (
       <div className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
         <h3 className="text-lg font-semibold text-black">Availability / Leave</h3>
         <div className="mt-4 space-y-3 text-sm text-gray-700">
-          <p>Employees currently on leave: {n(summary?.on_leave_count)}</p>
-          <p>Employees going on leave soon: {n(summary?.leaving_soon_count)}</p>
+          <p>Employees currently on leave: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.on_leave_count)}</span></p>
+          <p>Employees going on leave soon: <span className={`${GeistPixelSquare.className} tabular-nums`}>{n(summary?.leaving_soon_count)}</span></p>
           {employeesOnLeave.length > 0 ? (
             <p>On leave now: {employeesOnLeave.join(", ")}</p>
           ) : null}
@@ -356,7 +357,7 @@ return (
                   </p>
                 ))
               ) : (
-                <p>No project leave impact right now.</p>
+                <p>No impact from current leave.</p>
               )}
             </div>
           </div>
@@ -375,7 +376,7 @@ return (
               className="flex justify-between text-gray-700"
             >
               <span>{skill.name ?? "Unnamed skill"}</span>
-              <span>{skill.employee_count} employees</span>
+              <span className={`${GeistPixelSquare.className} tabular-nums`}>{skill.employee_count} employees</span>
             </div>
           ))}
         </div>
@@ -390,7 +391,7 @@ return (
               className="flex justify-between text-gray-700"
             >
               <span>{skill.name ?? "Unnamed skill"}</span>
-              <span>{skill.employee_count} employees</span>
+              <span className={`${GeistPixelSquare.className} tabular-nums`}>{skill.employee_count} employees</span>
             </div>
           ))}
         </div>
@@ -415,10 +416,10 @@ return (
             {allEmployees.map((employee) => (
               <tr key={employee.employee_id} className="border-b border-gray-50">
                 <td className="py-3 pr-4">{employee.name ?? "Unnamed employee"}</td>
-                <td className="py-3 pr-4">{employee.allocation_pct}%</td>
-                <td className="py-3 pr-4">{employee.utilization_pct}%</td>
+                <td className={`${GeistPixelSquare.className} py-3 pr-4 tabular-nums`}>{employee.allocation_pct}%</td>
+                <td className={`${GeistPixelSquare.className} py-3 pr-4 tabular-nums`}>{employee.utilization_pct}%</td>
                 <td className="py-3 pr-4">{employee.project_names?.join(", ") ?? "-"}</td>
-                <td className="py-3 pr-4">{employee.hours_week}</td>
+                <td className={`${GeistPixelSquare.className} py-3 pr-4 tabular-nums`}>{employee.hours_week}</td>
                 <td className="py-3 pr-4">{employee.is_on_leave ? "On leave" : "-"}</td>
               </tr>
             ))}
