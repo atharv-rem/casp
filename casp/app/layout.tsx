@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${rethink.variable} ${cal.variable} ${geistMono.variable} ${GeistPixelSquare.variable} bg-white`}>
-      <body>
+      <body className={geistMono.className}>
         <Providers>{children}</Providers>
         <Toaster />
       </body>

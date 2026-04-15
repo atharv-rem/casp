@@ -1,6 +1,7 @@
 "use client";
 
 import { useQueries } from "@tanstack/react-query";
+import { GeistMono } from "geist/font/mono";
 import { GeistPixelSquare } from "geist/font/pixel";
 
 type SummaryResponse = {
@@ -194,48 +195,50 @@ const smartInsights = [
 ];
 
 return (
-  <section className="mt-6 w-full max-w-7xl space-y-6 px-6 pb-10">
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Total employees</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.total_employees)}</p>
+  <section className="mt-5 w-full flex flex-col space-y-6 pb-10">
+    <span className={`${GeistMono.className} text-lg font-medium text-[#7a7a7a] uppercase mb-2`}>KEY METRICS</span>
+    <div className="flex flex-row items-center justify-start gap-5 w-full overflow-x-auto">
+      <article className="flex flex-col rounded-[15px] border bg-[#fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center h-fit w-fit gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase`}>Total employees</p>
+        <p className={`${GeistMono.className} mt-2 text-[40px] font-regular leading-10 text-black `}>{n(summary?.total_employees)}</p>
       </article>
 
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Active projects</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.active_projects)}</p>
+      <article className="flex flex-col rounded-[15px] border bg-[#fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center h-fit w-fit gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase`}>Active projects</p>
+        <p className={`${GeistMono.className} mt-2 text-[40px] font-regular leading-10 text-black `}>{n(summary?.active_projects)}</p>
       </article>
 
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Inactive projects</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.inactive_projects)}</p>
+      <article className="flex flex-col rounded-[15px] border bg-[#fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center h-fit w-fit gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase`}>Inactive projects</p>
+        <p className={`${GeistMono.className} mt-2 text-[40px] font-regular leading-10 text-black `}>{n(summary?.inactive_projects)}</p>
       </article>
 
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Unassigned employees</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{n(summary?.unassigned_employees)}</p>
+      <article className="flex flex-col rounded-[15px] border bg-[#fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center h-fit w-fit gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase`}>Unassigned employees</p>
+        <p className={`${GeistMono.className} mt-2 text-[40px] font-regular leading-10 text-black `}>{n(summary?.unassigned_employees)}</p>
       </article>
 
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Average utilization</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{pct(summary?.avg_utilization)}</p>
+      <article className="flex flex-col rounded-[15px] border bg-[#fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center h-fit w-fit gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase`}>Average utilization</p>
+        <p className={`${GeistMono.className} mt-2 text-[40px] font-regular leading-10 text-black `}>{pct(summary?.avg_utilization)}</p>
       </article>
     </div>
 
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Total capacity</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{hrs(summary?.total_capacity_hrs)}</p>
+    <span className={`${GeistMono.className} text-lg font-medium text-[#7a7a7a] uppercase`}>CAPACITY OVERVIEW</span>
+    <div className="flex flex-row items-stretch justify-start gap-6 w-full overflow-x-auto">
+      <article className="flex flex-col rounded-[15px] border bg-[#fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center  h-fit flex-1 min-w-0 gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase text-nowrap`}>Total capacity</p>
+        <p className={`${GeistMono.className} mt-2 text-[35px] font-regular leading-10 text-black text-nowrap`}>{hrs(summary?.total_capacity_hrs)}</p>
       </article>
 
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Allocated capacity</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{hrs(summary?.total_allocated_hrs)}</p>
+      <article className="flex flex-col rounded-[15px] border bg-[#Fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center  h-fit flex-1 min-w-0 gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase text-nowrap`}>Allocated capacity</p>
+        <p className={`${GeistMono.className} mt-2 text-[35px] font-regular leading-10 text-black text-nowrap`}>{hrs(summary?.total_allocated_hrs)}</p>
       </article>
 
-      <article className="rounded-xl border border-[#efefef] bg-white p-5 shadow-sm">
-        <p className="text-sm text-gray-500">Remaining capacity</p>
-        <p className={`${GeistPixelSquare.className} mt-2 text-3xl font-bold text-black tabular-nums`}>{hrs(summary?.remaining_capacity_hrs)}</p>
+      <article className="flex flex-col rounded-[15px] border bg-[#Fafafa] pl-[15px] pr-[50px] py-[15px] items-start justify-center  h-fit flex-1 min-w-0 gap-1">
+        <p className={`${GeistPixelSquare.className} text-sm text-black uppercase text-nowrap`}>Remaining capacity</p>
+        <p className={`${GeistMono.className} mt-2 text-[35px] font-regular leading-10 text-black text-nowrap`}>{hrs(summary?.remaining_capacity_hrs)}</p>
       </article>
     </div>
 
