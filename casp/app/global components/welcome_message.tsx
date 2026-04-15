@@ -4,7 +4,7 @@ export default function WelcomeMessage( { user }: { user: any }) {
     return (
         <div className="flex flex-col justify-center items-start pl-[25px] pr-[30px] mt-[10px]">
             <h1 className="text-[25px] font-semibold">{greeting} {user?.user_metadata?.name.split(" ")[0] ?? ""}</h1>
-            <p className="text-gray-600">Here you can manage your projects, view analytics, and customize your settings.</p>
+            <p className="text-gray-600">this is what's in store for you as of {new Date().toLocaleDateString()}</p>
         </div>
     );
 }

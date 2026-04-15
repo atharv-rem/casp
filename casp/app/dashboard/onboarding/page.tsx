@@ -45,7 +45,7 @@ export default function Onboarding_Form() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
       await supabase.auth.refreshSession();
-      router.push("/dashboard/records");
+      router.push("/dashboard/employees");
       return;
     }
     else {
