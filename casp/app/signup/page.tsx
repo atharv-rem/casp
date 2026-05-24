@@ -15,7 +15,6 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
-import { GeistPixelSquare } from "geist/font/pixel";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required").regex(/^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/, "Only letters, numbers, and single spaces are allowed").regex(/[a-zA-Z]/, "Name must contain at least one letter"),
@@ -100,7 +99,7 @@ export default function SignupPage() {
                 </Label>
               </div>
               
-              <button disabled={isSubmitting} type="submit" className={`${GeistPixelSquare.className} bg-black hover:bg-gray-800 text-white font-medium py-1 px-4 rounded-[10px] lg:rounded-2xl w-full sm:w-auto`}>{signupButtonState}</button>
+              <button disabled={isSubmitting} type="submit" className={`font-rethink bg-black hover:bg-gray-800 text-white font-medium py-1 px-4 rounded-[10px] lg:rounded-2xl w-full sm:w-auto`}>{signupButtonState}</button>
           </form>
         </div>
       </div>

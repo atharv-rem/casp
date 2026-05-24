@@ -9,7 +9,6 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import passwordResetIcon from "@/public/assets/password-reset.svg"
-import { GeistPixelSquare } from "geist/font/pixel";
 
 const forgotPasswordSchema = z.object({
   password: z.string().min(10, "Password must be at least 10 characters").regex(/[A-Z]/, "Must contain at least one uppercase letter").regex(/[a-z]/, "Must contain at least one lowercase letter").regex(/[0-9]/, "Must contain at least one number").regex(/[#@$!%*?&]/, "Must contain at least one special character (@$!%*?&]"),
@@ -62,7 +61,7 @@ export default function ForgotPasswordPage() {
               {errors.password && <p className="text-red-500 text-[12px] font-bold">{errors.password.message}</p>}
               <Input {...register("password")} id="password" type="password" placeholder="enter your password" className="text-[12px] font-rethink font-semibold rounded-[10px]"/>
             </div>
-            <button disabled={isSubmitting} type="submit" className={`${GeistPixelSquare.className} bg-black hover:bg-gray-800 text-white font-medium py-[4px] px-[14px] rounded-[12px]`}>
+            <button disabled={isSubmitting} type="submit" className={`font-rethink bg-black hover:bg-gray-800 text-white font-medium py-[4px] px-[14px] rounded-[12px]`}>
               {isSubmitting ? 'Resetting...' : 'Reset Password'}
             </button>
           </form>

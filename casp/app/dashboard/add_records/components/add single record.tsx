@@ -235,7 +235,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                                 setAssignments(next);
                                 setComboboxOpen(prev => ({ ...prev, [index]: false }));
                               }}
-                              className="font-geist font-medium text-[12px]"
+                              className="font-rethink font-medium text-[12px]"
                             >
                               <Check
                                 className={cn(
@@ -255,7 +255,7 @@ export default function AddSingleRecord({ orgId, empfields, projfields, projectL
                                   setAssignments(next);
                                   setComboboxOpen(prev => ({ ...prev, [index]: false }));
                                 }}
-                                className="font-geist font-medium text-[12px]"
+                                className="font-rethink font-medium text-[12px]"
                               >
                                 <Check
                                   className={cn(

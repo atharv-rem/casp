@@ -14,7 +14,7 @@ export default function PageRoute({ org }: { org: string }) {
     if (pathname.startsWith("/dashboard/employees/")) {
         pathSegments = "dashboard / employee details"
     }
-    if (pathname === "/dashboard/projects") {
+    if (pathname.startsWith("/dashboard/projects/") || pathname === "/dashboard/projects") {
         pathSegments = "dashboard / project details"
     }
     console.log("pathname:", pathname, "pathSegments:", pathSegments);

@@ -120,6 +120,24 @@ export const projectCollection = createCollection(
       },
     },
     getKey: (project: Project) => project.id,
+    onUpdate: async ({ transaction }) => {
+      const mutation = transaction.mutations[0]
+      const response = await fetch("/api/database_update/updateProject", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: mutation.original.id,
+          changes: mutation.changes,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null)
+        throw new Error(error?.error ?? "Failed to update project")
+      }
+    },
   })
 )
 
