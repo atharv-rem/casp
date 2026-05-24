@@ -2,18 +2,6 @@ import getEmployeeSchemas from "@/lib/database fetch/employee_schema";
 import { NextResponse,NextRequest } from "next/server";
 import getOrganizationID from "@/lib/database fetch/organization_id";
 
-type EmployeeField = {
-    "id": string,
-    "key": string,
-    "type": string,
-    "label": string,
-    "required": boolean
-}
-
-type  EmployeeSchema = {
-    "field"?: EmployeeField[]
-}
-
 export async function GET(request: NextRequest) {
     const {OrgId} = await getOrganizationID();
     if (!OrgId || OrgId === "cannot find organization id") {
@@ -24,7 +12,7 @@ export async function GET(request: NextRequest) {
     } 
 
     try {
-        const employeeSchemas: EmployeeSchema = await getEmployeeSchemas({orgId: OrgId});
+        const employeeSchemas = await getEmployeeSchemas({orgId: OrgId});
         if (!employeeSchemas) {
         return NextResponse.json(
             { error: "Employee schemas not found" },

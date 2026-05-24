@@ -28,7 +28,7 @@ const field_types = [
   { value: 'rating', label: 'Rating' },
 ];
 
-export default function SchemaBuilder({ fields, setFields }) {
+export default function SchemaBuilder({ fields, setFields }: { fields: any[], setFields: any }) {
   const [newField, setNewField] = useState('');
   const [fieldType, setFieldType] = useState('text');
 
@@ -50,7 +50,7 @@ export default function SchemaBuilder({ fields, setFields }) {
     setFieldType('text');
   };
 
-  const removeField = (id) => {
+  const removeField = (id: any) => {
     setFields(fields.filter((f) => f.id !== id));
   };
 

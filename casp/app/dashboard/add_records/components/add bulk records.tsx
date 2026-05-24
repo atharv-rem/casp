@@ -32,7 +32,7 @@ import {
 
 export default function AddBulkRecordButton( { empfields, projfields }: { empfields: any[], projfields: any[] }) {
 
-  const [templateType, setTemplateType] = useState('employees')
+  const [templateType, setTemplateType] = useState<'employees' | 'projects' | 'assignments' | 'all'>('employees')
   const [uploadError, setUploadError] = useState('')
   const [uploadStatus, setUploadStatus] = useState('')
   const [open, setOpen] = useState(false)
@@ -97,7 +97,7 @@ export default function AddBulkRecordButton( { empfields, projfields }: { empfie
                       key={opt.value}
                       value={opt.value}
                       onSelect={(currentValue) => {
-                        setTemplateType(currentValue)
+                        setTemplateType(currentValue as 'employees' | 'projects' | 'assignments' | 'all')
                         setOpen(false)
                       }}
                     >

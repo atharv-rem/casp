@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [globalFilter, setGlobalFilter] = useState("")
-  const [selectedRow, setSelectedRow] = useState<Row<Record<string, string>> | null>(null)
+  const [selectedRow, setSelectedRow] = useState<Row<any> | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [projectId, setProjectId] = useState<string | null>(null)
   const queryClient = useQueryClient()
@@ -155,14 +155,14 @@ export function DataTable<TData, TValue>({
     })
   }
 
-  const handleRowClick = (row: Row<Record<string, string>>) => {
+  const handleRowClick = (row: Row<any>) => {
     const id = row.original.id
     setSelectedRow(row)
     setIsSheetOpen(true)
     setProjectId(id)
   }
 
-  const handleRowHover = (row: Row<Record<string, string>>) => {
+  const handleRowHover = (row: Row<any>) => {
     const id = row.original.id
     if (!id) return
     prefetchProjectDetails(id)
@@ -373,7 +373,7 @@ export function DataTable<TData, TValue>({
         selectedRow={selectedRow}
         isLoading={isLoading}
         isError={isError}
-        projectAssignments={projectAssignments}
+        projectAssignments={projectAssignments ?? null}
         projectAssignmentData={projectAssignmentData}
         onRetry={() => {
           void refetch()

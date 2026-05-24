@@ -95,7 +95,7 @@ const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>, id: string) =
   const data = Object.fromEntries(new FormData(e.currentTarget))
 
   await projectCollection.update(id, (draft) => {
-    const projectDraft = draft as {
+    const projectDraft = draft as unknown as {
       name: string
       meta: Array<{ id: string; label?: string; value: string | null }> | null
     }

@@ -146,7 +146,7 @@ export function RecordDetailsSheet({
                 <div className="font-rethink text-[22px] font-semibold mb-0 leading-none">{selectedRow?.original?.employee_name || ""}</div>
                 <div className="flex flex-row items-center justify-center leading-none">
                   <Image src={mail} alt="mail icon" className="size-[15px] mr-2" />
-                  <span className="font-rethink text-[12px] font-medium text-[#909090] leading-none">{selectedRow?.original?.employee_email || ""}</span>
+                  <span className="font-rethink text-[12px] font-semibold text-[#909090] leading-none">{selectedRow?.original?.employee_email || ""}</span>
                 </div>
               </div>
             </div>
