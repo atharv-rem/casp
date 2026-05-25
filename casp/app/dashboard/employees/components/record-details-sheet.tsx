@@ -190,7 +190,7 @@ export function RecordDetailsSheet({
             </TabsList>
 
             <TabsContent value="details" className="flex-1 overflow-y-auto mt-[10px] ml-[5px]">
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-2 gap-3">
                 {selectedRow && selectedRow.getVisibleCells().map((cell: any) => {
                     const columnMeta = cell.column.columnDef.meta as { label?: string } | undefined
                     const columnLabel = columnMeta?.label ?? cell.column.id

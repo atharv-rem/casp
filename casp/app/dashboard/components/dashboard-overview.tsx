@@ -262,7 +262,7 @@ export default function DashboardOverview() {
   };
 
   const renderProjectName = (name: string | null | undefined, fallback = "Unnamed project") => {
-    if (!name) return <span className="text-slate-400 font-rethink italic">{fallback}</span>;
+    if (!name) return <span className="text-black font-rethink italic">{fallback}</span>;
 
     const projectId = projectIdByName.get(name);
     if (!projectId) return <span className="font-semibold text-slate-800 font-rethink">{name}</span>;
@@ -284,11 +284,11 @@ export default function DashboardOverview() {
       return (
         <span 
           key={`${name}-${index}`} 
-          className="inline-flex items-center bg-slate-100 border border-slate-200 text-slate-800 text-xs px-2.5 py-1 rounded-full font-medium shadow-sm hover:bg-slate-200 transition-colors mr-1.5 mb-1.5"
+          className="inline-flex items-center bg-[#f9f9f9] border border-gray-200 text-black text-xs px-2.5 py-1 rounded-full font-medium shadow-sm mr-1.5 mb-1.5"
         >
           {employeeId ? (
             <Link href={employeeHref(employeeId)} className="hover:underline flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-slate-900" />
+              <span className="h-1.5 w-1.5 rounded-full bg-black" />
               {name}
             </Link>
           ) : (
@@ -307,7 +307,7 @@ export default function DashboardOverview() {
       return (
         <span 
           key={`${item.name}-${index}`}
-          className="inline-flex items-center bg-slate-100 border border-slate-200 text-slate-800 text-xs px-2.5 py-1 rounded-full font-medium shadow-sm hover:bg-slate-200 transition-colors mr-1.5 mb-1.5"
+          className="inline-flex items-center bg-[#f9f9f9] border border-gray-200  text-black text-xs px-2.5 py-1 rounded-full font-medium shadow-sm hover:bg-slate-200 transition-colors mr-1.5 mb-1.5"
         >
           {id ? (
             <Link href={projectHref(id)} className="hover:underline flex items-center gap-1">
@@ -347,111 +347,61 @@ export default function DashboardOverview() {
   };
 
   const getAvatarBg = (name: string | null) => {
-    if (!name) return "bg-slate-100 text-slate-800 border border-slate-200";
-    const index = name.length % 4;
-    const colors = [
-      "bg-slate-50 border border-slate-200 text-slate-800",
-      "bg-slate-100 border border-slate-250 text-slate-900",
-      "bg-slate-800 border border-slate-700 text-white",
-      "bg-slate-200 border border-slate-300 text-slate-900",
-    ];
-    return colors[index];
+    return "bg-[#f9f9f9] border border-slate-200 text-slate-800";
   };
 
   return (
-    <section className="mt-5 w-full flex flex-col space-y-6 pb-10">
+    <section className="mt-5 w-full flex flex-col space-y-4 pb-10">
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
         {/* Total Employees */}
-        <article className="group flex flex-col rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 h-24 w-24 bg-slate-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform" />
+        <article className="group flex flex-col rounded-[15px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
           <div className="flex justify-between items-center w-full mb-3">
             <p className="font-rethink text-xs font-semibold text-slate-450 uppercase tracking-wider">Total Employees</p>
-            <div className="p-2 bg-slate-100 rounded-lg text-slate-850">
-              <Users className="h-5 w-5" />
-            </div>
           </div>
           <p className="font-rethink text-[38px] font-bold text-slate-800 leading-none">{n(summary?.total_employees)}</p>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-slate-500 font-rethink">
-            <span className="font-semibold text-slate-800 flex items-center gap-0.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-slate-800" />
-              Active
-            </span>
-            <span>workforce profiles</span>
-          </div>
         </article>
 
         {/* Inactive Projects */}
-        <article className="group flex flex-col rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 h-24 w-24 bg-slate-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform" />
+        <article className="group flex flex-col rounded-[15px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
           <div className="flex justify-between items-center w-full mb-3">
             <p className="font-rethink text-xs font-semibold text-slate-450 uppercase tracking-wider">Inactive Projects</p>
-            <div className="p-2 bg-slate-100 rounded-lg text-slate-855">
-              <Briefcase className="h-5 w-5" />
-            </div>
           </div>
           <div className="flex items-baseline gap-2">
             <p className="font-rethink text-[38px] font-bold text-slate-800 leading-none">{n(summary?.inactive_projects)}</p>
-            {n(summary?.inactive_projects) > 0 && (
-              <span className="h-2 w-2 rounded-full bg-slate-400 animate-pulse" />
-            )}
-          </div>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-slate-500 font-rethink">
-            <span className="font-semibold text-slate-700">Status hold</span>
-            <span>requiring activation</span>
           </div>
         </article>
 
         {/* Unassigned Employees */}
-        <article className="group flex flex-col rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 h-24 w-24 bg-slate-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform" />
+        <article className="group flex flex-col rounded-[15px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
           <div className="flex justify-between items-center w-full mb-3">
             <p className="font-rethink text-xs font-semibold text-slate-455 uppercase tracking-wider">Unassigned Bench</p>
-            <div className="p-2 bg-slate-100 rounded-lg text-slate-850">
-              <Users className="h-5 w-5" />
-            </div>
           </div>
           <div className="flex items-baseline gap-2">
             <p className="font-rethink text-[38px] font-bold text-slate-800 leading-none">{n(summary?.unassigned_employees)}</p>
-            {n(summary?.unassigned_employees) > 0 && (
-              <span className="h-2 w-2 rounded-full bg-slate-600 animate-pulse" />
-            )}
-          </div>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-slate-500 font-rethink">
-            <span className="font-semibold text-slate-800">Under-allocated</span>
-            <span>staff available</span>
           </div>
         </article>
 
         {/* Average Utilization */}
-        <article className="group flex flex-col rounded-[20px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 h-24 w-24 bg-slate-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform" />
+        <article className="group flex flex-col rounded-[15px] border border-slate-200 bg-white p-5 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
           <div className="flex justify-between items-center w-full mb-3">
             <p className="font-rethink text-xs font-semibold text-slate-450 uppercase tracking-wider">Avg Utilization</p>
-            <div className="p-2 bg-slate-100 rounded-lg text-slate-850">
-              <TrendingUp className="h-5 w-5" />
-            </div>
           </div>
           <p className="font-rethink text-[38px] font-bold text-slate-800 leading-none">{pct(summary?.avg_utilization)}</p>
-          <div className="flex items-center gap-1.5 mt-2.5 text-xs text-slate-500 font-rethink">
-            <span className="font-semibold text-slate-800">Operational rate</span>
-            <span>target 75-85%</span>
-          </div>
         </article>
       </div>
 
-      {/* Capacity Overview & Allocation Matrix (Sleek White theme panel) */}
-      <span className="font-rethink text-xs font-semibold tracking-wider text-slate-400 uppercase mt-4">Capacity & Allocation Matrix</span>
-      <div className="flex flex-col gap-5 rounded-[24px] bg-white border border-slate-200 w-full p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+      {/* Capacity Overview & Allocation Matrix */}
+      <div className="flex flex-col gap-5 rounded-[15px] bg-white border border-slate-200 w-full p-6 relative overflow-hidden">
         
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-slate-100 pb-5">
           <div>
             <p className="font-rethink text-xs font-medium text-slate-450 uppercase tracking-wider mb-1">Total Weekly Capacity</p>
-            <p className="font-rethink text-4xl font-extrabold text-slate-900">{hrs(summary?.total_capacity_hrs)}</p>
+            <p className="font-rethink text-4xl font-bold text-slate-900">{hrs(summary?.total_capacity_hrs)}</p>
           </div>
           <div className="text-left sm:text-right font-rethink text-xs">
             <div className="text-slate-600">
-              <span className="font-bold text-slate-900 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200">{n(summary?.total_allocated_hrs)}h allocated</span>
+              <span className="font-bold text-black px-2.5 py-1 rounded-full bg-[#f9f9f9] border-1 border-gray-300">{n(summary?.total_allocated_hrs)}h allocated</span>
               <span className="mx-2 text-slate-300">/</span>
               <span className="font-medium text-slate-500">{n(summary?.remaining_capacity_hrs)}h remaining</span>
             </div>
@@ -459,7 +409,7 @@ export default function DashboardOverview() {
         </div>
 
         {/* Dot Matrix Tracker */}
-        <div className="rounded-xl w-full">
+        <div className="rounded-[10px] w-full">
           <div className="flex flex-wrap gap-[6px]">
             {(() => {
               const total = n(summary?.total_capacity_hrs) || 1;
@@ -470,7 +420,7 @@ export default function DashboardOverview() {
                 const isAllocated = i < allocatedDots;
                 const dotColor = isAllocated 
                   ? "bg-black shadow-[0_0_4px_rgba(0,0,0,0.15)]" 
-                  : "bg-slate-100 hover:bg-slate-200 transition-colors";
+                  : "bg-[#d3d3d3] hover:bg-slate-200 transition-colors";
 
                 return (
                   <div
@@ -491,20 +441,19 @@ export default function DashboardOverview() {
             <span>Allocated Capacity</span>
           </div>
           <div className="flex items-center gap-2 text-slate-655 font-rethink">
-            <div className="h-3 w-3 rounded-full bg-slate-100 border border-slate-200" />
+            <div className="h-3 w-3 rounded-full bg-[#d3d3d3] border border-slate-200" />
             <span>Remaining Capacity</span>
           </div>
         </div>
       </div>
       
       {/* Top 5 Least Utilized */}
-      <span className="font-rethink text-xs font-semibold tracking-wider text-slate-400 uppercase mt-4">Underutilized Workforce</span>
-      <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 w-full shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex flex-col rounded-[15px] bg-white p-6 w-full border border-slate-200">
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-          <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+          <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
             <TrendingUp className="h-4 w-4" />
           </div>
-          <h3 className="font-rethink text-base font-bold text-slate-800">Top 5 Underutilized Staff</h3>
+          <h3 className="font-rethink text-base font-bold text-black">TOP 5 UNDERUTILIZED STAFF</h3>
         </div>
 
         <div className="flex flex-col gap-6 mt-1 flex-1">
@@ -519,31 +468,31 @@ export default function DashboardOverview() {
                 <div key={`lu-${employee.name}-${index}`} className="flex flex-col gap-2 group">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2.5">
-                      <div className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs uppercase ${getAvatarBg(employee.name)} shadow-sm`}>
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center font-semibold text-xs uppercase ${getAvatarBg(employee.name)} shadow-sm bg-[#f9f9f9] border border-gray-300`}>
                         {getInitials(employee.name)}
                       </div>
                       <div>
-                        <p className="font-rethink text-sm font-semibold text-slate-850 hover:text-black transition-colors">
+                        <p className="font-rethink text-sm font-medium text-black">
                           {renderEmployeeName(employee.name, "Unnamed")}
                         </p>
-                        <p className="text-xs text-slate-450 font-rethink">
-                          Utilization: <span className="font-bold text-slate-700">{utilizationPct}%</span>
+                        <p className="text-xs text-[#575757] font-rethink">
+                          Utilization: <span className="font-bold text-black">{utilizationPct}%</span>
                         </p>
                       </div>
                     </div>
                     <div className="text-right font-rethink text-xs">
-                      <p className="text-slate-655">
-                        <span className="font-bold text-slate-800">{allocatedHours}h allocated</span>
-                        <span className="mx-1 text-slate-300">•</span>
-                        <span className="text-slate-450 font-medium">{freeHours}h available</span>
+                      <p>
+                        <span className="font-bold text-black">{allocatedHours}h allocated</span>
+                        <span className="mx-1 text-[#575757]">•</span>
+                        <span className="text-[#575757] font-medium">{freeHours}h available</span>
                       </p>
                     </div>
                   </div>
 
                   {/* Visual Progress bar */}
-                  <div className="relative w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="relative w-full h-2 bg-[#f9f9f9] rounded-full overflow-hidden">
                     <div 
-                      className="absolute top-0 left-0 h-full bg-slate-700 rounded-full transition-all duration-500 group-hover:brightness-105"
+                      className="absolute top-0 left-0 h-full bg-[#7e7e7e] rounded-full transition-all duration-500 group-hover:brightness-105"
                       style={{ width: `${utilizationPct}%` }}
                     />
                   </div>
@@ -552,69 +501,68 @@ export default function DashboardOverview() {
             })
           ) : (
             <div className="flex flex-col items-center justify-center py-10">
-              <Frown className="h-8 w-8 text-slate-355 mb-2" />
-              <p className="text-sm text-slate-500 font-rethink">No underutilized employees found.</p>
+              <Frown className="h-8 w-8 text-[#575757] mb-2" />
+              <p className="text-sm text-[#575757] font-rethink">No underutilized employees found.</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Allocation Insights & Work Tracking (Side-by-side grid) */}
+      {/* Allocation Insights & Work Tracking */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mt-4">
         {/* Employee Allocation Insights */}
-        <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+        <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-50">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <Users className="h-4 w-4" />
             </div>
             <h3 className="font-rethink text-base font-bold text-slate-800">Allocation Insights</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm font-rethink flex-1">
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-150">
-              <span className="text-slate-500 font-medium">Optimal Utilization</span>
-              <span className="px-2.5 py-1 text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200 rounded-lg">{n(summary?.optimal_count)}</span>
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9]">
+              <span className="text-black font-medium">Optimal Utilization</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.optimal_count)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-150">
-              <span className="text-slate-500 font-medium">Underutilized</span>
-              <span className="px-2.5 py-1 text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 rounded-lg">{n(summary?.underutilized_count)}</span>
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9]">
+              <span className="text-black font-medium">Underutilized</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.underutilized_count)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-100 hover:bg-slate-150 transition-colors border border-slate-250">
-              <span className="text-slate-800 font-bold flex items-center gap-1">
-                <AlertTriangle className="h-4 w-4" />
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9]">
+              <span className="text-black font-medium flex items-center gap-1">
                 Burnout Risk
               </span>
-              <span className="px-2.5 py-1 text-xs font-bold text-white bg-slate-900 rounded-lg">{n(summary?.burnout_risk_count)}</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.burnout_risk_count)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-150">
-              <span className="text-slate-500 font-medium">Fully Booked</span>
-              <span className="px-2.5 py-1 text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200 rounded-lg">{n(summary?.fully_booked)}</span>
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9]">
+              <span className="text-black font-medium">Fully Booked</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.fully_booked)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-150">
-              <span className="text-slate-500 font-medium">Multi-project Roles</span>
-              <span className="px-2.5 py-1 text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200 rounded-lg">{n(summary?.multi_project_count)}</span>
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9]">
+              <span className="text-black font-medium">Multi-project Roles</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.multi_project_count)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-150">
-              <span className="text-slate-500 font-medium">Partial Allocation</span>
-              <span className="px-2.5 py-1 text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded-lg">{n(summary?.partial_alloc_count)}</span>
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9]">
+              <span className="text-black font-medium">Partial Allocation</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.partial_alloc_count)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3.5 rounded-[15px] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-150 sm:col-span-2">
-              <span className="text-slate-500 font-medium">Unassigned profiles</span>
-              <span className="px-2.5 py-1 text-xs font-bold text-slate-800 bg-slate-200 border border-slate-250 rounded-lg">{n(summary?.unassigned_employees)}</span>
+            <div className="flex justify-between items-center p-3.5 rounded-[15px] transition-colors border border-gray-150 bg-[#f9f9f9] sm:col-span-2">
+              <span className="text-black font-medium">Unassigned profiles</span>
+              <span className="px-2.5 py-1 text-[20px] font-bold text-black">{n(summary?.unassigned_employees)}</span>
             </div>
           </div>
         </div>
 
         {/* Work Tracking */}
-        <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6 ">
           <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <Clock className="h-4 w-4" />
             </div>
             <h3 className="font-rethink text-base font-bold text-slate-800">Work Tracking Insights</h3>
@@ -622,17 +570,17 @@ export default function DashboardOverview() {
 
           <div className="flex flex-col gap-4 flex-1">
             <div className="grid grid-cols-3 gap-3">
-              <div className="flex flex-col p-3 rounded-[15px] bg-slate-50 border border-slate-150">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider font-rethink">Today</span>
-                <span className="text-lg font-bold text-slate-800 font-rethink mt-1">{n(summary?.hours_logged_today)}h</span>
+              <div className="flex flex-col p-3 rounded-[15px] bg-[#f9f9f9] border border-slate-150">
+                <span className="text-[10px] text-[#575757] font-semibold uppercase tracking-wider font-rethink">Today</span>
+                <span className="text-lg font-bold text-black font-rethink mt-1">{n(summary?.hours_logged_today)}h</span>
               </div>
-              <div className="flex flex-col p-3 rounded-[15px] bg-slate-50 border border-slate-150">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider font-rethink">This Week</span>
-                <span className="text-lg font-bold text-slate-800 font-rethink mt-1">{n(summary?.hours_logged_week)}h</span>
+              <div className="flex flex-col p-3 rounded-[15px] bg-[#f9f9f9] border border-slate-150">
+                <span className="text-[10px] text-[#575757] font-semibold uppercase tracking-wider font-rethink">This Week</span>
+                <span className="text-lg font-bold text-black font-rethink mt-1">{n(summary?.hours_logged_week)}h</span>
               </div>
-              <div className="flex flex-col p-3 rounded-[15px] bg-slate-50 border border-slate-150">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider font-rethink">No Hours Logged</span>
-                <span className="text-lg font-bold text-slate-800 font-rethink mt-1">{n(summary?.no_hours_count)}</span>
+              <div className="flex flex-col p-3 rounded-[15px] bg-[#f9f9f9] border border-slate-150">
+                <span className="text-[10px] text-[#575757] font-semibold uppercase tracking-wider font-rethink">No Hours Logged</span>
+                <span className="text-lg font-bold text-black font-rethink mt-1">{n(summary?.no_hours_count)}</span>
               </div>
             </div>
 
@@ -652,12 +600,12 @@ export default function DashboardOverview() {
             <div className="space-y-3 mt-1.5 text-xs text-slate-600 font-rethink">
               {mostActive.length > 0 && (
                 <div className="flex flex-col gap-1.5">
-                  <span className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Top Active This Week:</span>
+                  <span className="font-semibold text-black uppercase tracking-wider text-[10px]">Top Active This Week</span>
                   <div className="flex flex-wrap gap-1.5">
                     {mostActive.map((employee, index) => (
                       <span 
                         key={`${employee.name ?? "unnamed"}-${index}`}
-                        className="inline-flex items-center gap-1 bg-slate-100 border border-slate-200 text-slate-800 px-2.5 py-1 rounded-full font-medium"
+                        className="inline-flex items-center gap-1 bg-[#f9f9f9] border border-gray-200 text-black px-2.5 py-1 rounded-full font-medium"
                       >
                         <Activity className="h-3 w-3 text-slate-900" />
                         {renderEmployeeName(employee.name, "Unnamed")} ({employee.hours}h)
@@ -669,7 +617,7 @@ export default function DashboardOverview() {
 
               {noHoursLogged.length > 0 && (
                 <div className="flex flex-col gap-1.5 pt-1">
-                  <span className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Missing Timesheets:</span>
+                  <span className="font-semibold text-black uppercase tracking-wider text-[10px]">Missing Timesheets:</span>
                   <div className="flex flex-wrap">
                     {renderEmployeeList(noHoursLogged)}
                   </div>
@@ -681,10 +629,9 @@ export default function DashboardOverview() {
       </div>
 
       {/* Project Overview */}
-      <span className="font-rethink text-xs font-semibold tracking-wider text-slate-400 uppercase mt-4">Project Workspace</span>
-      <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-          <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+      <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
             <Briefcase className="h-4 w-4" />
           </div>
           <h3 className="font-rethink text-base font-bold text-slate-800">Active Project Portfolios</h3>
@@ -698,27 +645,27 @@ export default function DashboardOverview() {
             return (
               <div 
                 key={project.id} 
-                className="group flex flex-col rounded-[20px] border border-slate-200 bg-slate-50/30 p-5 shadow-sm hover:shadow-md hover:bg-slate-50/70 transition-all duration-300"
+                className="group flex flex-col rounded-[10px] border border-gray-200 bg-[#f9f9f9] p-5 hover:bg-[#f0f0f0] transition-all duration-300"
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="font-rethink text-base font-bold text-slate-800 hover:text-black transition-colors">
+                  <h4 className="font-rethink text-base font-bold text-black ">
                     <Link href={projectHref(project.id)} className="flex items-center gap-1 group/link">
                       {project.name}
                       <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover/link:opacity-100 transition-opacity" />
                     </Link>
                   </h4>
-                  <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase border border-slate-900 bg-white text-slate-900 rounded-md">
+                  <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase border border-black bg-white text-black rounded-md">
                     {project.status}
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-3 mt-auto font-rethink text-xs">
                   <div className="flex flex-col gap-1">
-                    <div className="flex justify-between text-slate-400 font-medium">
+                    <div className="flex justify-between text-[#575757] font-medium">
                       <span>Staff Allocation</span>
-                      <span className="font-bold text-slate-700">{allocationVal}%</span>
+                      <span className="font-bold text-[#575757]">{allocationVal}%</span>
                     </div>
-                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-white rounded-full overflow-hidden">
                       <div 
                         className={`h-full ${progressColor} rounded-full`}
                         style={{ width: `${Math.min(100, allocationVal)}%` }}
@@ -746,18 +693,18 @@ export default function DashboardOverview() {
       {/* Project Risk Flags & Availability/Leave (Side-by-side grid) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mt-4">
         {/* Project Risk Flags */}
-        <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+        <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6 ">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <ShieldAlert className="h-4 w-4" />
             </div>
-            <h3 className="font-rethink text-base font-bold text-slate-800">Project Risk Monitor</h3>
+            <h3 className="font-rethink text-base font-bold text-black">Project Risk Monitor</h3>
           </div>
 
           <div className="flex flex-col gap-4 font-rethink text-sm text-slate-750 flex-1 justify-between">
             {/* Deadline Threats */}
-            <div className="p-4 rounded-[18px] bg-slate-50 border border-slate-200 hover:border-slate-350 transition-colors">
-              <p className="font-bold text-slate-850 flex items-center gap-1.5 text-xs uppercase tracking-wider mb-2">
+            <div className="p-4 rounded-[10px] bg-white border border-gray-200 hover:border-slate-350 transition-colors">
+              <p className="font-bold text-black flex items-center gap-1.5 text-xs uppercase tracking-wider mb-2">
                 <Clock className="h-4 w-4 text-slate-850" />
                 Critical Deadline Threats (Ending ≤ 14 days)
               </p>
@@ -771,15 +718,15 @@ export default function DashboardOverview() {
                     }))
                   )
                 ) : (
-                  <span className="text-slate-450 text-xs italic font-medium">No immediate deadline threats found.</span>
+                  <span className="text-slate-450 text-xs font-medium">No immediate deadline threats found.</span>
                 )}
               </div>
             </div>
 
             {/* No employees assigned */}
-            <div className="p-4 rounded-[18px] bg-slate-50 border border-slate-150">
-              <p className="font-bold text-slate-750 flex items-center gap-1.5 text-xs uppercase tracking-wider mb-2">
-                <AlertTriangle className="h-4 w-4 text-slate-700" />
+            <div className="p-4 rounded-[10px] bg-white border border-gray-200 hover:border-slate-350 transition-colors">
+              <p className="font-bold text-black flex items-center gap-1.5 text-xs uppercase tracking-wider mb-2">
+                <AlertTriangle className="h-4 w-4 text-black" />
                 Zero Staff Allocation
               </p>
               <div className="mt-1 flex flex-wrap">
@@ -791,15 +738,15 @@ export default function DashboardOverview() {
                     }))
                   )
                 ) : (
-                  <span className="text-slate-455 text-xs italic font-medium">All active projects have staff.</span>
+                  <span className="text-black text-xs font-medium">All active projects have staff.</span>
                 )}
               </div>
             </div>
 
             {/* Low allocation */}
-            <div className="p-4 rounded-[18px] bg-slate-50 border border-slate-150">
-              <p className="font-bold text-slate-755 flex items-center gap-1.5 text-xs uppercase tracking-wider mb-2">
-                <TrendingUp className="h-4 w-4 text-slate-800" />
+            <div className="p-4 rounded-[10px] bg-white border border-gray-200 hover:border-slate-350 transition-colors">
+              <p className="font-bold text-black flex items-center gap-1.5 text-xs uppercase tracking-wider mb-2">
+                <TrendingUp className="h-4 w-4 text-slate-850" />
                 Under-allocated Projects (&lt; 50%)
               </p>
               <div className="mt-1 flex flex-wrap">
@@ -819,21 +766,21 @@ export default function DashboardOverview() {
         </div>
 
         {/* Availability / Leave */}
-        <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+        <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6 ">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <Calendar className="h-4 w-4" />
             </div>
-            <h3 className="font-rethink text-base font-bold text-slate-800">Time-off & Availability</h3>
+            <h3 className="font-rethink text-base font-bold text-black">Time-off & Availability</h3>
           </div>
 
-          <div className="flex flex-col gap-4 font-rethink text-sm text-slate-700 flex-1">
+          <div className="flex flex-col gap-4 font-rethink text-sm text-black flex-1">
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-[15px] text-center">
+              <div className="p-3.5 bg-[#f9f9f9] border border-gray-200 rounded-[15px] text-center">
                 <p className="text-[10px] text-slate-450 font-semibold uppercase tracking-wider">Active Leave</p>
                 <p className="text-xl font-bold text-slate-850 mt-1">{n(summary?.on_leave_count)} employees</p>
               </div>
-              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-[15px] text-center">
+              <div className="p-3.5 bg-[#f9f9f9] border border-gray-200 rounded-[15px] text-center">
                 <p className="text-[10px] text-slate-450 font-semibold uppercase tracking-wider">Leaving Soon</p>
                 <p className="text-xl font-bold text-slate-850 mt-1">{n(summary?.leaving_soon_count)} employees</p>
               </div>
@@ -841,21 +788,21 @@ export default function DashboardOverview() {
 
             {employeesOnLeave.length > 0 && (
               <div className="flex flex-col gap-1.5">
-                <span className="font-semibold text-slate-450 uppercase tracking-wider text-[10px]">On Leave Now:</span>
+                <span className="font-semibold text-black uppercase tracking-wider text-[10px]">On Leave Now:</span>
                 <div className="flex flex-wrap">{renderEmployeeList(employeesOnLeave)}</div>
               </div>
             )}
 
             {employeesLeavingSoon.length > 0 && (
               <div className="flex flex-col gap-1.5 pt-1">
-                <span className="font-semibold text-slate-455 uppercase tracking-wider text-[10px]">Scheduled Leave:</span>
+                <span className="font-semibold text-black uppercase tracking-wider text-[10px]">Scheduled Leave:</span>
                 <div className="flex flex-wrap">{renderEmployeeList(employeesLeavingSoon)}</div>
               </div>
             )}
 
             {/* Leave impact tracker */}
-            <div className="pt-3 border-t border-slate-50 mt-auto">
-              <p className="font-bold text-slate-700 text-xs uppercase tracking-wider mb-2.5">Leave Impact Analysis</p>
+            <div className="pt-3 border-t border-[#f9f9f9] mt-auto">
+              <p className="font-bold text-black text-xs uppercase tracking-wider mb-2.5">Leave Impact Analysis</p>
               <div className="space-y-2">
                 {leaveImpact.length > 0 ? (
                   leaveImpact.map((impact, index) => {
@@ -883,7 +830,7 @@ export default function DashboardOverview() {
                     );
                   })
                 ) : (
-                  <p className="text-slate-450 text-xs italic font-medium">No critical impact from scheduled leaves.</p>
+                  <p className="text-black text-xs font-medium">No critical impact from scheduled leaves.</p>
                 )}
               </div>
             </div>
@@ -894,12 +841,12 @@ export default function DashboardOverview() {
       {/* Skill Insights & Skill Gaps (Side-by-side grid) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mt-4">
         {/* Skills Insights */}
-        <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+        <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6 transition-shadow">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <Award className="h-4 w-4" />
             </div>
-            <h3 className="font-rethink text-base font-bold text-slate-800">Top Available Skills</h3>
+            <h3 className="font-rethink text-base font-bold text-black">Top Available Skills</h3>
           </div>
 
           <div className="flex flex-col gap-4 font-rethink text-sm flex-1">
@@ -913,7 +860,7 @@ export default function DashboardOverview() {
                     <span className="font-bold text-slate-800">{skill.name ?? "Unnamed skill"}</span>
                     <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-900 rounded font-semibold">{skill.employee_count} profiles</span>
                   </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-[#f9f9f9] rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-slate-800 rounded-full group-hover:bg-black transition-colors"
                       style={{ width: `${Math.min(100, (skill.avg_proficiency ?? 4) * 20)}%` }}
@@ -928,12 +875,12 @@ export default function DashboardOverview() {
         </div>
 
         {/* Skill Gaps */}
-        <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+        <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6 transition-shadow">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <Target className="h-4 w-4" />
             </div>
-            <h3 className="font-rethink text-base font-bold text-slate-800">Identified Skill Gaps</h3>
+            <h3 className="font-rethink text-base font-bold text-black">Identified Skill Gaps</h3>
           </div>
 
           <div className="flex flex-col gap-4 font-rethink text-sm flex-1">
@@ -944,10 +891,10 @@ export default function DashboardOverview() {
                   className="flex flex-col gap-1.5 group"
                 >
                   <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800">{skill.name ?? "Unnamed skill"}</span>
-                    <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-900 rounded font-semibold">{skill.employee_count} needed</span>
+                    <span className="font-bold text-black">{skill.name ?? "Unnamed skill"}</span>
+                    <span className="px-2 py-0.5 bg-[#f9f9f9] border border-gray-200 text-black rounded font-semibold">{skill.employee_count} needed</span>
                   </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-[#f9f9f9] rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-slate-500 rounded-full group-hover:bg-slate-700 transition-colors"
                       style={{ width: `${Math.min(100, skill.employee_count * 20)}%` }}
@@ -962,15 +909,14 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* All Employees (Interactive Data Table with client-side live Search and Status Filtering tabs) */}
-      <span className="font-rethink text-xs font-semibold tracking-wider text-slate-400 uppercase mt-4">Talent Roster</span>
-      <div className="flex flex-col rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-50">
+      {/* All Employees */}
+      <div className="flex flex-col rounded-[15px] border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-slate-100 rounded-md text-slate-800">
+            <div className="p-1.5 bg-[#f9f9f9] rounded-md text-black">
               <Users className="h-4 w-4" />
             </div>
-            <h3 className="font-rethink text-base font-bold text-slate-800">All Employees ({filteredEmployees.length})</h3>
+            <h3 className="font-rethink text-base font-bold text-black">All Employees ({filteredEmployees.length})</h3>
           </div>
 
           {/* Table Controls */}
@@ -983,17 +929,17 @@ export default function DashboardOverview() {
                 placeholder="Search employee name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8.5 pr-4 py-2 border border-slate-200 rounded-[14px] text-xs font-rethink bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all text-slate-700 placeholder-slate-400"
+                className="w-full pl-8.5 pr-4 py-2 border border-gray-200 rounded-[14px] text-xs font-rethink bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black transition-all text-gray-700 placeholder:text-gray-400"
               />
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1 bg-slate-50 border border-slate-100 p-1 rounded-[16px] overflow-x-auto self-start sm:self-auto">
+            <div className="flex items-center gap-1 bg-gray-50 border border-gray-100 p-1 rounded-[16px] overflow-x-auto self-start sm:self-auto">
               <button
                 onClick={() => setStatusFilter("all")}
                 className={`px-3 py-1.5 rounded-[12px] text-[10px] font-bold tracking-wide uppercase transition-all whitespace-nowrap cursor-pointer ${
                   statusFilter === "all"
-                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-slate-900/50"
+                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-gray-900/50"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -1003,7 +949,7 @@ export default function DashboardOverview() {
                 onClick={() => setStatusFilter("burnout")}
                 className={`px-3 py-1.5 rounded-[12px] text-[10px] font-bold tracking-wide uppercase transition-all whitespace-nowrap cursor-pointer ${
                   statusFilter === "burnout"
-                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-slate-900/50"
+                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-gray-900/50"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -1013,7 +959,7 @@ export default function DashboardOverview() {
                 onClick={() => setStatusFilter("underutilized")}
                 className={`px-3 py-1.5 rounded-[12px] text-[10px] font-bold tracking-wide uppercase transition-all whitespace-nowrap cursor-pointer ${
                   statusFilter === "underutilized"
-                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-slate-900/50"
+                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-gray-900/50"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -1023,7 +969,7 @@ export default function DashboardOverview() {
                 onClick={() => setStatusFilter("on_leave")}
                 className={`px-3 py-1.5 rounded-[12px] text-[10px] font-bold tracking-wide uppercase transition-all whitespace-nowrap cursor-pointer ${
                   statusFilter === "on_leave"
-                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-slate-900/50"
+                    ? "bg-black text-white shadow-[0_2px_6px_-2px_rgba(0,0,0,0.15)] border border-gray-900/50"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -1038,7 +984,7 @@ export default function DashboardOverview() {
           {filteredEmployees.length > 0 ? (
             <table className="min-w-full text-sm font-rethink">
               <thead>
-                <tr className="border-b border-slate-100 text-left text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                <tr className="border-b border-gray-200 text-left text-black text-xs font-semibold uppercase tracking-wider">
                   <th className="pb-3 pr-4 pl-2 font-semibold">Employee</th>
                   <th className="pb-3 pr-4 font-semibold">Allocation</th>
                   <th className="pb-3 pr-4 font-semibold">Utilization</th>
@@ -1047,7 +993,7 @@ export default function DashboardOverview() {
                   <th className="pb-3 pr-4 font-semibold">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-gray-200">
                 {filteredEmployees.map((employee) => {
                   const allocVal = n(employee.allocation_pct);
                   const utilVal = n(employee.utilization_pct);
@@ -1061,7 +1007,7 @@ export default function DashboardOverview() {
                   else if (utilVal < 50) utilMeterColor = "bg-slate-400";
 
                   return (
-                    <tr key={employee.employee_id} className="hover:bg-slate-50/50 transition-colors group">
+                    <tr key={employee.employee_id} className="hover:bg-[#f9f9f9] transition-colors group">
                       {/* Name Card & initials */}
                       <td className="py-3.5 pr-4 pl-2">
                         <div className="flex items-center gap-3">
@@ -1071,12 +1017,12 @@ export default function DashboardOverview() {
                           <div>
                             <Link 
                               href={employeeHref(employee.employee_id)} 
-                              className="font-bold text-slate-800 hover:text-black transition-colors flex items-center gap-0.5 group/name"
+                              className="font-bold text-black hover:text-[#575757] transition-colors flex items-center gap-0.5 group/name"
                             >
                               {employee.name ?? "Unnamed employee"}
                               <ArrowUpRight className="h-3 w-3 opacity-0 group-hover/name:opacity-100 transition-all transform group-hover/name:translate-x-0.5 group-hover/name:-translate-y-0.5 text-black" />
                             </Link>
-                            <span className="text-[10px] text-slate-400 font-medium">ID: {employee.employee_id.slice(0, 8)}</span>
+                            <span className="text-[10px] text-[#575757] font-medium">ID: {employee.employee_id.slice(0, 8)}</span>
                           </div>
                         </div>
                       </td>
@@ -1084,8 +1030,8 @@ export default function DashboardOverview() {
                       {/* Allocation Meter */}
                       <td className="py-3.5 pr-4">
                         <div className="flex flex-col gap-1 w-28">
-                          <span className="font-bold text-slate-850 text-xs">{allocVal}%</span>
-                          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <span className="font-bold text-black text-xs">{allocVal}%</span>
+                          <div className="w-full h-1.5 bg-[#f9f9f9] border border-gray-200 rounded-full overflow-hidden">
                             <div className={`h-full ${allocMeterColor} rounded-full`} style={{ width: `${Math.min(100, allocVal)}%` }} />
                           </div>
                         </div>
@@ -1094,8 +1040,8 @@ export default function DashboardOverview() {
                       {/* Utilization Meter */}
                       <td className="py-3.5 pr-4">
                         <div className="flex flex-col gap-1 w-28">
-                          <span className="font-bold text-slate-850 text-xs">{utilVal}%</span>
-                          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <span className="font-bold text-black text-xs">{utilVal}%</span>
+                          <div className="w-full h-1.5 bg-[#f9f9f9] border border-gray-200 rounded-full overflow-hidden">
                             <div className={`h-full ${utilMeterColor} rounded-full`} style={{ width: `${Math.min(100, utilVal)}%` }} />
                           </div>
                         </div>
@@ -1113,19 +1059,19 @@ export default function DashboardOverview() {
                             )}
                           </div>
                         ) : (
-                          <span className="text-slate-350 font-semibold text-xs">-</span>
+                          <span className="text-[#575757] font-semibold text-xs">-</span>
                         )}
                       </td>
 
                       {/* Weekly Hours */}
                       <td className="py-3.5 pr-4">
-                        <span className="font-bold text-slate-700 text-xs">{employee.hours_week} hrs</span>
+                        <span className="font-bold text-black text-xs">{employee.hours_week} hrs</span>
                       </td>
 
                       {/* Status badge */}
                       <td className="py-3.5 pr-4">
                         {employee.is_on_leave ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-750 rounded-full uppercase tracking-wide">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold bg-[#f9f9f9] border border-gray-200 text-black rounded-full uppercase tracking-wide">
                             <span className="h-1.5 w-1.5 rounded-full bg-slate-600 animate-pulse" />
                             On Leave
                           </span>
@@ -1135,13 +1081,13 @@ export default function DashboardOverview() {
                             Overloaded
                           </span>
                         ) : allocVal === 0 ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold bg-slate-50 border border-slate-150 text-slate-450 rounded-full uppercase tracking-wide">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold bg-[#f9f9f9] border border-gray-200 text-black rounded-full uppercase tracking-wide">
                             <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
                             Bench
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-800 rounded-full uppercase tracking-wide">
-                            <span className="h-1.5 w-1.5 rounded-full bg-slate-900" />
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold bg-[#f9f9f9] border border-gray-200 text-black rounded-full uppercase tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full bg-black" />
                             Active
                           </span>
                         )}
@@ -1152,13 +1098,13 @@ export default function DashboardOverview() {
               </tbody>
             </table>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Frown className="h-10 w-10 text-slate-300 mb-3" />
-              <h4 className="text-sm font-bold text-slate-800">No matching employees found</h4>
-              <p className="text-xs text-slate-400 mt-1">Try adjusting your filters or search keywords.</p>
+            <div className="flex flex-col items-center justify-center py-12 bg-[#f9f9f9] border border-gray-200 rounded-[15px]">
+              <Frown className="h-10 w-10 text-black mb-3" />
+              <h4 className="text-sm font-bold text-black">No matching employees found</h4>
+              <p className="text-xs text-[#575757] mt-1">Try adjusting your filters or search keywords.</p>
               <button
                 onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}
-                className="mt-4 px-4 py-2 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                className="mt-4 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-black text-xs font-bold rounded-xl transition-all cursor-pointer"
               >
                 Reset Search Filters
               </button>
